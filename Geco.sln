@@ -10,7 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Generator", "src\Generator\Generator.xproj", "{F427C865-3707-4F7A-8C3B-28DB857923BF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Tools", ".Tools", "{E45BBA88-E139-4A1A-BE17-9CC6A56E0CF6}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Geco", "src\.Tools\Geco\Geco.xproj", "{F427C865-3707-4F7A-8C3B-28DB857923BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F427C865-3707-4F7A-8C3B-28DB857923BF} = {C827763C-4C1D-45AC-8C72-D14A46F164C2}
+		{E45BBA88-E139-4A1A-BE17-9CC6A56E0CF6} = {C827763C-4C1D-45AC-8C72-D14A46F164C2}
+		{F427C865-3707-4F7A-8C3B-28DB857923BF} = {E45BBA88-E139-4A1A-BE17-9CC6A56E0CF6}
 	EndGlobalSection
 EndGlobal
