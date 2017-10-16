@@ -32,7 +32,7 @@ namespace Geco.Common.MetadataProviders
                     (
                         Expression.New(t),
                         t.GetTypeInfo().GetProperties()
-                        .Select(p => Expression.Bind(p, GetAssignmentExpression(p, r)))
+                        .Select(p => Expression.Bind(p, GetAssignmentExpression(r, p)))
                     ), EnumerableExtensions.Yield(r)
                 );
 
@@ -40,11 +40,10 @@ namespace Geco.Common.MetadataProviders
             });
         }
 
-        private static Expression GetAssignmentExpression(PropertyInfo p, ParameterExpression r)
+        private static Expression GetAssignmentExpression(ParameterExpression r, PropertyInfo p)
         {
             if (!p.CanWrite)
                 throw new InvalidOperationException($"Property: {p.Name} of type:{p.DeclaringType.FullName} is not writable property!");
-
 
             return Expression.Call(ReadValueOrDefaultMethod.MakeGenericMethod(p.PropertyType), EnumerableExtensions.Yield<Expression>(r, Expression.Constant(p.Name)));
         }

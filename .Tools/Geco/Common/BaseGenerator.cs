@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace Geco.Common
 {
-    public abstract class BaseGenerator
+    public abstract class BaseGenerator : IOutputRunnable
     {
         private const string IndentString = "    ";
 
-        protected string Folder;
         private TextWriter _tw;
         private int _indent;
         private bool initialized;
+        private readonly HashSet<string> filesToDelete = new HashSet<string>();
 
         protected BaseGenerator(IInflector inf)
         {
@@ -22,31 +22,50 @@ namespace Geco.Common
         protected IInflector Inf { get; }
 
         public bool OutputToConsole { get; set; }
-        protected virtual void Initialize() { }
         protected abstract void Generate();
 
         public void Run()
         {
-            Initialize();
+            DetermineFilesToClean();
             Generate();
+            CleanFiles();
         }
 
-        protected IDisposable BeginFile(string file)
+        private void CleanFiles()
         {
+            foreach (var filePath in filesToDelete)
+            {
+                File.Delete(filePath);
+            }
+        }
+
+        private void DetermineFilesToClean()
+        {
+            if (!String.IsNullOrWhiteSpace(CleanFilesPattern))
+                foreach (var file in Directory.EnumerateFiles(BaseOutputPath, CleanFilesPattern, SearchOption.AllDirectories))
+                    filesToDelete.Add(file);
+        }
+
+        protected IDisposable BeginFile(string file, bool option = true)
+        {
+            if (!option)
+                return new DisposableAction(null);
+
             initialized = false;
-            _tw = File.CreateText(Path.Combine(Folder, file));
+            var fileName = Path.Combine(BaseOutputPath, file);
+            EnsurePath(fileName);
+            filesToDelete.Remove(fileName);
+            _tw = File.CreateText(fileName);
             return _tw;
         }
 
-        /// <summary>
-        /// Write line and increase indent
-        /// </summary>
-        /// <param name="text"></param>
-        protected void WI(string text = "")
+        private void EnsurePath(string fileName)
         {
-            W(text);
-            Indent();
+            var folders = Path.GetDirectoryName(fileName);
+            if (!String.IsNullOrEmpty(folders))
+                Directory.CreateDirectory(folders);
         }
+
 
         /// <summary>
         /// Write semicolon ; on the previous line
@@ -66,11 +85,24 @@ namespace Geco.Common
             if (OutputToConsole) Console.Write(",");
         }
 
+
+        /// <summary>
+        /// Write line and increase indent
+        /// </summary>
+        /// <param name="text">The text to write</param>
+        /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
+        protected void WI(string text = "", bool write = true)
+        {
+            W(text);
+            Indent();
+        }
+
         /// <summary>
         /// Increase indent and write line
         /// </summary>
-        /// <param name="text"></param>
-        protected void IW(string text = "")
+        /// <param name="text">The text to write</param>
+        /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
+        protected void IW(string text = "", bool write = true)
         {
             Indent();
             W(text);
@@ -79,8 +111,9 @@ namespace Geco.Common
         /// <summary>
         /// Decrease indent and write line
         /// </summary>
-        /// <param name="text"></param>
-        protected void DW(string text = "")
+        /// <param name="text">The text to write</param>
+        /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
+        protected void DW(string text = "", bool write = true)
         {
             Dedent();
             W(text);
@@ -89,19 +122,23 @@ namespace Geco.Common
         /// <summary>
         /// Write line and decrease indent
         /// </summary>
-        /// <param name="text"></param>
-        protected void WD(string text = "")
+        /// <param name="text">The text to write</param>
+        /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
+        protected void WD(string text = "", bool write = true)
         {
-            W(text);
+            W(text, write);
             Dedent();
         }
 
         /// <summary>
         /// Write line with current indent
         /// </summary>
-        /// <param name="text"></param>
-        protected void W(string text = "")
+        /// <param name="text">The text to write</param>
+        /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
+        protected void W(string text = "", bool write = true)
         {
+            if (!write)
+                return;
             if (initialized)
             {
                 _tw.WriteLine();
@@ -146,6 +183,29 @@ namespace Geco.Common
         protected string CommaJoin<T>(IEnumerable<T> values, Func<T, string> selector)
         {
             return string.Join(", ", values.Select(selector));
+        }
+
+        public string BaseOutputPath { get; set; }
+        public string CleanFilesPattern { get; set; }
+
+        protected IDisposable OnBlockEnd(Action action = null, bool write = true)
+        {
+            return new DisposableAction(write ? action : null);
+        }
+
+        private class DisposableAction : IDisposable
+        {
+            private readonly Action action;
+
+            public DisposableAction(Action action)
+            {
+                this.action = action;
+            }
+
+            public void Dispose()
+            {
+                action?.Invoke();
+            }
         }
     }
 }

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 namespace Geco.Common.SimpleMetadata
 {
-    public class DatabaseMetadata : IFreezableOwner
+    public class DatabaseMetadata : IFreezable
     {
-        public DatabaseMetadata(IReadOnlyDictionary<string, Type> typeMappings)
+        public DatabaseMetadata(string name, IReadOnlyDictionary<string, Type> typeMappings)
         {
             Schemas = new MetadataCollection<Schema>(this);
             TypeMappings = typeMappings;
+            Name = name;
         }
 
+        public string Name { get; }
         public MetadataCollection<Schema> Schemas { get; }
         public bool IsFrozen { get; private set; }
 

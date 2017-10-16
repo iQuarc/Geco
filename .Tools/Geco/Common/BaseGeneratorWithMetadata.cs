@@ -3,46 +3,28 @@ using Geco.Common.SimpleMetadata;
 
 namespace Geco.Common
 {
-    public abstract class ModelGeneratorBase : BaseGenerator
+    public abstract class BaseGeneratorWithMetadata : BaseGenerator
     {
-        public DatabaseMetadata Db { get; private set; }
+        protected readonly string ConnectionName;
+        public DatabaseMetadata Db => Provider.GetMetadata(ConnectionName);
         public IMetadataProvider Provider { get; }
 
-        protected ModelGeneratorBase(DatabaseMetadata db, IInflector inf, string folder)
-            :base(inf)
-        {
-            this.Db = db;
-            this.Folder = folder;
-        }
-
-        protected ModelGeneratorBase(IMetadataProvider provider, IInflector inf, string folder)
+        protected BaseGeneratorWithMetadata(IMetadataProvider provider, IInflector inf, string connectionName)
             : base(inf)
         {
-            this.Provider = provider;
-            this.Folder = folder;
+            this.ConnectionName = connectionName;
+            Provider = provider;
         }
 
         protected void ReloadMetadata()
         {
-            if (Provider != null)
-                this.Db = Provider.LoadMetadata(false);
-            this.OnMetadataLoaded(Db);
+            Provider.Reload();
             this.Db.Freeze();
         }
 
         protected virtual void OnMetadataLoaded(DatabaseMetadata db)
         {
 
-        }
-
-        protected override void Initialize()
-        {
-            ReloadMetadata();
-        }
-
-        protected void OverrideMetadata(DatabaseMetadata db)
-        {
-            this.Db = db;
         }
 
         protected string GetCharpTypeName(Type type)

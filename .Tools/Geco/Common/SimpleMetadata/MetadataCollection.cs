@@ -4,16 +4,15 @@ using System.Collections.Generic;
 
 namespace Geco.Common.SimpleMetadata
 {
-    public class MetadataCollection<TEntity> : IReadOnlyCollection<TEntity>, IReadOnlyDictionary<string, TEntity>, IMetadataWriteAccessor<TEntity>
+    public class MetadataCollection<TEntity> : IReadOnlyCollection<TEntity>, IMetadataWriteAccessor<TEntity>
         where TEntity : IMetadataItem
     {
-        private readonly IFreezableOwner freezableOwner;
+        private readonly IFreezable freezableOwner;
         private readonly Dictionary<string, TEntity> innerDictionary = new Dictionary<string, TEntity>(StringComparer.OrdinalIgnoreCase);
 
-        public MetadataCollection(IFreezableOwner freezableOwner)
+        public MetadataCollection(IFreezable freezableOwner)
         {
             this.freezableOwner = freezableOwner;
-            var f = System.Linq.Enumerable.Where<TEntity>(this, p => p.Name == "joe");
         }
 
         public void Add(TEntity item)
@@ -70,11 +69,6 @@ namespace Geco.Common.SimpleMetadata
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-
-        IEnumerator<KeyValuePair<string, TEntity>> IEnumerable<KeyValuePair<string, TEntity>>.GetEnumerator()
-        {
-            return innerDictionary.GetEnumerator();
         }
 
         IDictionary<string, TEntity> IMetadataWriteAccessor<TEntity>.GetWritable()

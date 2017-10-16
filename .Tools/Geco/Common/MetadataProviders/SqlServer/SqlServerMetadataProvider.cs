@@ -4,15 +4,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Geco.Common.MetadataProviders.SqlServer
 {
     public class SqlServerMetadataProvider : MetadataProviderBase
     {
-        private readonly string connectionString;
+        private readonly IConfigurationRoot configurationRoot;
         public SqlServerMetadataProvider(IConfigurationRoot configurationRoot)
         {
-            this.connectionString = configurationRoot.GetConnectionString("DefaultConnection");
+            this.configurationRoot = configurationRoot;
+        }
+
+        protected override string GetName()
+        {
+            return Scalar("SELECT DB_NAME()");
         }
 
         protected override IEnumerable<TableInfo> LoadTables()
@@ -27,10 +33,10 @@ namespace Geco.Common.MetadataProviders.SqlServer
         {
             return Query<ColumnInfo>(
                 @"SELECT
-                      t.name as TableName,
                       SCHEMA_NAME(t.schema_id) as SchemaName,
+                      t.name as TableName,
                       c.name as Name,
-                      ty.name as DataType,
+                      ISNULL(sty.name, ty.name) as DataType,
                       CAST(c.precision as int) as Precision,
                       CAST(c.scale as int) as Scale,
                       CAST(c.max_length AS int) as MaxLength,
@@ -48,7 +54,8 @@ namespace Geco.Common.MetadataProviders.SqlServer
                 FROM sys.columns c
                 INNER JOIN sys.tables t ON c.object_id = t.object_id
                 INNER JOIN sys.types ty ON c.user_type_id = ty.user_type_id
-                ORDER BY SchemaName, TableName, c.column_id ");
+				LEFT JOIN sys.types sty ON ty.system_type_id = sty.user_type_id
+                ORDER BY SchemaName, TableName, c.column_id");
         }
 
         protected override IEnumerable<ForeignKeyInfo> LoadForeignKeys()
@@ -96,7 +103,7 @@ namespace Geco.Common.MetadataProviders.SqlServer
 
         protected override DbConnection CreateConection()
         {
-            return new SqlConnection(connectionString);
+            return new SqlConnection(configurationRoot.GetConnectionString(ConnectionName));
         }
 
         protected override DbCommand CreateCommand(DbConnection cnn, string commandText)

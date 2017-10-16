@@ -35,7 +35,7 @@ namespace Geco.Common
             AddPlural("^(ox)$", "$1en");
             AddPlural("(quiz)$", "$1zes");
 
-            AddSingular("s$", "");
+            AddSingular("[^s]s$", "");
             AddSingular("(n)ews$", "$1ews");
             AddSingular("([ti])a$", "$1um");
             AddSingular("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis");
@@ -153,10 +153,10 @@ namespace Geco.Common
         ///     inflect.Pascalise("customer name").ShouldBe("Customer name");
         /// </example>
         /// <param name="lowercaseAndUnderscoredWord">The word to pascalise.</param>
-        /// <returns>The pascalied word.</returns>
+        /// <returns>The pascalised word.</returns>
         public string Pascalise(string lowercaseAndUnderscoredWord)
         {
-            return Regex.Replace(lowercaseAndUnderscoredWord, "(?:^|_)(.)",
+            return Regex.Replace(lowercaseAndUnderscoredWord, @"(?:^|_|\s)(.)",
                 match => match.Groups[1].Value.ToUpper());
         }
 

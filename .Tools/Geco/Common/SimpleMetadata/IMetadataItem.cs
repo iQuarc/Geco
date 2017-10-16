@@ -22,7 +22,7 @@ namespace Geco.Common.SimpleMetadata
     /// <summary>
     /// Base class for all metadata items
     /// </summary>
-    public abstract class MetadataItem : IMetadataItem, IFreezableOwner
+    public abstract class MetadataItem : IMetadataItem, IFreezable
     {
         /// <summary>
         /// The name of current metadata item
@@ -42,7 +42,7 @@ namespace Geco.Common.SimpleMetadata
     /// <summary>
     /// Indicates that the current instance is a freezable object that can be frozen to prevent all modifications
     /// </summary>
-    public interface IFreezableOwner
+    public interface IFreezable
     {
         /// <summary>
         /// Indicates if current instance was frozen
