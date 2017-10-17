@@ -7,5 +7,6 @@
         public bool OutputToConsole { get; set; }
         public string BaseOutputPath { get; set; }
         public string CleanFilesPattern { get; set; }
+        internal int ConfigIndex { get; set; }
     }
 }

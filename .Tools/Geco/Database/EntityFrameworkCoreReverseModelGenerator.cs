@@ -21,7 +21,7 @@ namespace Geco.Database
 
         public EntityFrameworkCoreReverseModelGenerator(IMetadataProvider provider, IInflector inf, EntityFrameworkCoreReverseModelGeneratorOptions options) : base(provider, inf, options.ConnectionName)
         {
-            this.options = options;
+            this.options = options;            
         }
 
         protected override void Generate()

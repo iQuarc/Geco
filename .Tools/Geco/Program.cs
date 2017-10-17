@@ -25,13 +25,22 @@ namespace Geco
     /// <remarks>
     /// Task discovery is done at runtime by scanning current assembly for all the types that implement <see cref="IRunnable"/> interfaces.
     /// The tasks are resolved using a <see cref="ServiceProvider"/>. Generator tasks can declare a options class using the <see cref="OptionsAttribute"/>
-    /// in order to have the options be read from the <c>appsettings.json</c> configuration file and registered in the <see cref="ServiceCollection"/>
+    /// in order to have the options be read from the <c>appsettings.json</c> configuration file and registered in the <see cref="Microsoft.Extensions.DependencyInjection.ServiceCollection"/>
     /// </remarks>
     public class Program
     {
-        private static Dictionary<string, Type> runnableTypes;
+        private Dictionary<string, Type> runnableTypes;
+        private IServiceCollection ServiceCollection;
+        private RootConfig RootConfig;
+        private IConfigurationRoot ConfigurationRoot;
 
         static int Main(string[] args)
+        {
+            var p = new Program();
+            return p.Run(args);
+        }
+
+        public int Run(string[] args)
         {
             try
             {
@@ -39,35 +48,29 @@ namespace Geco
                 app.Name = "Geco";
                 app.HelpOption("-?|-h|--help");
 
-                ServiceProvider serviceProvider = null;
-                IOptions<RootConfig> rootConfig = null;
-                IConfigurationRoot configurationRoot = null;
-
                 app.Command("run", command =>
                 {
                     command.HelpOption("-?|-h|--help");
                     var taskList = command.Option("-tl|--tasklist "
-                        , "The name of the task list from appsettings.json to execute. The task list is an array of task names."
-                        , CommandOptionType.SingleValue);
+                        , "The name of the task list from appsettings.json to execute. The task list is an array of task names.", CommandOptionType.SingleValue);
                     var taskNames = command.Option("-tn|--tasknames <tasknames>"
-                        , "The name(s) of the tasks to execute. The task list is an array of task names."
-                        , CommandOptionType.MultipleValue);
+                        , "The name(s) of the tasks to execute. The task list is an array of task names.", CommandOptionType.MultipleValue);
                     command.OnExecute(() =>
                     {
-                        serviceProvider = ConfigureServices(app.RemainingArguments.ToArray(), out rootConfig, out configurationRoot);
+                        ConfigureServices(app.RemainingArguments.ToArray());
                         if (taskList.HasValue())
-                            RunTaskListFromConfig(rootConfig.Value, serviceProvider, taskList.Value(), configurationRoot);
+                            RunTaskListFromConfig(taskList.Value());
                         if (taskNames.HasValue())
-                            RunTasksList(rootConfig.Value, serviceProvider, taskNames.Values, configurationRoot);
+                            RunTasksList(taskNames.Values);
                         return 0;
                     });
                 });
                 app.OnExecute(() =>
                 {
                     WriteLogo();
-                    serviceProvider = ConfigureServices(args, out rootConfig, out configurationRoot);
+                    ConfigureServices(app.RemainingArguments.ToArray());
                     WriteLine("<< Geco is running in interactive mode! >>", Yellow);
-                    InteractiveLoop(rootConfig.Value, serviceProvider);
+                    InteractiveLoop();
                     WriteLine("C ya!", Yellow);
                     return 0;
                 });
@@ -84,27 +87,27 @@ namespace Geco
             }
         }
 
-        private static void InteractiveLoop(RootConfig rootConfig, ServiceProvider serviceProvider)
+        private void InteractiveLoop()
         {
             Func<bool> displayAndRun;
             do
             {
-                displayAndRun = BuildMenu(rootConfig, serviceProvider);
+                displayAndRun = BuildMenu();
             } while (displayAndRun());
         }
 
-        private static Func<bool> BuildMenu(RootConfig rootConfig, ServiceProvider serviceProvider)
+        private Func<bool> BuildMenu()
         {
             Console.WriteLine();
             WriteLine("Select option:", White);
             var actions = new Dictionary<string, Action>();
-            foreach (var taskInfo in rootConfig.Tasks.WithInfo())
+            foreach (var taskInfo in RootConfig.Tasks.WithInfo())
             {
                 var taskNr = (taskInfo.Index + 1).ToString();
                 WriteLine(($"{taskNr}. ", White), ($"{taskInfo.Item.Name}", Blue));
-                actions.Add(taskNr, () => RunTask(serviceProvider, taskInfo.Item));
+                actions.Add(taskNr, () => RunTask(taskInfo.Item));
             }
-            WriteLine(($"q. ", White), ($"Quit", ConsoleColor.Yellow));
+            WriteLine(("q. ", White), ("Quit", ConsoleColor.Yellow));
             Write(">>", White);
 
             bool Choose()
@@ -122,36 +125,30 @@ namespace Geco
             return Choose;
         }
 
-        private static ServiceProvider ConfigureServices(string[] args, out IOptions<RootConfig> cfg, out IConfigurationRoot configurationRoot)
+        private void ConfigureServices(string[] args)
         {
-            var configRoot = new ConfigurationBuilder()
+            ConfigurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(args)
                 .Build();
 
-            configurationRoot = configRoot;
-
             //setup the DI
-            var serviceCollection = new ServiceCollection()
+            ServiceCollection = new ServiceCollection()
                 .AddLogging()
-                .AddSingleton(configRoot)
+                .AddSingleton(ConfigurationRoot)
                 .AddOptions()
                 .AddSingleton<IMetadataProvider, SqlServerMetadataProvider>()
-                .AddSingleton<IInflector, EnglishInflector>()
-                .Configure<RootConfig>(rooConfig => configRoot.Bind(rooConfig));
+                .AddSingleton<IInflector, EnglishInflector>();
 
-            ScanTasks(serviceCollection, configRoot);
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            cfg = serviceProvider.GetRequiredService<IOptions<RootConfig>>();
-            return serviceProvider;
+            ScanTasks();
         }
 
         private static void WriteLogo()
         {
+            var version = Assembly.GetEntryAssembly().GetName().Version;
             WriteLine("********************************************************", Blue);
-            WriteLine($"* ** Geco v{Assembly.GetEntryAssembly().GetName().Version} **                                  *", Blue);
+            WriteLine($"* ** Geco v{version} **                                  *", Blue);
             WriteLine("*                                                      *", Blue);
             WriteLine(("*", Blue), (@"        .)/     )/,         ", Green), ("        Copyright (c)     *", Blue));
             WriteLine(("*", Blue), (@"         /`-._,-'`._,@`-,   ", Green), ("         iQuarc 2017      *", Blue));
@@ -161,10 +158,10 @@ namespace Geco
             WriteLine("********************************************************", Blue);
         }
 
-        private static void ScanTasks(IServiceCollection serviceCollection, IConfigurationRoot configuration)
+        private void ScanTasks()
         {
-            var rootConfig = new RootConfig();
-            configuration.Bind(rootConfig);
+            RootConfig = new RootConfig();
+            ConfigurationRoot.Bind(RootConfig);
 
             runnableTypes = Assembly.GetAssembly(typeof(Program))
                 .GetTypes()
@@ -174,11 +171,11 @@ namespace Geco
 
             foreach (var runnableType in runnableTypes.Values)
             {
-                serviceCollection.Add(new ServiceDescriptor(runnableType, runnableType, ServiceLifetime.Transient));
+                ServiceCollection.Add(new ServiceDescriptor(runnableType, runnableType, ServiceLifetime.Transient));
             }
 
             //RootConfig rootConfig
-            foreach (var taskConfig in rootConfig.Tasks.WithInfo())
+            foreach (var taskConfig in RootConfig.Tasks.WithInfo())
             {
                 if (!runnableTypes.ContainsKey(taskConfig.Item.Generator))
                 {
@@ -190,55 +187,67 @@ namespace Geco
                 if (optionsAttribute != null)
                 {
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
-                    configuration.GetSection($"Tasks:{taskConfig.Index}:Options").Bind(options);
-                    serviceCollection.AddSingleton(optionsAttribute.OptionType, options);
+                    ConfigurationRoot.GetSection($"Tasks:{taskConfig.Index}:Options").Bind(options);
+                    ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
                 }
             }
         }
 
-        private static void RunTaskListFromConfig(RootConfig cfg, ServiceProvider serviceProvider, string taskListName, IConfigurationRoot configurationRoot)
+        private void RunTaskListFromConfig(string taskListName)
         {
             var taskList = new List<string>();
-            configurationRoot.Bind(taskListName, taskList);
-            RunTasksList(cfg, serviceProvider, taskList, configurationRoot);
+            ConfigurationRoot.Bind(taskListName, taskList);
+            RunTasksList(taskList);
         }
 
-        private static void RunTasksList(RootConfig cfg, ServiceProvider serviceProvider, IEnumerable<string> taskList, IConfigurationRoot configurationRoot)
+        private void RunTasksList(IEnumerable<string> taskList)
         {
             foreach (var taskName in taskList)
             {
-                var task = cfg.Tasks.Find(t => t.Name == taskName);
+                var task = RootConfig.Tasks.Find(t => t.Name == taskName);
                 task.OutputToConsole = false;
-                RunTask(serviceProvider, task);
+                RunTask(task);
             }
         }
 
-        private static void RunTask(ServiceProvider serviceProvider, TaskConfig itemInfo)
+        private void RunTask(TaskConfig itemInfo)
         {
             WriteLine("--------------------------------------------------------", Yellow);
             WriteLine(("*** Starting ", Yellow), ($" {itemInfo.Name} ", Blue));
             var sw = new Stopwatch();
-            sw.Start();
-            var task = (IRunnable)serviceProvider.GetService(runnableTypes[itemInfo.Generator]);
-            if (task is IOutputRunnable to)
+
+            var taskType = runnableTypes[itemInfo.Generator];
+            var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
+            if (optionsAttribute != null)
             {
-                to.OutputToConsole = itemInfo.OutputToConsole;
-                to.BaseOutputPath = itemInfo.BaseOutputPath;
-                to.CleanFilesPattern = itemInfo.CleanFilesPattern;
+                var options = Activator.CreateInstance(optionsAttribute.OptionType);
+                ConfigurationRoot.GetSection($"Tasks:{itemInfo.ConfigIndex}:Options").Bind(options);
+                ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
             }
 
-            if (task is IRunableConfirmation co)
+            using (var provider = ServiceCollection.BuildServiceProvider())
             {
-                Console.Write(co.ConfirmationQuestion);
-                Console.Write(":");
-                co.Answer(Console.ReadLine());
-                Console.WriteLine();
+                sw.Start();
+                var task = (IRunnable)provider.GetService(taskType);
+                if (task is IOutputRunnable to)
+                {
+                    to.OutputToConsole = itemInfo.OutputToConsole;
+                    to.BaseOutputPath = itemInfo.BaseOutputPath;
+                    to.CleanFilesPattern = itemInfo.CleanFilesPattern;
+                }
+
+                if (task is IRunableConfirmation co)
+                {
+                    Console.Write(co.ConfirmationQuestion);
+                    Console.Write(":");
+                    co.Answer(Console.ReadLine());
+                    Console.WriteLine();
+                }
+                task.Run();
             }
-            task.Run();
             sw.Stop();
             Console.WriteLine();
-            WriteLine(("Task", Yellow), ($" {itemInfo.Name} ", Blue), ("completed in", Yellow),
-                ($" {sw.ElapsedMilliseconds} ms", Green));
+            WriteLine(("Task", Yellow), ($" {itemInfo.Name} ", Blue), ("completed in", Yellow), ($" {sw.ElapsedMilliseconds} ms", Green));
         }
     }
 }

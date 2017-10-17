@@ -33,8 +33,10 @@ namespace Geco.Database
         protected override void Generate()
         {
             var tables = Db.Schemas.SelectMany(s => s.Tables)
-                .Where(t => options.Tables.Any(n => TableNameMaches(t, n)
-                || TableNameMachesRegex(t, options.TablesRegex))).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
+                .Where(t => (options.Tables.Any(n => TableNameMaches(t, n))
+                || TableNameMachesRegex(t, options.TablesRegex))
+                && !options.ExcludedTables.Any(n => !TableNameMaches(t, n))
+                && !TableNameMachesRegex(t, options.ExcludedTablesRegex)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
             TopologicalSort(tables);
             GenerateSeedFile(Path.Combine(BaseOutputPath, options.OutputFileName), tables);
 
@@ -105,8 +107,6 @@ namespace Geco.Database
             W("WHEN NOT MATCHED THEN");
             IW($"INSERT ({CommaJoin(columns, c => $"[{c.Name}]")})");
             WD($"VALUES ({CommaJoin(columns, c => $"Source.[{c.Name}]")});");
-            //string.Join("," + Environment.NewLine, columns.Where(c => !table.Columns[c].IsKey).Select(c => $"\t\t Target.[{c}] = Source.[{c}]")) + Environment.NewLine;
-
 
             if (table.Columns.Any(c => c.IsIdentity))
                 W($"SET IDENTITY_INSERT [{table.Schema.Name}].[{table.Name}] OFF");
@@ -121,9 +121,10 @@ namespace Geco.Database
             using (var cnn = new SqlConnection(connectionString))
             using (var cmd = new SqlCommand())
             {
-                var columns = table.Columns.Where(columnsFilter).ToList();
+                var columns = table.Columns.Where(columnsFilter)
+                    .ToList();
                 var where = whereClause(table);
-                cmd.CommandText = $"SELECT {CommaJoin(columns, c => $"[{c.Name}]")} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)}";
+                cmd.CommandText = $"SELECT {CommaJoin(columns, c => ColumnConvert(c))} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)}";
                 cnn.Open();
                 cmd.Connection = cnn;
                 using (var rdr = cmd.ExecuteReader())
@@ -136,6 +137,15 @@ namespace Geco.Database
                     }
                 }
             }
+        }
+
+        private string ColumnConvert(Column column)
+        {
+            if (!Db.TypeMappings.ContainsKey(column.DataType))
+            {
+                return $"CAST([{column.Name}] as NVARCHAR(MAX)) as[{column.Name}]";
+            }
+            return $"[{column.Name}]";
         }
 
 
@@ -164,9 +174,6 @@ namespace Geco.Database
                 sb.Append("',2)");
                 return sb.ToString();
             }
-
-            //if (value is SqlGeography)
-            //    return $"geography::Parse(N'{value}')";
 
             return value.ToString();
         }
