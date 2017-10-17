@@ -35,7 +35,7 @@ namespace Geco.Database
             var tables = Db.Schemas.SelectMany(s => s.Tables)
                 .Where(t => (options.Tables.Any(n => TableNameMaches(t, n))
                 || TableNameMachesRegex(t, options.TablesRegex))
-                && !options.ExcludedTables.Any(n => !TableNameMaches(t, n))
+                && !options.ExcludedTables.Any(n => TableNameMaches(t, n))
                 && !TableNameMachesRegex(t, options.ExcludedTablesRegex)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
             TopologicalSort(tables);
             GenerateSeedFile(Path.Combine(BaseOutputPath, options.OutputFileName), tables);
@@ -74,8 +74,8 @@ namespace Geco.Database
         private void GenerateTableSeed(Table table)
         {
             var columns = table.Columns.Where(columnsFilter).ToList();
-            var rows = GetTableValues(table).WithInfo().ToList();
-            if (rows.Count == 0)
+            var rows = GetTableValues(table).WithInfo();
+            if (!rows.Any())
                 return;
 
 
@@ -84,11 +84,13 @@ namespace Geco.Database
 
             W($"MERGE [{table.Schema.Name}].[{table.Name}] AS Target");
             WI($"USING ( VALUES ");
+            int count = 0;
             foreach (var rowData in rows)
             {
                 W($"({CommaJoin(rowData.Item, QuoteValue)})");
                 if (!rowData.IsLast)
                     Comma();
+                count++;
             }
             DW($") As Source ({CommaJoin(columns, c => $"[{c.Name}]")}) ");
             W($"ON {string.Join(" AND ", table.Columns.Where(c => c.IsKey).Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]"))}");
@@ -113,6 +115,7 @@ namespace Geco.Database
 
             W("--GO");
             W();
+            ColorConsole.WriteLine($"Generated merge script for {count} row{(count >= 2 ? "s":"")} for [{table.Schema.Name}].[{table.Name}].", ConsoleColor.DarkYellow);
         }
 
         private IEnumerable<IEnumerable<object>> GetTableValues(Table table)
