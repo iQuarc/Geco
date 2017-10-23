@@ -10,5 +10,6 @@ namespace Geco.Database
         public string TablesRegex { get; set; }
         public List<string> ExcludedTables { get; } = new List<string>();
         public string ExcludedTablesRegex { get; set; }
+        public int ItemsPerStatement { get; set; } = 1000;
     }
 }

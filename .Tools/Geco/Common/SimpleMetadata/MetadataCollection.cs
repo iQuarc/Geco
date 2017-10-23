@@ -90,7 +90,7 @@ namespace Geco.Common.SimpleMetadata
         IDictionary<string, TEntity> GetWritable();
     }
 
-    internal static class MetadataExtensions
+    internal static partial class MetadataExtensions
     {
         public static IDictionary<string, TEntity> GetWritable<TEntity>(this IMetadataWriteAccessor<TEntity> metadataCollection) 
             where TEntity : IMetadataItem

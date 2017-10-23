@@ -25,7 +25,11 @@ namespace Geco.Common.MetadataProviders.SqlServer
         {
             return Query<TableInfo>(
                 @"SELECT 
-                      t.name as Name, OBJECT_SCHEMA_NAME(t.object_id) as [SchemaName]
+                      t.name as Name, 
+                      OBJECT_SCHEMA_NAME(t.object_id) as [SchemaName], 
+                      t.is_memory_optimized, 
+                      t.is_tracked_by_cdc, 
+                      t.temporal_type
                 FROM sys.tables t ");
         }
 
@@ -46,11 +50,12 @@ namespace Geco.Common.MetadataProviders.SqlServer
                             FROM sys.index_columns ic
                             INNER JOIN sys.indexes i ON ic.object_id = i.object_id AND i.index_id = ic.index_id
                             INNER JOIN sys.key_constraints kc ON kc.parent_object_id = i.object_id
-                            WHERE i.is_primary_key = 1 AND i.type = 1 AND kc.type = 'PK' AND ic.column_id = c.column_id AND ic.object_id = c.object_id)
+                            WHERE i.is_primary_key = 1 AND kc.type = 'PK' AND ic.column_id = c.column_id AND ic.object_id = c.object_id)
                       THEN 1
                       ELSE 0 END) AS Bit) as IsKey,
                       CAST(columnproperty(t.object_id, c.name ,'IsIdentity')  AS Bit) as IsIdentity,
-                      object_definition(c.default_object_id) as DefaultValue
+                      object_definition(c.default_object_id) as DefaultValue,
+                      is_computed as IsComputed
                 FROM sys.columns c
                 INNER JOIN sys.tables t ON c.object_id = t.object_id
                 INNER JOIN sys.types ty ON c.user_type_id = ty.user_type_id

@@ -54,7 +54,7 @@ namespace Geco
                     var taskList = command.Option("-tl|--tasklist "
                         , "The name of the task list from appsettings.json to execute. The task list is an array of task names.", CommandOptionType.SingleValue);
                     var taskNames = command.Option("-tn|--tasknames <tasknames>"
-                        , "The name(s) of the tasks to execute. The task list is an array of task names.", CommandOptionType.MultipleValue);
+                        , "The name(s) of the tasks to execute. The task names is an list of task names parameters -tn <xx> -tn <yy>.", CommandOptionType.MultipleValue);
                     command.OnExecute(() =>
                     {
                         ConfigureServices(app.RemainingArguments.ToArray());
@@ -167,7 +167,7 @@ namespace Geco
                 .GetTypes()
                 .Where(t => typeof(IRunnable).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition && t.GetConstructors().Any())
-                .ToDictionary(t => t.Name);
+                .ToDictionary(t => t.FullName);
 
             foreach (var runnableType in runnableTypes.Values)
             {
@@ -177,12 +177,12 @@ namespace Geco
             //RootConfig rootConfig
             foreach (var taskConfig in RootConfig.Tasks.WithInfo())
             {
-                if (!runnableTypes.ContainsKey(taskConfig.Item.Generator))
+                if (!runnableTypes.ContainsKey(taskConfig.Item.TaskClass))
                 {
-                    WriteLine($"Task configuration for:[{taskConfig.Item.Generator}] has no corresponding service to be applied to", DarkYellow);
+                    WriteLine($"Task configuration for:[{taskConfig.Item.TaskClass}] has no corresponding service to be applied to", DarkYellow);
                     continue;
                 }
-                var taskType = runnableTypes[taskConfig.Item.Generator];
+                var taskType = runnableTypes[taskConfig.Item.TaskClass];
                 var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
                 if (optionsAttribute != null)
                 {
@@ -217,7 +217,7 @@ namespace Geco
             WriteLine(("*** Starting ", Yellow), ($" {itemInfo.Name} ", Blue));
             var sw = new Stopwatch();
 
-            var taskType = runnableTypes[itemInfo.Generator];
+            var taskType = runnableTypes[itemInfo.TaskClass];
             var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
             if (optionsAttribute != null)
             {
@@ -239,10 +239,12 @@ namespace Geco
 
                 if (task is IRunableConfirmation co)
                 {
+                    sw.Stop();
                     Console.Write(co.ConfirmationQuestion);
                     Console.Write(":");
                     co.Answer(Console.ReadLine());
                     Console.WriteLine();
+                    sw.Start();
                 }
                 task.Run();
             }

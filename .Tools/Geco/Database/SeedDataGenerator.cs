@@ -20,7 +20,7 @@ namespace Geco.Database
         private readonly SeedDataGeneratorOptions options;
         private readonly IConfigurationRoot configurationRoot;
 
-        private readonly Func<Column, bool> columnsFilter = _ => true;
+        private readonly Func<Column, bool> columnsFilter = c => !c.IsComputed;
         private readonly Func<Table, string> whereClause = _ => null;
         private readonly Func<Table, string> mergeFilter = _ => null;
 
@@ -38,7 +38,7 @@ namespace Geco.Database
                 && !options.ExcludedTables.Any(n => TableNameMaches(t, n))
                 && !TableNameMachesRegex(t, options.ExcludedTablesRegex)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
             TopologicalSort(tables);
-            GenerateSeedFile(Path.Combine(BaseOutputPath, options.OutputFileName), tables);
+            GenerateSeedFile(options.OutputFileName, tables);
 
             ColorConsole.WriteLine($"File: '{Path.GetFileName(options.OutputFileName)}' was generated.", ConsoleColor.Yellow);
         }
@@ -66,15 +66,18 @@ namespace Geco.Database
             {
                 foreach (var table in tables)
                 {
-                    GenerateTableSeed(table);
+                    if (table.Metadata["is_memory_optimized"] == "False" && table.Metadata["temporal_type"] == "0")
+                        foreach (var tableValues in GetTableValues(table)
+                            .Batch(options.ItemsPerStatement))
+                            GenerateTableSeed(table, tableValues);
                 }
             }
         }
 
-        private void GenerateTableSeed(Table table)
+        private void GenerateTableSeed(Table table, IEnumerable<IEnumerable<object>> rowValues)
         {
             var columns = table.Columns.Where(columnsFilter).ToList();
-            var rows = GetTableValues(table).WithInfo();
+            var rows = rowValues.WithInfo();
             if (!rows.Any())
                 return;
 
@@ -93,7 +96,7 @@ namespace Geco.Database
                 count++;
             }
             DW($") As Source ({CommaJoin(columns, c => $"[{c.Name}]")}) ");
-            W($"ON {string.Join(" AND ", table.Columns.Where(c => c.IsKey).Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]"))}");
+            W($"ON {string.Join(" AND ", GetMatchColumns(table))}");
             if (table.Columns.Any(c => !c.IsKey))
             {
                 WI($"WHEN MATCHED {mergeFilter(table)}THEN UPDATE SET");
@@ -115,7 +118,15 @@ namespace Geco.Database
 
             W("--GO");
             W();
-            ColorConsole.WriteLine($"Generated merge script for {count} row{(count >= 2 ? "s":"")} for [{table.Schema.Name}].[{table.Name}].", ConsoleColor.DarkYellow);
+            ColorConsole.WriteLine($"Generated merge script for {count} row{(count >= 2 ? "s" : "")} for [{table.Schema.Name}].[{table.Name}].", ConsoleColor.DarkYellow);
+        }
+
+        private static IEnumerable<string> GetMatchColumns(Table table)
+        {
+            if (table.Columns.Any(c => c.IsKey))
+                return table.Columns.Where(c => c.IsKey).Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]");
+            else
+                return table.Columns.Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]");
         }
 
         private IEnumerable<IEnumerable<object>> GetTableValues(Table table)
@@ -124,10 +135,11 @@ namespace Geco.Database
             using (var cnn = new SqlConnection(connectionString))
             using (var cmd = new SqlCommand())
             {
-                var columns = table.Columns.Where(columnsFilter)
+                var columns = table.Columns
+                    .Where(columnsFilter)
                     .ToList();
                 var where = whereClause(table);
-                cmd.CommandText = $"SELECT {CommaJoin(columns, c => ColumnConvert(c))} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)}";
+                cmd.CommandText = $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)}";
                 cnn.Open();
                 cmd.Connection = cnn;
                 using (var rdr = cmd.ExecuteReader())
@@ -142,7 +154,7 @@ namespace Geco.Database
             }
         }
 
-        private string ColumnConvert(Column column)
+        private string ColumnExpression(Column column)
         {
             if (!Db.TypeMappings.ContainsKey(column.DataType))
             {
@@ -164,6 +176,8 @@ namespace Geco.Database
                 return "N'" + ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss:fff") + "'";
             if (value is DateTimeOffset)
                 return "N'" + ((DateTimeOffset)value).ToString("yyyy-MM-dd HH:mm:ss.fffffff K") + "'";
+            if (value is TimeSpan t)
+                return "N'" + t + "'";
 
             var bs = value as byte[];
             if (bs != null)
@@ -192,7 +206,7 @@ namespace Geco.Database
                 sorted = true;
                 iterations++;
                 if (iterations > 10000)
-                    throw new InvalidOperationException("Cannot sort tables");
+                    throw new InvalidOperationException("Cannot sort tables due to cyclic relation between selected tables.");
 
                 for (int i = 0; i < tables.Count - 1; i++)
                     for (int j = i + 1; j < tables.Count; j++)
@@ -208,14 +222,17 @@ namespace Geco.Database
             }
         }
 
-        internal class TopologicalComparer : IComparer<Table>
+        private class TopologicalComparer : IComparer<Table>
         {
-            public int Compare(Table x, Table y)
+            public int Compare(Table source, Table target)
             {
-                if (x.IncomingForeignKeys.Any(fk => fk.ParentTable == y) || y.ForeignKeys.Any(fk => fk.TargetTable == x))
+                if (source == null || target == null)
+                    return 0;
+
+                if (source.IncomingForeignKeys.Any(fk => fk.ParentTable == target) || target.ForeignKeys.Any(fk => fk.TargetTable == source))
                     return -1;
 
-                if (y.IncomingForeignKeys.Any(fk => fk.ParentTable == x) || x.ForeignKeys.Any(fk => fk.TargetTable == y))
+                if (target.IncomingForeignKeys.Any(fk => fk.ParentTable == source) || source.ForeignKeys.Any(fk => fk.TargetTable == target))
                     return 1;
 
                 return 0;

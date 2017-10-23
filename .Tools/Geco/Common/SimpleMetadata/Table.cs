@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Geco.Common.MetadataProviders;
 
 namespace Geco.Common.SimpleMetadata
 {

@@ -49,6 +49,32 @@ namespace Geco.Common
         }
 
         /// <summary>
+        /// Batches the source enumerable into a sequence of enumerable each containing <para>size</para> elements
+        /// </summary>
+        /// <typeparam name="T">Element Type</typeparam>
+        /// <param name="source">The source <see cref="IEnumerable{T}"/></param>
+        /// <param name="count">Size of the batch indicating the number of elements in each batch</param>
+        /// <returns></returns>
+        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, int count)
+        {
+            if (count < 1) throw new ArgumentOutOfRangeException(nameof(count));
+            var enumerator = source.GetEnumerator();
+
+            IEnumerable<T> BatchCounter(int curentCount)
+            {
+                do 
+                {
+                    yield return enumerator.Current;
+                } while (--curentCount > 0 && enumerator.MoveNext());
+            }
+
+            while (enumerator.MoveNext())
+            {
+                yield return BatchCounter(count);
+            }
+        }
+
+        /// <summary>
         /// Returns a wrapped enumerable that contains info for each enumerated item, like the index in original source
         /// </summary>
         /// <typeparam name="T">the type of elements in sequence</typeparam>

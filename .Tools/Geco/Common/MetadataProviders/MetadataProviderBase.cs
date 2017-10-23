@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
@@ -30,7 +31,7 @@ namespace Geco.Common.MetadataProviders
                 foreach (var table in LoadTables())
                 {
                     var schema = db.Schemas.GetOrAdd(table.SchemaName, () => new Schema(table.SchemaName, db));
-                    schema.Tables.Add(new Table(table.Name, schema));
+                    schema.Tables.Add(new Table(table.Name, schema).WithMetadata(table));
                 }
 
                 foreach (var column in LoadColumns())
@@ -39,7 +40,7 @@ namespace Geco.Common.MetadataProviders
                     var table = schema.Tables[column.TableName];
 
                     table.Columns.Add(new Column(column.Name, table, column.DataType, column.Precision, column.Scale, column.MaxLength,
-                        column.IsNullable, column.IsKey, column.IsIdentity, column.IsRowguidCol, column.DefaultValue));
+                        column.IsNullable, column.IsKey, column.IsIdentity, column.IsRowguidCol, column.IsComputed, column.DefaultValue).WithMetadata(column));
                 }
 
                 foreach (var foreignKey in LoadForeignKeys().GroupBy(x => new { x.ParentTableSchema, x.ParentTable, x.ReferencedTable, x.ReferencedTableSchema, x.Name }))
@@ -65,7 +66,7 @@ namespace Geco.Common.MetadataProviders
                     var schema = db.Schemas[trigger.ParentTableSchema];
                     var table = schema.Tables[trigger.ParentTable];
 
-                    table.Triggers.GetOrAdd(trigger.Name, () => new Trigger(trigger.Name, table));
+                    table.Triggers.GetOrAdd(trigger.Name, () => new Trigger(trigger.Name, table).WithMetadata(trigger));
                 }
 
                 foreach (var indexInfo in LoadIndexInfo())
@@ -74,7 +75,7 @@ namespace Geco.Common.MetadataProviders
                     var table = schema.Tables[indexInfo.TableName];
                     var column = table.Columns[indexInfo.ColumnName];
 
-                    var index = table.Indexes.GetOrAdd(indexInfo.IndexName, () => new Index(indexInfo.IndexName, table, indexInfo.IsUnique, indexInfo.IsClustered));
+                    var index = table.Indexes.GetOrAdd(indexInfo.IndexName, () => new Index(indexInfo.IndexName, table, indexInfo.IsUnique, indexInfo.IsClustered).WithMetadata(indexInfo));
                     if (indexInfo.IsIncluded)
                         index.IncludedColumns.Add(column);
                     else
@@ -113,7 +114,7 @@ namespace Geco.Common.MetadataProviders
         protected abstract IReadOnlyDictionary<string, Type> GetClrTypeMappings();
 
         protected virtual IEnumerable<T> Query<T>(string query)
-            where T : new()
+            where T : IMetadataItem, new()
         {
             using (var cmd = CreateCommand(Connection, query))
             {
@@ -146,26 +147,31 @@ namespace Geco.Common.MetadataProviders
             }
         }
 
-        protected class TableInfo
+        protected class TableInfo : IMetadataItem
         {
             public string Name { get; set; }
             public string SchemaName { get; set; }
+
+            public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
 
-        protected class TriggerInfo
+        protected class TriggerInfo : IMetadataItem
         {
             public string Name { get; set; }
             public string ParentTableSchema { get; set; }
             public string ParentTable { get; set; }
+
+            public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
 
-        protected class ColumnInfo
+        protected class ColumnInfo : IMetadataItem
         {
             public string DataType { get; set; }
             public bool IsKey { get; set; }
             public bool IsIdentity { get; set; }
             public bool IsNullable { get; set; }
             public bool IsRowguidCol { get; set; }
+            public bool IsComputed { get; set; }
             public int MaxLength { get; set; }
             public string Name { get; set; }
             public int Precision { get; set; }
@@ -173,9 +179,11 @@ namespace Geco.Common.MetadataProviders
             public string SchemaName { get; set; }
             public string TableName { get; set; }
             public string DefaultValue { get; set; }
+
+            public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
 
-        protected class ForeignKeyInfo
+        protected class ForeignKeyInfo : IMetadataItem
         {
             public string Name { get; set; }
             public string ParentTableSchema { get; set; }
@@ -184,9 +192,11 @@ namespace Geco.Common.MetadataProviders
             public string ReferencedTable { get; set; }
             public string ParentColumn { get; set; }
             public string ReferencedColumn { get; set; }
+
+            public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
 
-        protected class IndexColumnInfo
+        protected class IndexColumnInfo : IMetadataItem
         {
             public string SchemaName { get; set; }
             public string TableName { get; set; }
@@ -195,6 +205,9 @@ namespace Geco.Common.MetadataProviders
             public bool IsUnique { get; set; }
             public bool IsClustered { get; set; }
             public bool IsIncluded { get; set; }
+
+            public string Name => $"[{TableName}].[{ColumnName}]";
+            public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
 
 
