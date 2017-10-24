@@ -53,7 +53,7 @@ namespace Geco
                     command.HelpOption("-?|-h|--help");
                     var taskList = command.Option("-tl|--tasklist "
                         , "The name of the task list from appsettings.json to execute. The task list is an array of task names.", CommandOptionType.SingleValue);
-                    var taskNames = command.Option("-tn|--tasknames <tasknames>"
+                    var taskNames = command.Option("-tn|--taskname <taskname>"
                         , "The name(s) of the tasks to execute. The task names is an list of task names parameters -tn <xx> -tn <yy>.", CommandOptionType.MultipleValue);
                     command.OnExecute(() =>
                     {
