@@ -37,10 +37,10 @@ namespace Geco
         static int Main(string[] args)
         {
             var p = new Program();
-            return p.Run(args);
+            return p.Run(args); 
         }
 
-        public int Run(string[] args)
+        private int Run(string[] args)
         {
             try
             {

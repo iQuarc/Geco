@@ -195,7 +195,7 @@ namespace Geco.Database
                         var propertyName = Inf.Pascalise(column.Name);
                         CheckClash(ref propertyName, existingNames, ref i);
                         column.Metadata["Property"] = propertyName;
-                        W($"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{get; set;}}");
+                        W($"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{ get; set; }}");
                     }
                     W();
                 }
@@ -210,7 +210,7 @@ namespace Geco.Database
                         var propertyName = Inf.Pascalise(column.Name);
                         CheckClash(ref propertyName, existingNames, ref i);
                         column.Metadata["Property"] = propertyName;
-                        W($"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{get; set;}}");
+                        W($"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{ get; set; }}");
                     }
                     W();
                 }
@@ -226,7 +226,7 @@ namespace Geco.Database
                         CheckClash(ref propertyName, existingNames, ref i);
                         column.Metadata["NavProperty"] = propertyName;
                         W("[JsonIgnore]", options.JsonSerialization);
-                        W($"public {targetClassName} {propertyName} {{get; set;}}");
+                        W($"public {targetClassName} {propertyName} {{ get; set; }}");
                     }
                     W();
                 }
@@ -251,7 +251,7 @@ namespace Geco.Database
                         fk.Metadata["Property"] = propertyName;
                         fk.Metadata["Type"] = targetClassName;
                         W("[JsonIgnore]", options.JsonSerialization);
-                        W($"public List<{targetClassName}> {propertyName} {{get; set;}}");
+                        W($"public List<{targetClassName}> {propertyName} {{ get; set; }}");
                     }
                     W();
 

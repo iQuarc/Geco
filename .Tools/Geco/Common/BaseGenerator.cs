@@ -41,7 +41,7 @@ namespace Geco.Common
 
         private void DetermineFilesToClean()
         {
-            if (!String.IsNullOrWhiteSpace(CleanFilesPattern))
+            if (!String.IsNullOrWhiteSpace(CleanFilesPattern) && Directory.Exists(BaseOutputPath))
                 foreach (var file in Directory.EnumerateFiles(BaseOutputPath, CleanFilesPattern, SearchOption.AllDirectories))
                     filesToDelete.Add(file);
         }

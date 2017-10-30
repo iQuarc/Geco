@@ -62,10 +62,10 @@
         /// <example>
         ///     inflect.Pascalise("customer").ShouldBe("Customer");
         ///     inflect.Pascalise("customer_name").ShouldBe("CustomerName");
-        ///     inflect.Pascalise("customer name").ShouldBe("Customer name");
+        ///     inflect.Pascalise("customer name").ShouldBe("CustomerName");
         /// </example>
         /// <param name="lowercaseAndUnderscoredWord">The word to pascalise.</param>
-        /// <returns>The pascalied word.</returns>
+        /// <returns>The pascalised word.</returns>
         string Pascalise(string lowercaseAndUnderscoredWord);
 
         /// <summary>
