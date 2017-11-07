@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>iQuarc.Geco.CSharp</id>
-    <version>1.0.0.0</version>
+    <version>1.0.0.1</version>
     <title>Geco, dotnet new template</title>
     <authors>Catalin Pop, © iQuarc 2017</authors>
     <owners>iQuarc</owners>
@@ -11,7 +11,7 @@
     <iconUrl>https://github.com/iQuarc/Geco/blob/master/.Tools/Geco/Logo.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</description>
-    <summary>>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</summary>
+    <summary>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</summary>
     <releaseNotes>First Release</releaseNotes>
     <copyright>Copyright © iQuarc 2017</copyright>
     <tags>Code-Generator Template-Engine CSharp Interpolated-Strings</tags>

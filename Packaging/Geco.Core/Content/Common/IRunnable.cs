@@ -5,9 +5,6 @@
     /// </summary>
     public interface IRunnable
     {
-
-
-
         /// <summary>
         /// Invoked when this task is executed
         /// </summary>
