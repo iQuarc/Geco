@@ -24,6 +24,9 @@ From the included SQL Seeed Scrip Generator:
 
 ![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage2.JPG?raw=true)
 
+Runing geco in interactive mode:
+![Geco Preview3](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage3.JPG?raw=true)
+
 
 ## Description
 
