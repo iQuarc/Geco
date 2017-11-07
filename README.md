@@ -1,7 +1,7 @@
 # Geco, (Ge)nerator (Co)nsole
 Simple code generator based on a console project, running on .Net core and using C# interpolated strings.
 
-Geco runs on .Net Core 2.0 [Downlaod and Install](http://dot.net)
+Geco runs on .Net Core 2.0 [Download and Install](http://dot.net)
 
 ## Installation
 
@@ -23,11 +23,12 @@ From the included Entity Framework Core Reverse model generator:
 
 ![Geco Preview1](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage.JPG?raw=true)
 
-From the included SQL Seeed Scrip Generator:
+From the included SQL Seed Scrip Generator:
 
 ![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage2.JPG?raw=true)
 
-Runing geco in interactive mode:
+Running geco in interactive mode:
+
 ![Geco Preview3](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage3.JPG?raw=true)
 
 
@@ -35,11 +36,11 @@ Runing geco in interactive mode:
 
 Geco uses C# string interpolation as a template engine for code generation, in order to allow:
 
- - Easy cusomization of templates (Simply edit the .cs file)
- - Easy degugging (Place a breakpoint an run)
- - Easy extensibility (Add a new task by creating a new C# class a simple interface `IRunnable`
+ - Easy customization of templates (Simply edit the .cs file)
+ - Easy debugging (Place a breakpoint an run)
+ - Easy extensibility (Add a new task by creating a new C# class a simple interface `IRunnable`)
  
-Geco uses task discovery at runtime and each task is configured using Dependency Injection. The  generation taks can be run during build or from interactive mode (Debug Run).
+Geco uses tass discovery at runtime and each task is configured using Dependency Injection. The generation tasks can be run during build or from interactive mode (Debug Run).
 
 ## Included generators
 
@@ -52,7 +53,7 @@ The following generator tasks are included in current version.
 
 ## Customizing
 
-1. The first customization option invoves changing task parameters from `appsettings.json` configuration file. Each geco task defines it's own set of parameters (see the corespoting Options class):
+1. The first customization option involves changing task parameters from `appsettings.json` configuration file. Each geco task defines it's own set of parameters (see the corresponding Options class):
 
 ```JSon
 {
@@ -90,7 +91,7 @@ The following generator tasks are included in current version.
 
 3. By creating new code generation tasks as a C# class which implements the `IRunnable` interface.
 
-`IRunnable` is a single method interace containging the `Run` method:
+`IRunnable` is a single method interface containing the `Run` method:
 
  ```CSharp
      /// <summary>
@@ -103,7 +104,7 @@ The following generator tasks are included in current version.
         /// </summary>     
  ```
 
-A code generation class can be acconpanied by an Option POCO class to hold options which can be customized from `appsettings.json`
+A code generation class can be accompanied by an Option POCO class to hold options which can be customized from `appsettings.json`
 
 Example:
 
