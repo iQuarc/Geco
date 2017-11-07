@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</Description>
+    <Company>iQuarc</Company>
+    <PackageTags>Code-Generator Code-Generation Template-Engine CSharp Interpolated-Strings</PackageTags>
+    <Copyright>iQuarc 2017</Copyright>
+    <PackageLicenseUrl>https://github.com/iQuarc/Geco/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/iQuarc/Geco</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/iQuarc/Geco/blob/master/.Tools/Geco/Logo.png?raw=true</PackageIconUrl>
+    <RepositoryUrl>https://github.com/iQuarc/Geco.git</RepositoryUrl>
+    <Authors>iQuarc</Authors>
+    <PackageId>Geco.Core</PackageId>
+    <Product>Geco Core</Product>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <LangVersion>latest</LangVersion>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Generated\**" />
+    <Compile Remove="Generated\**" />
+    <EmbeddedResource Remove="Generated\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
+  </ItemGroup>
+
+  <Import Project="$(ProjectDir)Geco.Targets" Condition="Exists('$(ProjectDir)Geco.Targets')" />
+</Project>

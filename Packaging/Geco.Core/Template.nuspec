@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Geco.Core</id>
+    <version>1.0.0.0</version>
+    <title>Geco, dotnet new template</title>
+    <authors>Catalin Pop, © iQuarc 2017</authors>
+    <owners>iQuarc</owners>
+    <licenseUrl>https://github.com/iQuarc/Geco/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/iQuarc/Geco</projectUrl>
+    <iconUrl>https://github.com/iQuarc/Geco/blob/master/.Tools/Geco/Logo.png?raw=true</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings. This package contains the core functionality and core templates</description>
+    <releaseNotes>First Release</releaseNotes>
+    <copyright>Copyright © iQuarc 2017</copyright>
+    <tags>Code-Generator Template-Engine CSharp Interpolated-Strings</tags>
+    <repository url="https://github.com/iQuarc/Geco.git" />
+    <dependencies>
+      <group targetFramework=".NETCoreApp2.0">
+        <dependency id="Microsoft.Extensions.Configuration.Json" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.CommandLineUtils" version="1.1.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.CommandLine" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Options" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Logging.Console" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.NETCore.App" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Data.SqlClient" version="4.4.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <contentFiles>
+      <files include="any/**/*.cs" buildAction="Compile" />
+      <files include="any/**/*.json" buildAction="Content" copyToOutput="true" />
+    </contentFiles>
+  </metadata>
+</package>

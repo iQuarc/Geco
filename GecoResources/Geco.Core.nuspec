@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <licenseUrl>https://github.com/iQuarc/Geco/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/iQuarc/Geco</projectUrl>
+    <iconUrl>https://github.com/iQuarc/Geco/blob/master/.Tools/Geco/Logo.png?raw=true</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>$packagetags$</tags>
+    <!--<contentFiles>
+      <files include="Common/**/*.cs" buildAction="Compile" flatten="false"/>
+      <files include="Config/**/*.cs" buildAction="Compile" flatten="false"/>
+      <files include="Program.cs" buildAction="Compile" flatten="false"/>
+      <files include="Geco.Targets" buildAction="None" flatten="false"/>
+    </contentFiles>-->
+  </metadata>
+  <files>
+    <!--No assembly files in this package-->
+  </files>
+</package>
