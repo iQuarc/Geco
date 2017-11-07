@@ -80,7 +80,7 @@ The following generator tasks are included in current version.
                 "ConfigureWarnings": true,
                 "GeneratedCodeAttribute": false,
                 "NetCore": true,
-                "ContextName":"MeetupContext"
+                "ContextName":"AdventureworksContext"
             }
         }
     ]
