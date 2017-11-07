@@ -94,15 +94,18 @@ The following generator tasks are included in current version.
 `IRunnable` is a single method interface containing the `Run` method:
 
  ```CSharp
-     /// <summary>
+    /// <summary>
     /// Represents a runable task, for code generation or purposes or others
     /// </summary>
     public interface IRunnable
     {
         /// <summary>
         /// Invoked when this task is executed
-        /// </summary>     
+        /// </summary>
+        void Run();
+    }   
  ```
+ or by deriving from one of helper base classes `BaseGenerator` or `BaseGeneratorWithMetadata`.
 
 A code generation class can be accompanied by an Option POCO class to hold options which can be customized from `appsettings.json`
 
