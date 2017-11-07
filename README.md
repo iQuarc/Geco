@@ -38,7 +38,7 @@ Geco uses C# string interpolation as a template engine for code generation, in o
 
  - Easy customization of templates (Simply edit the .cs file)
  - Easy debugging (Place a breakpoint an run)
- - Easy extensibility (Add a new task by creating a new C# class a simple interface `IRunnable`)
+ - Easy extensibility (Add a new task by creating a new C# class and implement a simple interface `IRunnable`)
  
 Geco uses tass discovery at runtime and each task is configured using Dependency Injection. The generation tasks can be run during build or from interactive mode (Debug Run).
 
