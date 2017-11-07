@@ -1,9 +1,12 @@
 # Geco, (Ge)nerator (Co)nsole
 Simple code generator based on a console project, running on .Net core and using C# interpolated strings.
 
+Geco runs on .Net Core 2.0 [Downlaod and Install](http://dot.net)
+
 ## Installation
 
-Geco can be installed as `dotnet new` template. Run the following command on a consoele or terminal:
+Geco can be installed as `dotnet new` template. Run the following command on a console or terminal:
+
 ```Batchfile
 dotnet new -i iQuarc.Geco.CSharp
 ```
