@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Geco.Common
 {
-    public abstract class BaseGenerator : IOutputRunnable
+    public abstract class BaseGenerator : IOutputRunnable, IRunableConfirmation
     {
         private const string IndentString = "    ";
 
@@ -39,11 +39,21 @@ namespace Geco.Common
             }
         }
 
+        public virtual bool GetUserConfirmation()
+        {
+            ColorConsole.Write($"Clean all files with pattern [{(CleanFilesPattern, ConsoleColor.Yellow)}] in the target folder [{(Path.GetFullPath(BaseOutputPath), ConsoleColor.Yellow)}] (y/n)?", ConsoleColor.White);
+            return string.Equals(Console.ReadLine(), "y", StringComparison.OrdinalIgnoreCase);
+        }
+
         private void DetermineFilesToClean()
         {
             if (!String.IsNullOrWhiteSpace(CleanFilesPattern) && Directory.Exists(BaseOutputPath))
-                foreach (var file in Directory.EnumerateFiles(BaseOutputPath, CleanFilesPattern, SearchOption.AllDirectories))
+            {
+                foreach (var file in Directory.EnumerateFiles(BaseOutputPath, CleanFilesPattern, SearchOption.TopDirectoryOnly))
+                {
                     filesToDelete.Add(file);
+                }
+            }
         }
 
         protected IDisposable BeginFile(string file, bool option = true)
@@ -187,6 +197,7 @@ namespace Geco.Common
 
         public string BaseOutputPath { get; set; }
         public string CleanFilesPattern { get; set; }
+        public bool Interactive { get; set; }
 
         protected IDisposable OnBlockEnd(Action action = null, bool write = true)
         {

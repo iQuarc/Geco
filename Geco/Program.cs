@@ -31,7 +31,7 @@ namespace Geco
         private IServiceCollection ServiceCollection;
         private RootConfig RootConfig;
         private IConfigurationRoot ConfigurationRoot;
-
+        private bool Interactive { get; set; }
         static int Main(string[] args)
         {
             var p = new Program();
@@ -67,9 +67,9 @@ namespace Geco
                 {
                     WriteLogo();
                     ConfigureServices(app.RemainingArguments.ToArray());
-                    WriteLine("<< Geco is running in interactive mode! >>", Yellow);
+                    WriteLine($"<< Geco is running in interactive mode! >>", Yellow);
                     InteractiveLoop();
-                    WriteLine("C ya!", Yellow);
+                    WriteLine($"C ya!", Yellow);
                     return 0;
                 });
 
@@ -77,16 +77,17 @@ namespace Geco
             }
             catch (Exception ex)
             {
-                WriteLine("==============================================", Red);
-                WriteLine("=== Geco stopped due to error:", Red);
-                WriteLine(ex.ToString(), Yellow);
-                WriteLine("==============================================", Red);
+                WriteLine($"==============================================", Red);
+                WriteLine($"=== Geco stopped due to error:", Red);
+                WriteLine($"{ex}", Yellow);
+                WriteLine($"==============================================", Red);
                 return -1;
             }
         }
 
         private void InteractiveLoop()
         {
+            Interactive = true;
             Func<bool> displayAndRun;
             do
             {
@@ -97,7 +98,7 @@ namespace Geco
         private Func<bool> BuildMenu()
         {
             Console.WriteLine();
-            WriteLine("Select option:", White);
+            WriteLine($"Select option:", White);
             var actions = new Dictionary<string, Action>();
             foreach (var taskInfo in RootConfig.Tasks.WithInfo())
             {
@@ -106,7 +107,7 @@ namespace Geco
                 actions.Add(taskNr, () => RunTask(taskInfo.Item));
             }
             WriteLine(("q. ", White), ("Quit", ConsoleColor.Yellow));
-            Write(">>", White);
+            Write($">>", White);
 
             bool Choose()
             {
@@ -145,15 +146,15 @@ namespace Geco
         private static void WriteLogo()
         {
             var version = Assembly.GetEntryAssembly().GetName().Version;
-            WriteLine("********************************************************", Blue);
+            WriteLine($"********************************************************", Blue);
             WriteLine($"* ** Geco v{version} **                                  *", Blue);
-            WriteLine("*                                                      *", Blue);
+            WriteLine($"*                                                      *", Blue);
             WriteLine(("*", Blue), (@"        .)/     )/,         ", Green), ("        Copyright (c)     *", Blue));
             WriteLine(("*", Blue), (@"         /`-._,-'`._,@`-,   ", Green), ("         iQuarc 2017      *", Blue));
             WriteLine(("*", Blue), (@"  ,  _,-=\,-.__,-.-.__@/    ", Green), ("    - Generator Console - *", Blue));
             WriteLine(("*", Blue), (@" (_,'    )\`    '(`         ", Green), ("           - Geco -       *", Blue));
-            WriteLine("*                                                      *", Blue);
-            WriteLine("********************************************************", Blue);
+            WriteLine($"*                                                      *", Blue);
+            WriteLine($"********************************************************", Blue);
         }
 
         private void ScanTasks()
@@ -211,7 +212,7 @@ namespace Geco
 
         private void RunTask(TaskConfig itemInfo)
         {
-            WriteLine("--------------------------------------------------------", Yellow);
+            WriteLine($"--------------------------------------------------------", Yellow);
             WriteLine(("*** Starting ", Yellow), ($" {itemInfo.Name} ", Blue));
             var sw = new Stopwatch();
 
@@ -233,18 +234,27 @@ namespace Geco
                     to.OutputToConsole = itemInfo.OutputToConsole;
                     to.BaseOutputPath = itemInfo.BaseOutputPath;
                     to.CleanFilesPattern = itemInfo.CleanFilesPattern;
+                    to.Interactive = Interactive;
                 }
 
-                if (task is IRunableConfirmation co)
+                if (task is IRunableConfirmation co && Interactive)
                 {
                     sw.Stop();
-                    Console.Write(co.ConfirmationQuestion);
-                    Console.Write(":");
-                    co.Answer(Console.ReadLine());
-                    Console.WriteLine();
+                    if (!co.GetUserConfirmation())
+                    {
+                        WriteLine(("*** Task was canceled ", Yellow), ($" {itemInfo.Name} ", Blue));
+                        return;
+                    }
                     sw.Start();
                 }
-                task.Run();
+                try
+                {
+                    task.Run();
+                }
+                catch (OperationCanceledException)
+                {
+                    WriteLine(("*** Task was aborted ", Yellow), ($" {itemInfo.Name} ", Blue));
+                }
             }
             sw.Stop();
             Console.WriteLine();

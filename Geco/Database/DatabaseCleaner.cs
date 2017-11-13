@@ -13,7 +13,7 @@ namespace Geco.Database
     /// Deleting of data is done in a transaction, so either all data is deleted or none is.
     /// </remarks>
     [Options(typeof(DatabaseCleanerOptions))]
-    public class DatabaseCleaner : BaseGenerator, IRunableConfirmation
+    public class DatabaseCleaner : BaseGenerator
     {
         private readonly IConfigurationRoot configurationRoot;
         private readonly DatabaseCleanerOptions options;
@@ -65,11 +65,10 @@ namespace Geco.Database
             }
         }
 
-        public string ConfirmationQuestion => "Are you sure you want to delete all data in the target database? (y/n)";
-        public void Answer(string answer)
+        public override bool GetUserConfirmation()
         {
-            this.exit = !string.Equals(answer, "y", StringComparison.OrdinalIgnoreCase);
+            ColorConsole.Write($"Are you sure you want to delete all data in the target database? (y/n):", White);
+            return string.Equals(Console.ReadLine(), "y", StringComparison.OrdinalIgnoreCase);
         }
-
     }
 }

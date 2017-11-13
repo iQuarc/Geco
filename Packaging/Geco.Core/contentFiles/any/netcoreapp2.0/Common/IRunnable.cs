@@ -29,12 +29,15 @@
         /// A wild card base pattern for deleting the files from the <see cref="BaseOutputPath"/> prior to generation. 
         /// </summary>
         string CleanFilesPattern { get; set; }
+        /// <summary>
+        /// <c>true</c> if the Geco is running in interactive mode and the task may ask for additional user input. <c>false</c> otherwise
+        /// </summary>
+        bool Interactive { get; set; }
     }
 
 
     public interface IRunableConfirmation
     {
-        string ConfirmationQuestion { get; }
-        void Answer(string answer);
+        bool GetUserConfirmation();
     }
 }

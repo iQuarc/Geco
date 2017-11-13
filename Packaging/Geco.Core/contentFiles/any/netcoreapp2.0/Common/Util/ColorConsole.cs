@@ -1,21 +1,22 @@
 using System;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace Geco.Common
 {
     public static class ColorConsole
     {
-        public static void WriteLine(string value, ConsoleColor color)
+        static readonly Regex splitRegex = new Regex(@"{\d+}", RegexOptions.Compiled);
+
+        public static void WriteLine(FormattableString value, ConsoleColor color)
         {
-            var curentColor = Console.ForegroundColor;
-            try
+            if (value == null)
             {
-                Console.ForegroundColor = color;
-                Console.WriteLine(value);
+                Console.WriteLine();
+                return;
             }
-            finally
-            {
-                Console.ForegroundColor = curentColor;
-            }
+            Write(value, color);
+            WriteLine();
         }
 
         public static void WriteLine(params (string value, ConsoleColor color)[] values)
@@ -36,9 +37,28 @@ namespace Geco.Common
             }
         }
 
-
-        public static void Write(string value, ConsoleColor color)
+        public static void Write(FormattableString value, ConsoleColor color)
         {
+
+            var parts = splitRegex.Split(value.Format);
+            for (int i = 0; i < parts.Length; i++)
+            {
+                Write(parts[i], color);
+                if (i < value.ArgumentCount)
+                {
+                    var arg = value.GetArgument(i);
+                    if (arg is ITuple v && v.Length == 2 && v[1] is ConsoleColor c)
+                        Write(v[0].ToString(), c);
+                    else
+                        Write(arg.ToString(), color);
+                }
+            }
+        }
+
+        private static void Write(string value, ConsoleColor color)
+        {
+            if (string.IsNullOrEmpty(value))
+                return;
             var curentColor = Console.ForegroundColor;
             try
             {
@@ -67,5 +87,5 @@ namespace Geco.Common
                 Console.ForegroundColor = curentColor;
             }
         }
-    } 
+    }
 }

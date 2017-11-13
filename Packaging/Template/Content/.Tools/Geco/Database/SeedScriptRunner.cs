@@ -38,7 +38,7 @@ namespace Geco.Database
             catch (Exception ex)
             {
                 WriteLine(("Error running merge script:", Red), (currentFileNamme, Yellow));
-                WriteLine(ex.ToString(), DarkRed);
+                WriteLine($"{ex}", DarkRed);
             }
         }
 
@@ -56,7 +56,7 @@ namespace Geco.Database
                     {
                         using (var cmd = new SqlCommand(commandText.Command, cnn, tran){CommandTimeout = options.CommandTimeout})
                         {
-                            Write(commandText.TableName, Cyan);
+                            Write($"{commandText.TableName}", Cyan);
                             var affectedRows = cmd.ExecuteNonQuery();
                             WriteLine($" ({affectedRows} row(s) affected)", White);
                         }
