@@ -143,6 +143,11 @@ Example:
     }
     
 ```
+## Roadmap
+
+ - ASP.Net MVC Template (scaffolds controllers and views)
+ - ASP.Net + Angular scaffolder (scaffolds web api and components)
+ - SQL Sever to SQL Compact data sync template (api to syncrhonize schema compatible SQL Server and SQL Compact databaser over REST)
 
 ## Version History
 
