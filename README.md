@@ -1,16 +1,14 @@
 # Geco, (Ge)nerator (Co)nsole
-Simple code generator based on a console project, running on .Net core and using C# interpolated strings.
+Simple code generator based on a console project, running on .Net Core and using C# interpolated strings.
 
 Geco runs on .Net Core 2.0. [Download and Install](http://dot.net)
 
 What's the reasoning behind this utility?
 
 One of the most popular code generation tools for Visual Studio over the years was T4 (Text Template Transformation Toolkit), which saw a great deal of success for simple to complex code generation tasks.
-Scott Hanselman has a nice (blog post)[https://www.hanselman.com/blog/T4TextTemplateTransformationToolkitCodeGenerationBestKeptVisualStudioSecret.aspx] about it. However since the advent of **.Net Core** 
-and .Net going cross platform there isn't a simple way to generate code or other artifacts that will also work in Visual Studio Code (or other code editors).
+Scott Hanselman has a nice (blog post)[https://www.hanselman.com/blog/T4TextTemplateTransformationToolkitCodeGenerationBestKeptVisualStudioSecret.aspx] about it. However, since the advent of **.Net Core** and .Net going cross platform there is no simple way to generate code or other artifacts that would also work in Visual Studio Code (or other code editors).
 
-This is where the idea for this simple utility came from. Have a small utility for code generation that is **debuggable** *(one of the long standing issues of T4)*, provides some level of **intellisense**, can be run at build time,
-is higly customizable, generic and has as small as possible footprint.
+This is where the idea for this simple utility came from. Have a small utility for code generation that is **debuggable** *(one of the long standing issues of T4)*, provides some level of **intellisense**, can be run at build time, is higly customizable, generic and has an as small as possible footprint.
 
 ## Installation
 
@@ -34,11 +32,11 @@ Next snippet is from the included Entity Framework Core Reverse model generator,
 
 ![Geco Preview1](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage.JPG?raw=true)
 
-This snippet is from theSQL Seed Scrip Generator, which generates SQL Merge scripts which can be used to Seed data:
+This snippet is from the SQL Seed Scrip Generator, which generates SQL Merge scripts for Seed data:
 
 ![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage2.JPG?raw=true)
 
-Next screen shot shows geco running in interactive mode (as a Console App), and the menu that is presented to the user:
+Next screen shot shows Geco running in interactive mode (as a Console App), and the menu that is presented to the user:
 
 ![Geco Preview3](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage3.JPG?raw=true)
 
@@ -57,14 +55,14 @@ Geco uses task discovery at runtime and each task is configured using Dependency
 
 The following generator tasks are included in current version.
 
- - Entity Framework Reverse model generator
+ - Entity Framework Core 1.1, 2.0 Reverse model generator
  - SQL Seed data script generator (Generates MERGE scripts)
  - SQL Script runner
  - Database cleaner
 
 ## Customizing
 
-1. The first customization option involves changing task parameters from `appsettings.json` configuration file. Each geco task defines it's own set of parameters (see the corresponding Options class):
+1. The first customization option involves changing task parameters from `appsettings.json` configuration file. Each Geco task defines its own set of parameters (see the corresponding Options class):
 
 ```JSon
 {
@@ -116,9 +114,9 @@ The following generator tasks are included in current version.
         void Run();
     }   
  ```
- or by deriving from one of helper base classes `BaseGenerator` or `BaseGeneratorWithMetadata`.
+ or by deriving from one of the helper base classes `BaseGenerator` or `BaseGeneratorWithMetadata`.
 
-A code generation class can be accompanied by an Option POCO class to hold options which can be customized from `appsettings.json`
+A code generation class can be accompanied by an Options POCO class to hold customization parameters from `appsettings.json`
 
 Example:
 
@@ -146,15 +144,15 @@ Example:
 ## Roadmap
 
  - ASP.Net MVC Template (scaffolds controllers and views)
- - ASP.Net + Angular scaffolder (scaffolds web api and components)
- - SQL Sever to SQL Compact data sync template (api to syncrhonize schema compatible SQL Server and SQL Compact databaser over REST)
+ - ASP.Net + Angular scaffolder (scaffolds Web Api and components)
+ - SQL Sever to SQL Compact data sync template (Api to syncrhonize schema compatible SQL Server and SQL Compact databases including Web Api and .Net client methods)
 
 ## Version History
 
 **Version 1.0.1**
 
  - Changed Entity Framework Core generator to allow multi column foreign keys
- - Fixed MedataData for MaxLength nvarchar and nchar columns
+ - Fixed MetaData for MaxLength nvarchar and nchar columns
  - Removed tables without primary key from generated model
  - Switched to semver
 
