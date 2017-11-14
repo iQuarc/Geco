@@ -5,7 +5,7 @@ Geco runs on .Net Core 2.0. [Download and Install](http://dot.net)
 
 What's the reasoning behind this utility?
 
-One of the most popular code generation tools for Visual Studio over the years was T4 (Text Template Transformation Toolkit), which saw a great deal of success for simple to complex code genration tasks over the years.
+One of the most popular code generation tools for Visual Studio over the years was T4 (Text Template Transformation Toolkit), which saw a great deal of success for simple to complex code generation tasks.
 Scott Hanselman has a nice (blog post)[https://www.hanselman.com/blog/T4TextTemplateTransformationToolkitCodeGenerationBestKeptVisualStudioSecret.aspx] about it. However since the advent of **.Net Core** 
 and .Net going cross platform there isn't a simple way to generate code or other artifacts that will can also work in Visual Studio Code (or other code editors).
 
