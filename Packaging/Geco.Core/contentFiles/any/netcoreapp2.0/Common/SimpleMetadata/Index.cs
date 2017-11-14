@@ -11,13 +11,12 @@ namespace Geco.Common.SimpleMetadata
             Table = table;
             IsUnique = isUnique;
             IsClustered = isClustered;
-            IncludedColumns = new MetadataCollection<Column>(this);
-            Columns = new MetadataCollection<Column>(this);
+            IncludedColumns = new MetadataCollection<Column>();
+            Columns = new MetadataCollection<Column>();
         }
 
         public override string Name { get; }
         public Table Table { get; }
-        public override bool IsFrozen => Table.IsFrozen;
         public bool IsUnique { get; }
         public bool IsClustered { get; }
 

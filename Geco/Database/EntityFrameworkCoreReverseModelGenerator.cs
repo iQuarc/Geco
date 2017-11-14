@@ -42,18 +42,18 @@ namespace Geco.Database
                             ColorConsole.WriteLine(
                                 $"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.",
                                 ConsoleColor.DarkYellow);
-                            table.Columns.Remove(column.Name);
+                            table.Columns.GetWritable().Remove(column.Name);
                         }
 
                     if (!table.Columns.Any(c => c.IsKey))
                     {
-                        schema.Tables.Remove(table.Name);
+                        schema.Tables.GetWritable().Remove(table.Name);
                         foreach (var col in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.Columns)).Where(c => c.ForeignKey?.TargetTable == table))
-                            col.ForeignKey.TargetTable.IncomingForeignKeys.Remove(col.ForeignKey.Name);
+                            col.ForeignKey.TargetTable.IncomingForeignKeys.GetWritable().Remove(col.ForeignKey.Name);
                         foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.ForeignKeys)).Where(fk => fk.TargetTable == table))
-                            fk.ParentTable.ForeignKeys.Remove(fk.Name);
+                            fk.ParentTable.ForeignKeys.GetWritable().Remove(fk.Name);
                         foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.IncomingForeignKeys)).Where(fk => fk.ParentTable == table))
-                            fk.TargetTable.IncomingForeignKeys.Remove(fk.Name);
+                            fk.TargetTable.IncomingForeignKeys.GetWritable().Remove(fk.Name);
 
                         ColorConsole.WriteLine(
                             $"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.",

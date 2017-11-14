@@ -22,7 +22,7 @@ namespace Geco.Common.SimpleMetadata
     /// <summary>
     /// Base class for all metadata items
     /// </summary>
-    public abstract class MetadataItem : IMetadataItem, IFreezable
+    public abstract class MetadataItem : IMetadataItem
     {
         /// <summary>
         /// The name of current metadata item
@@ -32,22 +32,6 @@ namespace Geco.Common.SimpleMetadata
         /// A mutable dictionary for additional metadata for current <see cref="MetadataItem"/>
         /// </summary>
         public IDictionary<string, string> Metadata { get; } = new MetadataDictionary();
-
-        /// <summary>
-        /// Indicates that the current instance was frozen for any modifications
-        /// </summary>
-        public abstract bool IsFrozen { get; }
-    }
-
-    /// <summary>
-    /// Indicates that the current instance is a freezable object that can be frozen to prevent all modifications
-    /// </summary>
-    public interface IFreezable
-    {
-        /// <summary>
-        /// Indicates if current instance was frozen
-        /// </summary>
-        bool IsFrozen { get; }
     }
 
 

@@ -10,11 +10,11 @@ namespace Geco.Common.SimpleMetadata
         {
             Name = name;
             Schema = schema;
-            Indexes = new MetadataCollection<Index>(this);
-            Triggers = new MetadataCollection<Trigger>(this);
-            IncomingForeignKeys = new MetadataCollection<ForeignKey>(this);
-            ForeignKeys = new MetadataCollection<ForeignKey>(this);
-            Columns = new MetadataCollection<Column>(this);
+            Indexes = new MetadataCollection<Index>();
+            Triggers = new MetadataCollection<Trigger>();
+            IncomingForeignKeys = new MetadataCollection<ForeignKey>();
+            ForeignKeys = new MetadataCollection<ForeignKey>();
+            Columns = new MetadataCollection<Column>();
         }
 
         public override string Name { get; }
@@ -25,7 +25,5 @@ namespace Geco.Common.SimpleMetadata
         public MetadataCollection<ForeignKey> IncomingForeignKeys { get;}
         public MetadataCollection<Trigger> Triggers { get; }
         public MetadataCollection<Index> Indexes { get; }
-
-        public override bool IsFrozen => Schema.IsFrozen;
     }
 }

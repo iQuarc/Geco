@@ -10,7 +10,5 @@
 
         public Table Table { get; }
         public override string Name { get; }
-
-        public override bool IsFrozen => Table.IsFrozen;
     }
 }

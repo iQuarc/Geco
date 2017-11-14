@@ -14,7 +14,6 @@ namespace Geco.Common.SimpleMetadata
         }
 
         public override string Name { get; }
-        public override bool IsFrozen => ParentTable.IsFrozen;
         public Table ParentTable { get;}
         public Table TargetTable { get;}
         public IReadOnlyList<Column> FromColumns { get; }

@@ -36,7 +36,5 @@ namespace Geco.Common.SimpleMetadata
         public ForeignKey ForeignKey { get; set; }
 
         public string DefaultValue { get;}
-
-        public override bool IsFrozen => Table.IsFrozen;
     }
 }

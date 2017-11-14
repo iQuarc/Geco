@@ -8,31 +8,13 @@ namespace Geco.Common.SimpleMetadata
     public class MetadataCollection<TEntity> : IReadOnlyCollection<TEntity>, IMetadataWriteAccessor<TEntity>
         where TEntity : IMetadataItem
     {
-        private readonly IFreezable freezableOwner;
         private readonly Dictionary<string, TEntity> innerDictionary = new Dictionary<string, TEntity>(StringComparer.OrdinalIgnoreCase);
-
-        public MetadataCollection(IFreezable freezableOwner)
-        {
-            this.freezableOwner = freezableOwner;
-        }
 
         public void Add(TEntity item)
         {
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
             innerDictionary.Add(item.Name, item);
-        }
-
-        public void Add(string key, TEntity value)
-        {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            innerDictionary.Add(key, value);
-        }
-
-        public void Clear()
-        {
-            innerDictionary.Clear();
         }
 
         public bool Contains(TEntity item)
@@ -45,11 +27,6 @@ namespace Geco.Common.SimpleMetadata
         public bool ContainsKey(string key)
         {
             return innerDictionary.ContainsKey(key);
-        }
-
-        public bool Remove(string key)
-        {
-            return innerDictionary.Remove(key);
         }
 
         public bool TryGetValue(string key, out TEntity value)
@@ -74,8 +51,6 @@ namespace Geco.Common.SimpleMetadata
 
         IDictionary<string, TEntity> IMetadataWriteAccessor<TEntity>.GetWritable()
         {
-            if (freezableOwner.IsFrozen)
-                throw new InvalidOperationException("Cannot get writable accessor while the collection is frozen!");
             return this.innerDictionary;
         }
 

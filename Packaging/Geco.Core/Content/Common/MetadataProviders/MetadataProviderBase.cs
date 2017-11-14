@@ -30,7 +30,7 @@ namespace Geco.Common.MetadataProviders
                 db = new DatabaseMetadata(GetName(), GetClrTypeMappings());
                 foreach (var table in LoadTables())
                 {
-                    var schema = db.Schemas.GetOrAdd(table.SchemaName, () => new Schema(table.SchemaName, db));
+                    var schema = db.Schemas.GetOrAdd(table.SchemaName, () => new Schema(table.SchemaName));
                     schema.Tables.Add(new Table(table.Name, schema).WithMetadata(table));
                 }
 

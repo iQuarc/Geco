@@ -5,16 +5,13 @@ namespace Geco.Common.SimpleMetadata
     [DebuggerDisplay("[{Name}]")]
     public class Schema : MetadataItem
     {
-        private readonly DatabaseMetadata dbMetadata;
-        public Schema(string name, DatabaseMetadata dbMetadata)
+        public Schema(string name)
         {
-            this.dbMetadata = dbMetadata;
             Name = name;
-            Tables = new MetadataCollection<Table>(this);
+            Tables = new MetadataCollection<Table>();
         }
 
         public override string Name { get; }
-        public override bool IsFrozen => dbMetadata.IsFrozen;
         public MetadataCollection<Table> Tables { get; }
     }
 }
