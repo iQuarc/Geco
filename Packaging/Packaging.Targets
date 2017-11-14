@@ -1,6 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <GecoDir Condition="'$(GecoDir)' == ''">$(SolutionDir)Geco\</GecoDir>
+    <OverwriteSettings Condition="'$(OverwriteSettings)' == ''">false</OverwriteSettings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +15,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <TemplateFiles Include="$(GecoDir)appsettings.json"/>
+      <TemplateFiles Include="$(GecoDir)appsettings.json" Condition="'$(OverwriteSettings)' == 'true'"/>
       <TemplateFiles Include="$(GecoDir)**\*.cs" Exclude="$(GecoDir)obj\**\*.*"/>
       <TemplateFiles Include="$(GecoDir)Program.cs" />
       <TemplateFiles Include="$(GecoDir)Geco.csproj;$(GecoDir)Geco.Targets" />
@@ -31,7 +32,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <CoreFiles Include="$(GecoDir)appsettings.json"/>
+      <CoreFiles Include="$(GecoDir)appsettings.json" Condition="'$(OverwriteSettings)' == 'true'"/>
       <CoreFiles Include="$(GecoDir)**\*.cs" Exclude="$(GecoDir)obj\**\*.*"/>
       <CoreFiles Include="$(GecoDir)Program.cs" />
       <CoreFiles Remove="Database\**" />

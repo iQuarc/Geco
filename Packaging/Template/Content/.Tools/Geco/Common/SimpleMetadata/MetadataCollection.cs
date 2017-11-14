@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Geco.Common.SimpleMetadata
 {
@@ -63,7 +64,7 @@ namespace Geco.Common.SimpleMetadata
 
         public IEnumerator<TEntity> GetEnumerator()
         {
-            return innerDictionary.Values.GetEnumerator();
+            return innerDictionary.Values.ToList().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

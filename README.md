@@ -146,6 +146,13 @@ Example:
 
 ## Version History
 
+**Version 1.0.1**
+
+ - Changed Entity Framework Core generator to allow multi column foreign keys
+ - Fixed MedataData for MaxLength nvarchar and nchar columns
+ - Removed tables without primary key from generated model
+ - Switched to semver
+
 **Version 1.0.0.2**
 
 - Changed user confirmation mechanism

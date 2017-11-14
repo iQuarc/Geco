@@ -21,7 +21,7 @@ namespace Geco.Database
 
         public EntityFrameworkCoreReverseModelGenerator(IMetadataProvider provider, IInflector inf, EntityFrameworkCoreReverseModelGeneratorOptions options) : base(provider, inf, options.ConnectionName)
         {
-            this.options = options;            
+            this.options = options;
         }
 
         protected override void Generate()
@@ -35,6 +35,7 @@ namespace Geco.Database
         {
             foreach (var schema in Db.Schemas)
                 foreach (var table in schema.Tables)
+                {
                     foreach (var column in table.Columns.ToList())
                         if (!Db.TypeMappings.TryGetValue(column.DataType, out var type) || type == null)
                         {
@@ -43,6 +44,24 @@ namespace Geco.Database
                                 ConsoleColor.DarkYellow);
                             table.Columns.Remove(column.Name);
                         }
+
+                    if (!table.Columns.Any(c => c.IsKey))
+                    {
+                        schema.Tables.Remove(table.Name);
+                        foreach (var col in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.Columns)).Where(c => c.ForeignKey?.TargetTable == table))
+                            col.ForeignKey.TargetTable.IncomingForeignKeys.Remove(col.ForeignKey.Name);
+                        foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.ForeignKeys)).Where(fk => fk.TargetTable == table))
+                            fk.ParentTable.ForeignKeys.Remove(fk.Name);
+                        foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.IncomingForeignKeys)).Where(fk => fk.ParentTable == table))
+                            fk.TargetTable.IncomingForeignKeys.Remove(fk.Name);
+
+                        ColorConsole.WriteLine(
+                            $"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.",
+                            ConsoleColor.DarkYellow);
+
+                        continue;
+                    }
+                }
         }
 
         private void WriteEntityFiles()
@@ -215,37 +234,52 @@ namespace Geco.Database
                     W();
                 }
 
-                var foreignKeyProperties = table.Columns.Where<Column>(c => c.ForeignKey != null);
-                if (foreignKeyProperties.Any())
+                if (table.ForeignKeys.Any())
                 {
                     W("// Foreign keys", options.GenerateComments);
-                    foreach (var column in foreignKeyProperties.OrderBy(c => c.Name))
+                    foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns[0].Name))
                     {
-                        var targetClassName = Inf.Pascalise(Inf.Singularise(column.ForeignKey.TargetTable.Name));
-                        var propertyName = Inf.Pascalise(Inf.Singularise(RemoveSuffix(column.Name)));
-                        CheckClash(ref propertyName, existingNames, ref i);
-                        column.Metadata["NavProperty"] = propertyName;
+                        var targetClassName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name));
+                        //var propertyName = Inf.Pascalise(Inf.Singularise(RemoveSuffix(column.Name)));
+
+                        string propertyName;
+                        if (table.ForeignKeys.Count(f => f.TargetTable == fk.TargetTable) > 1)
+                            propertyName = Inf.Pluralise(targetClassName) + GetFkName(fk.ToColumns);
+                        else
+                            propertyName = Inf.Pluralise(targetClassName);
+
+                        if (CheckClash(ref propertyName, existingNames, ref i))
+                        {
+                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.TargetTable.Name)) + GetFkName(fk.FromColumns);
+                            CheckClash(ref propertyName, existingNames, ref i);
+                        }
+
+                        fk.Metadata["NavProperty"] = propertyName;
+                        foreach (var column in fk.FromColumns)
+                        {
+                            column.Metadata["NavProperty"] = propertyName;
+                        }
                         W("[JsonIgnore]", options.JsonSerialization);
                         W($"public {targetClassName} {propertyName} {{ get; set; }}");
                     }
                     W();
                 }
 
-                if (table.IncomingForeignKeys.Any<ForeignKey>())
+                if (table.IncomingForeignKeys.Any())
                 {
                     W("// Reverse navigation", options.GenerateComments);
-                    foreach (var fk in table.IncomingForeignKeys.OrderBy<ForeignKey, string>(t => t.ParentTable.Name).ThenBy(t => t.FromColumns[0].Name))
+                    foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns[0].Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.ParentTable.Name));
                         string propertyName;
-                        if (table.IncomingForeignKeys.Count<ForeignKey>(f => f.ParentTable == fk.ParentTable) > 1)
-                            propertyName = Inf.Pluralise(targetClassName) + GetFKName(fk.FromColumns);
+                        if (table.IncomingForeignKeys.Count(f => f.ParentTable == fk.ParentTable) > 1)
+                            propertyName = Inf.Pluralise(targetClassName) + GetFkName(fk.FromColumns);
                         else
                             propertyName = Inf.Pluralise(targetClassName);
 
                         if (CheckClash(ref propertyName, existingNames, ref i))
                         {
-                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.ParentTable.Name)) + GetFKName(fk.FromColumns);
+                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.ParentTable.Name)) + GetFkName(fk.FromColumns);
                             CheckClash(ref propertyName, existingNames, ref i);
                         }
                         fk.Metadata["Property"] = propertyName;
@@ -271,7 +305,7 @@ namespace Geco.Database
             W("", !options.OneFilePerEntity);
         }
 
-        private string GetFKName(IReadOnlyList<Column> fromColumns)
+        private string GetFkName(IReadOnlyList<Column> fromColumns)
         {
             var sb = new StringBuilder();
             foreach (var fromCol in fromColumns)
@@ -334,15 +368,16 @@ namespace Geco.Database
                         W();
                     }
 
-                    foreach (var column in table.Columns.Where<Column>(c => c.ForeignKey != null))
+                    foreach (var fk in table.ForeignKeys)
                     {
-                        var propertyName = column.Metadata["NavProperty"];
-                        var reverse = column.ForeignKey.Metadata["Property"];
+                        var propertyName = fk.Metadata["NavProperty"];
+                        var reverse = fk.Metadata["Property"];
                         DW($"entity.HasOne(e => e.{propertyName})");
                         IW($".WithMany(p => p.{reverse})");
-                        W($".HasForeignKey(p => p.{column.ForeignKey.FromColumns[0].Name})");
+                        W($".HasForeignKey(p => p.{fk.FromColumns[0].Name})", fk.FromColumns.Count == 1);
+                        W($".HasForeignKey(p => new {{{string.Join(", ", fk.FromColumns.Select(c => "p." + c.Metadata["Property"]))}}})", fk.FromColumns.Count > 1);
                         W($".OnDelete(DeleteBehavior.Restrict)"); // TODO: Get actual behavior for constraint from database
-                        W($".HasConstraintName(\"{column.ForeignKey.Name}\")");
+                        W($".HasConstraintName(\"{fk.Name}\")");
                         SemiColon();
                         W();
                     }
@@ -364,7 +399,7 @@ namespace Geco.Database
             return false;
         }
 
-        private readonly HashSet<string> stringTypes = new HashSet<string>() { "nvarchar", "varchar", "char" };
+        private readonly HashSet<string> stringTypes = new HashSet<string>() { "nvarchar", "varchar", "char", "nchar" };
         private readonly HashSet<string> binaryTypes = new HashSet<string>() { "varbinary" };
         private readonly HashSet<string> numericTypes = new HashSet<string>() { "numeric", "decimal" };
 
@@ -392,7 +427,7 @@ namespace Geco.Database
 
         private string GetNullable(Column column)
         {
-            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsPrimitive)
+            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsPrimitive && Db.TypeMappings[column.DataType] != typeof(char))
             {
                 return "?";
             }
@@ -404,7 +439,11 @@ namespace Geco.Database
             string sysType = "string";
             if (Db.TypeMappings.ContainsKey(sqlType))
             {
-                sysType = GetCharpTypeName(Db.TypeMappings[sqlType]);
+                var clrType = Db.TypeMappings[sqlType];
+                if (clrType == typeof(char))
+                    return sysType;
+
+                sysType = GetCharpTypeName(clrType);
             }
             return sysType;
         }
@@ -413,7 +452,7 @@ namespace Geco.Database
         {
             if (IsString(column.DataType))
             {
-                return $"{column.DataType}({(column.MaxLength == -1 || column.MaxLength >= 8000 ? "MAX" : (column.MaxLength / 2).ToString())})";
+                return $"{column.DataType}({(column.MaxLength == -1 || column.MaxLength >= 8000 ? "MAX" : column.MaxLength.ToString())})";
             }
 
             if (IsBinary(column.DataType))

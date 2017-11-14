@@ -43,7 +43,7 @@ namespace Geco.Common.MetadataProviders.SqlServer
                       ISNULL(sty.name, ty.name) as DataType,
                       CAST(c.precision as int) as Precision,
                       CAST(c.scale as int) as Scale,
-                      CAST(c.max_length AS int) as MaxLength,
+                      CAST(ISNULL(COLUMNPROPERTY(c.object_id, c.name, 'charmaxlen'), c.max_length) AS int) as MaxLength,
                       c.is_nullable as IsNullable,
                       c.is_rowguidcol as IsRowGuidCol,
                       CAST((CASE WHEN EXISTS (SELECT 1
