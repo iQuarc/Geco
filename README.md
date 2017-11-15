@@ -6,13 +6,15 @@ Geco runs on .Net Core 2.0. [Download and Install](http://dot.net)
 What's the reasoning behind this utility?
 
 One of the most popular code generation tools for Visual Studio over the years was T4 (Text Template Transformation Toolkit), which saw a great deal of success for simple to complex code generation tasks.
-Scott Hanselman has a nice (blog post)[https://www.hanselman.com/blog/T4TextTemplateTransformationToolkitCodeGenerationBestKeptVisualStudioSecret.aspx] about it. However, since the advent of **.Net Core** and .Net going cross platform there is no simple way to generate code or other artifacts that would also work in Visual Studio Code (or other code editors).
+Scott Hanselman has a nice [blog post](https://www.hanselman.com/blog/T4TextTemplateTransformationToolkitCodeGenerationBestKeptVisualStudioSecret.aspx) about it. However, since the advent of **.Net Core** and .Net going cross platform there is no simple way to generate code or other artifacts that would also work in Visual Studio Code (or other code editors).
 
 This is where the idea for this simple utility came from. Have a small utility for code generation that is **debuggable** *(one of the long standing issues of T4)*, provides some level of **intellisense**, can be run at build time, is higly customizable, generic and has an as small as possible footprint.
 
 ## Installation
 
-Geco can be installed as `dotnet new` template. Run the following command on a console or terminal:
+Geco can be installed as a [Visual Studio Project Template](https://marketplace.visualstudio.com/items?itemName=catalinpop.Geco101) or as `dotnet new` template. 
+
+To install Geco as a `dotnet new template` run the following command on a console or terminal:
 
 ```Batchfile
 dotnet new -i iQuarc.Geco.CSharp
@@ -23,6 +25,8 @@ Then create a new project using the newly installed template:
 ```Batchfile  
 dotnet new geco
 ```
+
+To create a Geco project when installed as a Visual Studio Project template, Select File -> New project select the Geco template.
 
 ## Code Generation examples
 
