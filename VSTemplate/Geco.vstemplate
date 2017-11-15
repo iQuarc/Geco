@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="2.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Geco</Name>
+    <Description>As simple as it gets code generator, which is a .Net Core Console Application that runs code generation tasks written in C# using interpolated strings.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <Icon>__TemplateIcon.png</Icon>
+    <PreviewImage>__PreviewImage.JPG</PreviewImage>
+    <TemplateID>0989b5fd-7dd1-4092-8332-6ab7137b7076</TemplateID>
+    <CreateInPlace>true</CreateInPlace>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectCollection>
+      <SolutionFolder Name=".Tools">
+        <ProjectTemplateLink ProjectName="Geco">
+          .Tools\Geco\Geco.vstemplate
+        </ProjectTemplateLink>
+      </SolutionFolder>
+    </ProjectCollection>
+  </TemplateContent>
+</VSTemplate>

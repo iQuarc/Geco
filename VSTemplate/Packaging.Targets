@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <GecoDir Condition="'$(GecoDir)' == ''">$(SolutionDir)Geco\</GecoDir>
+    <OverwriteSettings Condition="'$(OverwriteSettings)' == ''">true</OverwriteSettings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\*.cs" />
+    <None Include="**\*.cs" />
+  </ItemGroup>
+
+  <Target BeforeTargets="BeforeBuild" Name="VSTemplate">
+    <PropertyGroup>
+      <GecoTargetDir>$(ProjectDir)\.Tools\Geco\</GecoTargetDir>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <TemplateFiles Include="$(GecoDir)appsettings.json" Condition="'$(OverwriteSettings)' == 'true'"/>
+      <TemplateFiles Include="$(GecoDir)**\*.cs" Exclude="$(GecoDir)obj\**\*.*"/>
+      <TemplateFiles Include="$(GecoDir)Program.cs" />
+      <TemplateFiles Include="$(GecoDir)Geco.csproj;$(GecoDir)Geco.Targets" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFolder="$(GecoTargetDir)%(RecursiveDir)\" OverwriteReadOnlyFiles="true" />
+  </Target>
+  
+</Project>

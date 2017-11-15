@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(ProjectDir)Packaging.Targets" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{04092C13-1A91-486F-8C0C-7EE6AF697EF6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VSTemplate</RootNamespace>
+    <AssemblyName>VSTemplate</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CreateVsixContainer>false</CreateVsixContainer>
+    <DeployExtension>false</DeployExtension>
+    <DeployVSTemplates>false</DeployVSTemplates>
+    <CopyVsixManifestToOutput>false</CopyVsixManifestToOutput>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CreateVsixContainer>False</CreateVsixContainer>
+    <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".Tools\Geco\appsettings.json" />
+    <None Include=".Tools\Geco\Geco.Targets" />
+    <None Include="Packaging.Targets" />
+    <None Include="ProjectTemplate.csproj" />
+    <None Include="VSTemplate.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Geco.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".Tools\Geco\Common\BaseGenerator.cs" />
+    <None Include=".Tools\Geco\Common\BaseGeneratorWithMetadata.cs" />
+    <None Include=".Tools\Geco\Common\Inflector\EnglishInflector.cs" />
+    <None Include=".Tools\Geco\Common\Inflector\IInflector.cs" />
+    <None Include=".Tools\Geco\Common\IRunnable.cs" />
+    <None Include=".Tools\Geco\Common\MetadataProviders\MetadataCollectionExtensions.cs" />
+    <None Include=".Tools\Geco\Common\MetadataProviders\MetadataProviderBase.cs" />
+    <None Include=".Tools\Geco\Common\MetadataProviders\QueryUtil.cs" />
+    <None Include=".Tools\Geco\Common\MetadataProviders\SqlServer\SqlServerMetadataProvider.cs" />
+    <None Include=".Tools\Geco\Common\OptionsAttribute.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\Column.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\DatabaseMetadata.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\ForeignKey.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\IMetadataItem.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\IMetadataProvider.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\Index.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\MetadataCollection.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\MetadataDictionary.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\Schema.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\Table.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\Trigger.cs" />
+    <None Include=".Tools\Geco\Common\Util\ColorConsole.cs" />
+    <None Include=".Tools\Geco\Common\Util\EnumerableExtensions.cs" />
+    <None Include=".Tools\Geco\Config\RootConfig.cs" />
+    <None Include=".Tools\Geco\Config\Task.cs" />
+    <None Include=".Tools\Geco\Database\DatabaseCleaner.cs" />
+    <None Include=".Tools\Geco\Database\DatabaseCleanerOptions.cs" />
+    <None Include=".Tools\Geco\Database\EntityFrameworkCoreReverseModelGenerator.cs" />
+    <None Include=".Tools\Geco\Database\EntityFrameworkCoreReverseModelGeneratorOptions.cs" />
+    <None Include=".Tools\Geco\Database\SeedDataGenerator.cs" />
+    <None Include=".Tools\Geco\Database\SeedDataGeneratorOptions.cs" />
+    <None Include=".Tools\Geco\Database\SeedScriptRunner.cs" />
+    <None Include=".Tools\Geco\Database\SeedScriptRunnerOptions.cs" />
+    <None Include=".Tools\Geco\Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".Tools\Geco\Geco.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".Tools\Geco\Geco.csproj" />
+    <Content Include="__PreviewImage.JPG" />
+    <Content Include="__TemplateIcon.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

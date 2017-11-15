@@ -10,12 +10,12 @@ namespace Geco.Tests
 {
     public class EntityFrameworkGeneratorTests
     {
-        private IConfigurationRoot configuration;
+        private readonly IConfigurationRoot configuration;
         public EntityFrameworkGeneratorTests()
         {
             var options = new Dictionary<string, string>
             {
-                {"ConnectionStrings:DefaultConnection", "Integrated Security=True; Initial Catalog = AdventureWorks; Data Source =.\\SQLEXPRESS; "}
+                {"ConnectionStrings:DefaultConnection", "Integrated Security=True; Initial Catalog=AdventureWorks; Data Source=.\\SQLEXPRESS; "}
             };
             configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(options)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="iQuarc.Geco.CSharp.ProjectTemplate" Version="1.0.1" Language="en-US" Publisher="Catalin Pop" />
+        <DisplayName>Geco</DisplayName>
+        <Description xml:space="preserve">As simple as it gets code generator, which is a .Net Core Console Application that runs code generation tasks written in C# using interpolated strings.</Description>
+        <MoreInfo>https://github.com/iQuarc/Geco</MoreInfo>
+        <License>LICENSE.txt</License>
+        <GettingStartedGuide>https://github.com/iQuarc/Geco</GettingStartedGuide>
+        <Icon>Logo.png</Icon>
+        <PreviewImage>PreviewImage.JPG</PreviewImage>
+        <Tags>Code-Generator Template-Engine CSharp Interpolated-Strings</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0]" />
+    </Installation>
+    <Dependencies>
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="VSTemplate" d:TargetPath="|VSTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.NetCore.ComponentGroup.Web" Version="[15.0.26919.1,16.0)" DisplayName=".NET Core 2.0 development tools" />
+        <Prerequisite Id="Microsoft.Component.NetFX.Core.Runtime" Version="[15.0.26208.0,16.0)" DisplayName=".NET Core runtime" />
+    </Prerequisites>
+</PackageManifest>

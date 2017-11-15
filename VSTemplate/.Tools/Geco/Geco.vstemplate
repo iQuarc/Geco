@@ -1,0 +1,72 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>Geco</Name>
+    <Description>As simple as it gets code generator, which is a .Net Core Console Application that runs code generation tasks written in C# using interpolated strings.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>Geco</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <Icon>..\..\__TemplateIcon.png</Icon>
+	<CreateInPlace>true</CreateInPlace>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="Geco.csproj">
+      <Folder Name="Common" TargetFolderName="Common">
+        <Folder Name="Inflector" TargetFolderName="Inflector">
+          <ProjectItem ReplaceParameters="false" TargetFileName="EnglishInflector.cs">EnglishInflector.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="IInflector.cs">IInflector.cs</ProjectItem>
+        </Folder>
+        <Folder Name="MetadataProviders" TargetFolderName="MetadataProviders">
+          <Folder Name="SqlServer" TargetFolderName="SqlServer">
+            <ProjectItem ReplaceParameters="false" TargetFileName="SqlServerMetadataProvider.cs">SqlServerMetadataProvider.cs</ProjectItem>
+          </Folder>
+          <ProjectItem ReplaceParameters="false" TargetFileName="MetadataCollectionExtensions.cs">MetadataCollectionExtensions.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="MetadataProviderBase.cs">MetadataProviderBase.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="QueryUtil.cs">QueryUtil.cs</ProjectItem>
+        </Folder>
+        <Folder Name="SimpleMetadata" TargetFolderName="SimpleMetadata">
+          <ProjectItem ReplaceParameters="false" TargetFileName="Column.cs">Column.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="DatabaseMetadata.cs">DatabaseMetadata.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="ForeignKey.cs">ForeignKey.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="IMetadataItem.cs">IMetadataItem.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="IMetadataProvider.cs">IMetadataProvider.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="Index.cs">Index.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="MetadataCollection.cs">MetadataCollection.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="MetadataDictionary.cs">MetadataDictionary.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="Schema.cs">Schema.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="Table.cs">Table.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="Trigger.cs">Trigger.cs</ProjectItem>
+        </Folder>
+        <Folder Name="Util" TargetFolderName="Util">
+          <ProjectItem ReplaceParameters="false" TargetFileName="ColorConsole.cs">ColorConsole.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="EnumerableExtensions.cs">EnumerableExtensions.cs</ProjectItem>
+        </Folder>
+        <ProjectItem ReplaceParameters="false" TargetFileName="BaseGenerator.cs">BaseGenerator.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="BaseGeneratorWithMetadata.cs">BaseGeneratorWithMetadata.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="IRunnable.cs">IRunnable.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="OptionsAttribute.cs">OptionsAttribute.cs</ProjectItem>
+      </Folder>
+      <Folder Name="Config" TargetFolderName="Config">
+        <ProjectItem ReplaceParameters="false" TargetFileName="RootConfig.cs">RootConfig.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="Task.cs">Task.cs</ProjectItem>
+      </Folder>
+      <Folder Name="Database" TargetFolderName="Database">
+        <ProjectItem ReplaceParameters="false" TargetFileName="DatabaseCleaner.cs">DatabaseCleaner.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="DatabaseCleanerOptions.cs">DatabaseCleanerOptions.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="EntityFrameworkCoreReverseModelGenerator.cs">EntityFrameworkCoreReverseModelGenerator.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="EntityFrameworkCoreReverseModelGeneratorOptions.cs">EntityFrameworkCoreReverseModelGeneratorOptions.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="SeedDataGenerator.cs">SeedDataGenerator.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="SeedDataGeneratorOptions.cs">SeedDataGeneratorOptions.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="SeedScriptRunner.cs">SeedScriptRunner.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="SeedScriptRunnerOptions.cs">SeedScriptRunnerOptions.cs</ProjectItem>
+      </Folder>
+      <ProjectItem ReplaceParameters="false" TargetFileName="appsettings.json">appsettings.json</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Geco.Targets">Geco.Targets</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Program.cs">Program.cs</ProjectItem>
+
+    </Project>
+  </TemplateContent>
+</VSTemplate>
