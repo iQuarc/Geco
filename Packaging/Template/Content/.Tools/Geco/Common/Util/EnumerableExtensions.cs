@@ -85,7 +85,39 @@ namespace Geco.Common
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
-            return WithInfoIterator(source);
+            IEnumerable<ItemInfo<T>> WithInfoIterator()
+            {
+                using (var enumerator = source.GetEnumerator())
+                {
+                    int index = 0;
+                    if (!enumerator.MoveNext())
+                        yield break;
+
+                    T current = enumerator.Current;
+
+                    if (enumerator.MoveNext())
+                    {
+                        yield return new ItemInfo<T>(true, false, index++, current);
+                        current = enumerator.Current;
+                    }
+                    else
+                    {
+                        yield return new ItemInfo<T>(true, true, index, current);
+                        yield break;
+                    }
+
+
+                    while (enumerator.MoveNext())
+                    {
+                        var next = enumerator.Current;
+                        yield return new ItemInfo<T>(false, false, index++, current);
+                        current = next;
+                    }
+                    yield return new ItemInfo<T>(false, true, index, current);
+                }
+            }
+
+            return WithInfoIterator();
         }
 
         /// <summary>
@@ -96,41 +128,7 @@ namespace Geco.Common
         /// <returns>wrapped enumerable sequence</returns>
         public static IEnumerable<ItemInfo<T>> WithInfo<T>(this IEnumerable<ItemInfo<T>> source)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            return WithInfoIterator(source.Select(s => s.Item));
-        }
-
-        private static IEnumerable<ItemInfo<T>> WithInfoIterator<T>(IEnumerable<T> source)
-        {
-            using (var enumerator = source.GetEnumerator())
-            {
-                int index = 0;
-                if (!enumerator.MoveNext())
-                    yield break;
-
-                T current = enumerator.Current;
-
-                if (enumerator.MoveNext())
-                {
-                    yield return new ItemInfo<T>(true, false, index++, current);
-                    current = enumerator.Current;
-                }
-                else
-                {
-                    yield return new ItemInfo<T>(true, true, index, current);
-                    yield break;
-                }
-
-
-                while (enumerator.MoveNext())
-                {
-                    var next = enumerator.Current;
-                    yield return new ItemInfo<T>(false, false, index++, current);
-                    current = next;
-                }
-                yield return new ItemInfo<T>(false, true, index, current);
-            }
+            return WithInfo(source.Select(s => s.Item));
         }
     }
 

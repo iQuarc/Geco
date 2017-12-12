@@ -60,7 +60,7 @@ namespace Geco.Database
                             cmd.ExecuteNonQuery();
                         }
                     }
-                    tran.Rollback();
+                    tran.Commit();
                 }
             }
         }

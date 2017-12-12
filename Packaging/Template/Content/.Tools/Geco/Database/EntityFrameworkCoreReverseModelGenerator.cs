@@ -156,15 +156,18 @@ namespace Geco.Database
             if (!write)
                 return base.OnBlockEnd();
 
-            W("// ReSharper disable RedundantUsingDirective");
-            W("// ReSharper disable DoNotCallOverridableMethodsInConstructor");
-            W("// ReSharper disable InconsistentNaming");
-            W("// ReSharper disable PartialTypeWithSinglePart");
-            W("// ReSharper disable PartialMethodWithSinglePart");
-            W("// ReSharper disable RedundantNameQualifier");
-            W("// ReSharper disable UnusedMember.Global");
-            W("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
-            W();
+            if (options.DisableCodeWarnings)
+            {
+                W("// ReSharper disable RedundantUsingDirective");
+                W("// ReSharper disable DoNotCallOverridableMethodsInConstructor");
+                W("// ReSharper disable InconsistentNaming");
+                W("// ReSharper disable PartialTypeWithSinglePart");
+                W("// ReSharper disable PartialMethodWithSinglePart");
+                W("// ReSharper disable RedundantNameQualifier");
+                W("// ReSharper disable UnusedMember.Global");
+                W("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
+                W(); 
+            }
             W("using System;");
             W("using System.CodeDom.Compiler;");
             W("using System.Collections.Generic;");
@@ -376,7 +379,7 @@ namespace Geco.Database
                         IW($".WithMany(p => p.{reverse})");
                         W($".HasForeignKey(p => p.{fk.FromColumns[0].Name})", fk.FromColumns.Count == 1);
                         W($".HasForeignKey(p => new {{{string.Join(", ", fk.FromColumns.Select(c => "p." + c.Metadata["Property"]))}}})", fk.FromColumns.Count > 1);
-                        W($".OnDelete(DeleteBehavior.Restrict)"); // TODO: Get actual behavior for constraint from database
+                        W($".OnDelete(DeleteBehavior.{GetBehavior(fk.DeleteAction)})");
                         W($".HasConstraintName(\"{fk.Name}\")");
                         SemiColon();
                         W();
@@ -384,6 +387,23 @@ namespace Geco.Database
                     Dedent();
                 }
                 DW("});");
+            }
+        }
+
+        private string GetBehavior(ForeignKeyAction fkDeleteAction)
+        {
+            switch (fkDeleteAction)
+            {
+                case ForeignKeyAction.NoAction:
+                    return "Restrict";
+                case ForeignKeyAction.Cascade:
+                    return "Cascade";
+                case ForeignKeyAction.SetNull:
+                    return "SetNull";
+                case ForeignKeyAction.SetDefault:
+                    return "ClientSetNull";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fkDeleteAction), fkDeleteAction, null);
             }
         }
 

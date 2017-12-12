@@ -2648,7 +2648,7 @@ namespace Geco.Tests.Model
                 entity.HasOne(e => e.SalesOrderHeaders)
                     .WithMany(p => p.SalesOrderDetails)
                     .HasForeignKey(p => p.SalesOrderID)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_SalesOrderDetail_SalesOrderHeader_SalesOrderID");
 
             });
@@ -3123,7 +3123,7 @@ namespace Geco.Tests.Model
                 entity.HasOne(e => e.SalesOrderHeaders)
                     .WithMany(p => p.SalesOrderHeaderSalesReasons)
                     .HasForeignKey(p => p.SalesOrderID)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_SalesOrderHeaderSalesReason_SalesOrderHeader_SalesOrderID");
 
                 entity.HasOne(e => e.SalesReasons)

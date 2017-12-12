@@ -153,6 +153,11 @@ Example:
 
 ## Version History
 
+**Version 1.0.2**
+
+  - Added constraint delete behavior support
+  - Modified logo
+
 **Version 1.0.1**
 
  - Changed Entity Framework Core generator to allow multi column foreign keys

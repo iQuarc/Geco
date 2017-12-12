@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Geco.Core</id>
-    <version>1.0.0.0</version>
+    <version>1.0.2</version>
     <title>Geco, dotnet new template</title>
     <authors>Catalin Pop, © iQuarc 2017</authors>
     <owners>iQuarc</owners>

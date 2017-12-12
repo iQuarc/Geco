@@ -67,13 +67,15 @@ namespace Geco.Common.MetadataProviders.SqlServer
         {
             return Query<ForeignKeyInfo>(
                 @"SELECT 
-                      f.name as Name, 
-                      OBJECT_SCHEMA_NAME(f.parent_object_id) as ParentTableSchema, 
-                      OBJECT_NAME(f.parent_object_id) as ParentTable,
-                      OBJECT_SCHEMA_NAME(f.referenced_object_id) as ReferencedTableSchema, 
-                      OBJECT_NAME(f.referenced_object_id) as ReferencedTable,
-                      cp.name as ParentColumn,
-                      cr.name as ReferencedColumn
+                        f.name as Name, 
+                        OBJECT_SCHEMA_NAME(f.parent_object_id) as ParentTableSchema, 
+                        OBJECT_NAME(f.parent_object_id) as ParentTable,
+                        OBJECT_SCHEMA_NAME(f.referenced_object_id) as ReferencedTableSchema, 
+                        OBJECT_NAME(f.referenced_object_id) as ReferencedTable,
+                        cp.name as ParentColumn,
+                        cr.name as ReferencedColumn,
+		                f.update_referential_action AS UpdateAction,
+		                f.delete_referential_action as DeleteAction
                 FROM sys.foreign_keys f
                 INNER JOIN sys.foreign_key_columns fkp ON fkp.constraint_object_id = f.object_id
                 INNER JOIN sys.columns cp ON fkp.parent_object_id = cp.object_id AND fkp.parent_column_id = cp.column_id

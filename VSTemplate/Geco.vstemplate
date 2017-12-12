@@ -8,6 +8,7 @@
     <PreviewImage>__PreviewImage.JPG</PreviewImage>
     <TemplateID>0989b5fd-7dd1-4092-8332-6ab7137b7076</TemplateID>
     <CreateInPlace>true</CreateInPlace>
+    <DefaultName>Tools</DefaultName>
   </TemplateData>
   <TemplateContent>
     <ProjectCollection>

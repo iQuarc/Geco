@@ -43,7 +43,7 @@ namespace Geco.Common.MetadataProviders
                         column.IsNullable, column.IsKey, column.IsIdentity, column.IsRowguidCol, column.IsComputed, column.DefaultValue).WithMetadata(column));
                 }
 
-                foreach (var foreignKey in LoadForeignKeys().GroupBy(x => new { x.ParentTableSchema, x.ParentTable, x.ReferencedTable, x.ReferencedTableSchema, x.Name }))
+                foreach (var foreignKey in LoadForeignKeys().GroupBy(x => new { x.ParentTableSchema, x.ParentTable, x.ReferencedTable, x.ReferencedTableSchema, x.Name, x.UpdateAction, x.DeleteAction }))
                 {
                     var parentTable = db.Schemas[foreignKey.Key.ParentTableSchema].Tables[foreignKey.Key.ParentTable];
                     var targetTable = db.Schemas[foreignKey.Key.ReferencedTableSchema].Tables[foreignKey.Key.ReferencedTable];
@@ -52,7 +52,7 @@ namespace Geco.Common.MetadataProviders
                     var targetColumns = new ReadOnlyCollection<Column>(parentTable.Columns.Where(c => foreignKey.Any(x => x.ReferencedColumn == c.Name)).ToList());
 
                     var fk = parentTable.ForeignKeys.GetOrAdd(foreignKey.Key.Name,
-                        () => new ForeignKey(foreignKey.Key.Name, parentTable, targetTable, parentColumns, targetColumns));
+                        () => new ForeignKey(foreignKey.Key.Name, parentTable, targetTable, parentColumns, targetColumns, foreignKey.Key.UpdateAction, foreignKey.Key.DeleteAction));
 
                     targetTable.IncomingForeignKeys.GetOrAdd(foreignKey.Key.Name, () => fk);
                     foreach (var parentColumn in parentColumns)
@@ -192,7 +192,8 @@ namespace Geco.Common.MetadataProviders
             public string ReferencedTable { get; set; }
             public string ParentColumn { get; set; }
             public string ReferencedColumn { get; set; }
-
+            public ForeignKeyAction UpdateAction { get; set; }
+            public ForeignKeyAction DeleteAction { get; set; }
             public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
 
