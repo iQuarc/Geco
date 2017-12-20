@@ -34,15 +34,15 @@ Bellow are some snippets from the included code generation tasks that are in the
 
 Next snippet is from the included Entity Framework Core Reverse model generator, which exemplifies part of the code generation:
 
-![Geco Preview1](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage.JPG?raw=true)
+![Geco Preview1](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage.JPG?raw=true)
 
 This snippet is from the SQL Seed Scrip Generator, which generates SQL Merge scripts for Seed data:
 
-![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage2.JPG?raw=true)
+![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage2.JPG?raw=true)
 
 Next screen shot shows Geco running in interactive mode (as a Console App), and the menu that is presented to the user:
 
-![Geco Preview3](https://github.com/iQuarc/Geco/blob/dev/GecoResources/PreviewImage3.JPG?raw=true)
+![Geco Preview3](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage3.JPG?raw=true)
 
 
 ## Description
