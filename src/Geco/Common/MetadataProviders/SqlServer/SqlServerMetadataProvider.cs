@@ -87,7 +87,8 @@ namespace Geco.Common.MetadataProviders.SqlServer
             return Query<TriggerInfo>(
                 @"SELECT 
                     tr.name, OBJECT_NAME(tr.parent_id) as  ParentTable, OBJECT_SCHEMA_NAME(tr.parent_id) as ParentTableSchema
-                FROM sys.triggers tr ");
+                FROM sys.triggers tr 
+                WHERE tr.parent_class <> 0");
         }
 
         protected override IEnumerable<IndexColumnInfo> LoadIndexInfo()
