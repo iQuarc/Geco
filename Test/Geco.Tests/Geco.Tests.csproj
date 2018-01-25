@@ -12,4 +12,9 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Database\Model\" />
+    <Folder Include="DataSync\Server\" />
+  </ItemGroup>
+
 </Project>
