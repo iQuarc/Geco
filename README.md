@@ -26,7 +26,9 @@ Then create a new project using the newly installed template:
 dotnet new geco
 ```
 
-To create a Geco project when installed as a Visual Studio Project template, Select File -> New project select the Geco template.
+To create a Geco project when installed as a Visual Studio Project template, Select File -> New project select the Geco template. 
+
+### A more indetail Getting Sstarted with Visual Studio walkthrough can be found on the Wiki: [Geting Started](https://github.com/iQuarc/Geco/wiki)
 
 ## Code Generation examples
 
