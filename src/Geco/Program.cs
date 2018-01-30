@@ -98,7 +98,7 @@ namespace Geco
         private Func<bool> BuildMenu()
         {
             Console.WriteLine();
-            WriteLine($"Select option:", White);
+            WriteLine($"Select option {("(then press Enter)", Gray)}:", White);
             var actions = new Dictionary<string, Action>();
             foreach (var taskInfo in RootConfig.Tasks.WithInfo())
             {
