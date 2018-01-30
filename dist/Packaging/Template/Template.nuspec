@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>iQuarc.Geco.CSharp</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title>Geco, dotnet new template</title>
     <authors>Catalin Pop, © iQuarc 2017</authors>
     <owners>iQuarc</owners>
@@ -13,10 +13,8 @@
     <description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</description>
     <summary>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</summary>
     <releaseNotes>
-      - Changed Entity Framework Core generator to allow multi column foreign keys
-      - Fixed MedataData for MaxLength nvarchar and nchar columns
-      - Removed tables without primary key from generated model
-      - Switched to semver
+      - Fix SqlServerMetadataProvider bug with global database triggers
+      - Added display of errors in interactive
     </releaseNotes>
     <copyright>Copyright © iQuarc 2017</copyright>
     <tags>Code-Generator Template-Engine CSharp Interpolated-Strings</tags>

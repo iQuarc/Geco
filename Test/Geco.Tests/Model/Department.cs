@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Model
 {
-    [GeneratedCode("Geco", "1.0.2.0")]
+    [GeneratedCode("Geco", "1.0.3.0")]
     public partial class Department
     {
         // Key Properties

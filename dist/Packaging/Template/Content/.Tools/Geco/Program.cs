@@ -255,6 +255,11 @@ namespace Geco
                 {
                     WriteLine(("*** Task was aborted ", Yellow), ($" {itemInfo.Name} ", Blue));
                 }
+                catch (Exception ex) when (Interactive)
+                {
+                    WriteLine($"Error running {(itemInfo.Name,Blue)}: Error:{(ex.Message, Red)}", DarkRed);
+                    WriteLine($"Detail: {ex}", DarkYellow);
+                }
             }
             sw.Stop();
             Console.WriteLine();

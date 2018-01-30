@@ -155,6 +155,10 @@ Example:
 
 ## Version History
 
+**Version 1.0.3**
+  - Fix SqlServerMetadataProvider bug with global database triggers
+  - Added display of errors in interactive
+
 **Version 1.0.2**
 
   - Added constraint delete behavior support
