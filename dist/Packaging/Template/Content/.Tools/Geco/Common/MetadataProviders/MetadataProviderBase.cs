@@ -38,27 +38,30 @@ namespace Geco.Common.MetadataProviders
                 {
                     var schema = db.Schemas[column.SchemaName];
                     var table = schema.Tables[column.TableName];
-
-                    table.Columns.Add(new Column(column.Name, table, column.DataType, column.Precision, column.Scale, column.MaxLength,
+                    var index = table.Columns.Count;
+                    table.Columns.Add(new Column(column.Name, table, index, column.DataType, column.Precision, column.Scale, column.MaxLength,
                         column.IsNullable, column.IsKey, column.IsIdentity, column.IsRowguidCol, column.IsComputed, column.DefaultValue).WithMetadata(column));
                 }
 
-                foreach (var foreignKey in LoadForeignKeys().GroupBy(x => new { x.ParentTableSchema, x.ParentTable, x.ReferencedTable, x.ReferencedTableSchema, x.Name, x.UpdateAction, x.DeleteAction }))
+                foreach (var foreignKey in LoadForeignKeys())
                 {
-                    var parentTable = db.Schemas[foreignKey.Key.ParentTableSchema].Tables[foreignKey.Key.ParentTable];
-                    var targetTable = db.Schemas[foreignKey.Key.ReferencedTableSchema].Tables[foreignKey.Key.ReferencedTable];
+                    var parentTable = db.Schemas[foreignKey.ParentTableSchema].Tables[foreignKey.ParentTable];
+                    var targetTable = db.Schemas[foreignKey.ReferencedTableSchema].Tables[foreignKey.ReferencedTable];
 
-                    var parentColumns = new ReadOnlyCollection<Column>(parentTable.Columns.Where(c => foreignKey.Any(x => x.ParentColumn == c.Name)).ToList());
-                    var targetColumns = new ReadOnlyCollection<Column>(parentTable.Columns.Where(c => foreignKey.Any(x => x.ReferencedColumn == c.Name)).ToList());
+                    var fk = parentTable.ForeignKeys.GetOrAdd(foreignKey.Name,
+                        () => new ForeignKey(foreignKey.Name, parentTable, targetTable, foreignKey.UpdateAction, foreignKey.DeleteAction));
 
-                    var fk = parentTable.ForeignKeys.GetOrAdd(foreignKey.Key.Name,
-                        () => new ForeignKey(foreignKey.Key.Name, parentTable, targetTable, parentColumns, targetColumns, foreignKey.Key.UpdateAction, foreignKey.Key.DeleteAction));
-
-                    targetTable.IncomingForeignKeys.GetOrAdd(foreignKey.Key.Name, () => fk);
-                    foreach (var parentColumn in parentColumns)
+                    foreach(var parentColumn in parentTable.Columns.Where(c => foreignKey.ParentColumn == c.Name))
                     {
+                        fk.FromColumns.Add(parentColumn);
                         parentColumn.ForeignKey = fk;
+                    };
+                    foreach (var targetColumn in parentTable.Columns.Where(c => foreignKey.ReferencedColumn == c.Name))
+                    {
+                        fk.ToColumns.Add(targetColumn);
                     }
+
+                    targetTable.IncomingForeignKeys.GetOrAdd(foreignKey.Name, () => fk);
                 }
 
                 foreach (var trigger in LoadTriggerInfo())
@@ -81,7 +84,6 @@ namespace Geco.Common.MetadataProviders
                     else
                         index.Columns.Add(column);
                 }
-
             }
             sw.Stop();
             ColorConsole.WriteLine(("Database Metadata loaded in ", ConsoleColor.DarkYellow), ($"{sw.ElapsedMilliseconds} ms", ConsoleColor.Green));

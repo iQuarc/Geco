@@ -185,9 +185,9 @@ namespace Geco
                 var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
                 if (optionsAttribute != null)
                 {
-                    taskConfig.Item.ConfigIndex = taskConfig.Index;
+                    taskConfig.Item.ConfigIndex = taskConfig.Index + 1;
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
-                    ConfigurationRoot.GetSection($"Tasks:{taskConfig.Index}:Options").Bind(options);
+                    ConfigurationRoot.GetSection($"Tasks:{taskConfig.Item.ConfigIndex}:Options").Bind(options);
                     ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
                 }
             }
@@ -212,54 +212,57 @@ namespace Geco
 
         private void RunTask(TaskConfig itemInfo)
         {
-            WriteLine($"--------------------------------------------------------", Yellow);
-            WriteLine(("*** Starting ", Yellow), ($" {itemInfo.Name} ", Blue));
             var sw = new Stopwatch();
-
-            var taskType = runnableTypes[itemInfo.TaskClass];
-            var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
-            if (optionsAttribute != null)
+            try
             {
-                var options = Activator.CreateInstance(optionsAttribute.OptionType);
-                ConfigurationRoot.GetSection($"Tasks:{itemInfo.ConfigIndex}:Options").Bind(options);
-                ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
-            }
+                WriteLine($"--------------------------------------------------------", Yellow);
+                WriteLine(("*** Starting ", Yellow), ($" {itemInfo.Name} ", Blue));
 
-            using (var provider = ServiceCollection.BuildServiceProvider())
-            {
-                sw.Start();
-                var task = (IRunnable)provider.GetService(taskType);
-                if (task is IOutputRunnable to)
+                var taskType = runnableTypes[itemInfo.TaskClass];
+                var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
+                if (optionsAttribute != null)
                 {
-                    to.OutputToConsole = itemInfo.OutputToConsole;
-                    to.BaseOutputPath = itemInfo.BaseOutputPath;
-                    to.CleanFilesPattern = itemInfo.CleanFilesPattern;
-                    to.Interactive = Interactive;
+                    var options = Activator.CreateInstance(optionsAttribute.OptionType);
+                    ConfigurationRoot.GetSection($"Tasks:{itemInfo.ConfigIndex}:Options").Bind(options);
+                    ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
                 }
 
-                if (task is IRunableConfirmation co && Interactive)
+                using (var provider = ServiceCollection.BuildServiceProvider())
                 {
-                    sw.Stop();
-                    if (!co.GetUserConfirmation())
-                    {
-                        WriteLine(("*** Task was canceled ", Yellow), ($" {itemInfo.Name} ", Blue));
-                        return;
-                    }
                     sw.Start();
+                    var task = (IRunnable)provider.GetService(taskType);
+                    if (task is IOutputRunnable to)
+                    {
+                        to.OutputToConsole = itemInfo.OutputToConsole;
+                        to.BaseOutputPath = itemInfo.BaseOutputPath;
+                        to.CleanFilesPattern = itemInfo.CleanFilesPattern;
+                        to.Interactive = Interactive;
+                    }
+
+                    if (task is IRunableConfirmation co && Interactive)
+                    {
+                        sw.Stop();
+                        if (!co.GetUserConfirmation())
+                        {
+                            WriteLine(("*** Task was canceled ", Yellow), ($" {itemInfo.Name} ", Blue));
+                            return;
+                        }
+                        sw.Start();
+                    }
+                    try
+                    {
+                        task.Run();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        WriteLine(("*** Task was aborted ", Yellow), ($" {itemInfo.Name} ", Blue));
+                    }
                 }
-                try
-                {
-                    task.Run();
-                }
-                catch (OperationCanceledException)
-                {
-                    WriteLine(("*** Task was aborted ", Yellow), ($" {itemInfo.Name} ", Blue));
-                }
-                catch (Exception ex) when (Interactive)
-                {
-                    WriteLine($"Error running {(itemInfo.Name,Blue)}: Error:{(ex.Message, Red)}", DarkRed);
-                    WriteLine($"Detail: {ex}", DarkYellow);
-                }
+            }
+            catch (Exception ex) when (Interactive)
+            {
+                WriteLine($"Error running {(itemInfo.Name, Blue)}: Error:{(ex.Message, Red)}", DarkRed);
+                WriteLine($"Detail: {ex}", DarkYellow);
             }
             sw.Stop();
             Console.WriteLine();

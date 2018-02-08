@@ -27,41 +27,9 @@ namespace Geco.Database
         protected override void Generate()
         {
             IgnoreUnsuportedColumns();
+            FilterTables();
             WriteEntityFiles();
             WriteContextFile();
-        }
-
-        private void IgnoreUnsuportedColumns()
-        {
-            foreach (var schema in Db.Schemas)
-                foreach (var table in schema.Tables)
-                {
-                    foreach (var column in table.Columns.ToList())
-                        if (!Db.TypeMappings.TryGetValue(column.DataType, out var type) || type == null)
-                        {
-                            ColorConsole.WriteLine(
-                                $"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.",
-                                ConsoleColor.DarkYellow);
-                            table.Columns.GetWritable().Remove(column.Name);
-                        }
-
-                    if (!table.Columns.Any(c => c.IsKey))
-                    {
-                        schema.Tables.GetWritable().Remove(table.Name);
-                        foreach (var col in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.Columns)).Where(c => c.ForeignKey?.TargetTable == table))
-                            col.ForeignKey.TargetTable.IncomingForeignKeys.GetWritable().Remove(col.ForeignKey.Name);
-                        foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.ForeignKeys)).Where(fk => fk.TargetTable == table))
-                            fk.ParentTable.ForeignKeys.GetWritable().Remove(fk.Name);
-                        foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.IncomingForeignKeys)).Where(fk => fk.ParentTable == table))
-                            fk.TargetTable.IncomingForeignKeys.GetWritable().Remove(fk.Name);
-
-                        ColorConsole.WriteLine(
-                            $"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.",
-                            ConsoleColor.DarkYellow);
-
-                        continue;
-                    }
-                }
         }
 
         private void WriteEntityFiles()
@@ -166,7 +134,7 @@ namespace Geco.Database
                 W("// ReSharper disable RedundantNameQualifier");
                 W("// ReSharper disable UnusedMember.Global");
                 W("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
-                W(); 
+                W();
             }
             W("using System;");
             W("using System.CodeDom.Compiler;");
@@ -240,7 +208,7 @@ namespace Geco.Database
                 if (table.ForeignKeys.Any())
                 {
                     W("// Foreign keys", options.GenerateComments);
-                    foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns[0].Name))
+                    foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name));
                         //var propertyName = Inf.Pascalise(Inf.Singularise(RemoveSuffix(column.Name)));
@@ -271,7 +239,7 @@ namespace Geco.Database
                 if (table.IncomingForeignKeys.Any())
                 {
                     W("// Reverse navigation", options.GenerateComments);
-                    foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns[0].Name))
+                    foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.ParentTable.Name));
                         string propertyName;
@@ -295,7 +263,7 @@ namespace Geco.Database
                     W($"public {className}()");
                     WI("{");
                     {
-                        foreach (var fk in table.IncomingForeignKeys.OrderBy<ForeignKey, string>(t => t.ParentTable.Name).ThenBy(t => t.FromColumns[0].Name))
+                        foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
                         {
                             W($"this.{fk.Metadata["Property"]} = new List<{fk.Metadata["Type"]}>();");
                         }
@@ -308,7 +276,7 @@ namespace Geco.Database
             W("", !options.OneFilePerEntity);
         }
 
-        private string GetFkName(IReadOnlyList<Column> fromColumns)
+        private string GetFkName(IEnumerable<Column> fromColumns)
         {
             var sb = new StringBuilder();
             foreach (var fromCol in fromColumns)
@@ -377,7 +345,7 @@ namespace Geco.Database
                         var reverse = fk.Metadata["Property"];
                         DW($"entity.HasOne(e => e.{propertyName})");
                         IW($".WithMany(p => p.{reverse})");
-                        W($".HasForeignKey(p => p.{fk.FromColumns[0].Name})", fk.FromColumns.Count == 1);
+                        W($".HasForeignKey(p => p.{fk.FromColumns.First().Name})", fk.FromColumns.Count == 1);
                         W($".HasForeignKey(p => new {{{string.Join(", ", fk.FromColumns.Select(c => "p." + c.Metadata["Property"]))}}})", fk.FromColumns.Count > 1);
                         W($".OnDelete(DeleteBehavior.{GetBehavior(fk.DeleteAction)})");
                         W($".HasConstraintName(\"{fk.Name}\")");
@@ -493,6 +461,47 @@ namespace Geco.Database
             if (stringValue.StartsWith("(") && stringValue.EndsWith(")"))
                 return RemoveExtraParantesis(stringValue.Substring(1, stringValue.Length - 2));
             return stringValue;
+        }
+
+        private void IgnoreUnsuportedColumns()
+        {
+            foreach (var schema in Db.Schemas)
+                foreach (var table in schema.Tables)
+                {
+                    foreach (var column in table.Columns.ToList())
+                        if (!Db.TypeMappings.TryGetValue(column.DataType, out var type) || type == null)
+                        {
+                            ColorConsole.WriteLine($"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.", ConsoleColor.DarkYellow);
+                            table.Columns.GetWritable().Remove(column.Name);
+                        }
+
+                    if (!table.Columns.Any(c => c.IsKey))
+                    {
+                        ColorConsole.WriteLine($"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.", ConsoleColor.DarkYellow);
+                    }
+                }
+        }
+
+        private void FilterTables()
+        {
+            if (options.Tables.Count == 0 && String.IsNullOrEmpty(options.TablesRegex) &&
+                options.ExcludedTables.Count == 0 && String.IsNullOrEmpty(options.ExcludedTablesRegex))
+                return;
+
+            var tables = new HashSet<Table>(
+                Db.Schemas.SelectMany(s => s.Tables)
+                    .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n)) ||
+                                 Util.TableNameMachesRegex(t, options.TablesRegex))
+                                && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
+                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex))
+                    .OrderBy(t => t.Schema.Name + "." + t.Name));
+
+            foreach (var schema in Db.Schemas)
+            foreach (var table in schema.Tables)
+            {
+                if (!tables.Contains(table))
+                    schema.Tables.GetWritable().Remove(table.Name);
+            }
         }
     }
 }

@@ -28,45 +28,46 @@ namespace Geco.Common.MetadataProviders
             {
                 Connection.Open();
                 db = new DatabaseMetadata(GetName(), GetClrTypeMappings());
-                foreach (var table in LoadTables())
+                foreach (var tableInfo in LoadTables())
                 {
-                    var schema = db.Schemas.GetOrAdd(table.SchemaName, () => new Schema(table.SchemaName));
-                    schema.Tables.Add(new Table(table.Name, schema).WithMetadata(table));
+                    var schema = db.Schemas.GetOrAdd(tableInfo.SchemaName, () => new Schema(tableInfo.SchemaName));
+                    schema.Tables.Add(new Table(tableInfo.Name, schema).WithMetadata(tableInfo));
                 }
 
-                foreach (var column in LoadColumns())
+                foreach (var columnInfo in LoadColumns())
                 {
-                    var schema = db.Schemas[column.SchemaName];
-                    var table = schema.Tables[column.TableName];
-
-                    table.Columns.Add(new Column(column.Name, table, column.DataType, column.Precision, column.Scale, column.MaxLength,
-                        column.IsNullable, column.IsKey, column.IsIdentity, column.IsRowguidCol, column.IsComputed, column.DefaultValue).WithMetadata(column));
+                    var schema = db.Schemas[columnInfo.SchemaName];
+                    var table = schema.Tables[columnInfo.TableName];
+                    var index = table.Columns.Count;
+                    table.Columns.Add(new Column(columnInfo.Name, table, index, columnInfo.DataType, columnInfo.Precision, columnInfo.Scale, columnInfo.MaxLength,
+                        columnInfo.IsNullable, columnInfo.IsKey, columnInfo.IsIdentity, columnInfo.IsRowguidCol, columnInfo.IsComputed, columnInfo.DefaultValue).WithMetadata(columnInfo));
                 }
 
-                foreach (var foreignKey in LoadForeignKeys().GroupBy(x => new { x.ParentTableSchema, x.ParentTable, x.ReferencedTable, x.ReferencedTableSchema, x.Name, x.UpdateAction, x.DeleteAction }))
+                foreach (var foreignKeyInfo in LoadForeignKeys())
                 {
-                    var parentTable = db.Schemas[foreignKey.Key.ParentTableSchema].Tables[foreignKey.Key.ParentTable];
-                    var targetTable = db.Schemas[foreignKey.Key.ReferencedTableSchema].Tables[foreignKey.Key.ReferencedTable];
+                    var parentTable = db.Schemas[foreignKeyInfo.ParentTableSchema].Tables[foreignKeyInfo.ParentTable];
+                    var targetTable = db.Schemas[foreignKeyInfo.ReferencedTableSchema]
+                        .Tables[foreignKeyInfo.ReferencedTable];
 
-                    var parentColumns = new ReadOnlyCollection<Column>(parentTable.Columns.Where(c => foreignKey.Any(x => x.ParentColumn == c.Name)).ToList());
-                    var targetColumns = new ReadOnlyCollection<Column>(parentTable.Columns.Where(c => foreignKey.Any(x => x.ReferencedColumn == c.Name)).ToList());
+                    var fk = parentTable.ForeignKeys.GetOrAdd(foreignKeyInfo.Name, 
+                        () => new ForeignKey(foreignKeyInfo.Name, parentTable, targetTable, foreignKeyInfo.UpdateAction, foreignKeyInfo.DeleteAction).WithMetadata(foreignKeyInfo));
 
-                    var fk = parentTable.ForeignKeys.GetOrAdd(foreignKey.Key.Name,
-                        () => new ForeignKey(foreignKey.Key.Name, parentTable, targetTable, parentColumns, targetColumns, foreignKey.Key.UpdateAction, foreignKey.Key.DeleteAction));
+                    var parentColumn = parentTable.Columns[foreignKeyInfo.ParentColumn];
+                    fk.FromColumns.Add(parentColumn);
+                    parentColumn.ForeignKey = fk;
 
-                    targetTable.IncomingForeignKeys.GetOrAdd(foreignKey.Key.Name, () => fk);
-                    foreach (var parentColumn in parentColumns)
-                    {
-                        parentColumn.ForeignKey = fk;
-                    }
+                    var targetColumn = targetTable.Columns[foreignKeyInfo.ReferencedColumn];
+                    fk.ToColumns.Add(targetColumn);
+
+                    targetTable.IncomingForeignKeys.GetOrAdd(foreignKeyInfo.Name, () => fk);
                 }
 
-                foreach (var trigger in LoadTriggerInfo())
+                foreach (var triggerInfo in LoadTriggerInfo())
                 {
-                    var schema = db.Schemas[trigger.ParentTableSchema];
-                    var table = schema.Tables[trigger.ParentTable];
+                    var schema = db.Schemas[triggerInfo.ParentTableSchema];
+                    var table = schema.Tables[triggerInfo.ParentTable];
 
-                    table.Triggers.GetOrAdd(trigger.Name, () => new Trigger(trigger.Name, table).WithMetadata(trigger));
+                    table.Triggers.GetOrAdd(triggerInfo.Name, () => new Trigger(triggerInfo.Name, table).WithMetadata(triggerInfo));
                 }
 
                 foreach (var indexInfo in LoadIndexInfo())
@@ -81,7 +82,6 @@ namespace Geco.Common.MetadataProviders
                     else
                         index.Columns.Add(column);
                 }
-
             }
             sw.Stop();
             ColorConsole.WriteLine(("Database Metadata loaded in ", ConsoleColor.DarkYellow), ($"{sw.ElapsedMilliseconds} ms", ConsoleColor.Green));
@@ -110,7 +110,6 @@ namespace Geco.Common.MetadataProviders
 
         protected abstract DbConnection CreateConection();
         protected abstract DbCommand CreateCommand(DbConnection cnn, string commandText);
-
         protected abstract IReadOnlyDictionary<string, Type> GetClrTypeMappings();
 
         protected virtual IEnumerable<T> Query<T>(string query)
@@ -131,7 +130,7 @@ namespace Geco.Common.MetadataProviders
         protected virtual T? Scalar<T>(string query)
             where T : struct
         {
-            using (var cmd = CreateCommand(Connection, "SELECT DB_NAME()"))
+            using (var cmd = CreateCommand(Connection, query))
             {
                 var result = cmd.ExecuteScalar();
                 return result == DBNull.Value ? default(T) : (T)result;
@@ -140,7 +139,7 @@ namespace Geco.Common.MetadataProviders
 
         protected virtual string Scalar(string query)
         {
-            using (var cmd = CreateCommand(Connection, "SELECT DB_NAME()"))
+            using (var cmd = CreateCommand(Connection, query))
             {
                 var result = cmd.ExecuteScalar();
                 return result == DBNull.Value ? null : (string)result;
@@ -210,7 +209,5 @@ namespace Geco.Common.MetadataProviders
             public string Name => $"[{TableName}].[{ColumnName}]";
             public IDictionary<string, string> Metadata { get; } = new ConcurrentDictionary<string, string>();
         }
-
-
     }
 }

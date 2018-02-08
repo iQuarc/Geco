@@ -17,10 +17,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{347DB7B5-67FE-4E10-A2AF-9FBFB90E6182}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GecoVSIX", "..\dist\GecoVSIX\GecoVSIX.csproj", "{B9A598E1-C0FE-48B9-9963-7253B4F1AF79}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0A806563-3EBA-4927-B60D-3FC70D193587} = {0A806563-3EBA-4927-B60D-3FC70D193587}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Packaging", "..\dist\Packaging\Packaging.csproj", "{365CFADA-1686-4504-A00F-A48D8F489226}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0A806563-3EBA-4927-B60D-3FC70D193587} = {0A806563-3EBA-4927-B60D-3FC70D193587}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTemplate", "..\dist\VSTemplate\VSTemplate.csproj", "{04092C13-1A91-486F-8C0C-7EE6AF697EF6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0A806563-3EBA-4927-B60D-3FC70D193587} = {0A806563-3EBA-4927-B60D-3FC70D193587}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

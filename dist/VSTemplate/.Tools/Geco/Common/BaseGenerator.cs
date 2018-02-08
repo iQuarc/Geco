@@ -41,6 +41,8 @@ namespace Geco.Common
 
         public virtual bool GetUserConfirmation()
         {
+            if (string.IsNullOrEmpty(CleanFilesPattern))
+                return true;
             ColorConsole.Write($"Clean all files with pattern [{(CleanFilesPattern, ConsoleColor.Yellow)}] in the target folder [{(Path.GetFullPath(BaseOutputPath), ConsoleColor.Yellow)}] (y/n)?", ConsoleColor.White);
             return string.Equals(Console.ReadLine(), "y", StringComparison.OrdinalIgnoreCase);
         }

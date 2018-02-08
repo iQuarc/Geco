@@ -4,13 +4,13 @@ namespace Geco.Common.SimpleMetadata
 {
     public class ForeignKey : MetadataItem
     {
-        public ForeignKey(string name, Table parentTable, Table targetTable, IReadOnlyList<Column> fromColumns, IReadOnlyList<Column> toColumns, ForeignKeyAction updateAction, ForeignKeyAction deleteAction)
+        public ForeignKey(string name, Table parentTable, Table targetTable, ForeignKeyAction updateAction, ForeignKeyAction deleteAction)
         {
             Name = name;
             ParentTable = parentTable;
             TargetTable = targetTable;
-            FromColumns = fromColumns;
-            ToColumns = toColumns;
+            FromColumns = new MetadataCollection<Column>();
+            ToColumns = new MetadataCollection<Column>();
             UpdateAction = updateAction;
             DeleteAction = deleteAction;
         }
@@ -18,8 +18,8 @@ namespace Geco.Common.SimpleMetadata
         public override string Name { get; }
         public Table ParentTable { get; }
         public Table TargetTable { get; }
-        public IReadOnlyList<Column> FromColumns { get; }
-        public IReadOnlyList<Column> ToColumns { get; }
+        public MetadataCollection<Column> FromColumns { get; }
+        public MetadataCollection<Column> ToColumns { get; }
 
         public ForeignKeyAction UpdateAction { get;}
         public ForeignKeyAction DeleteAction { get;}

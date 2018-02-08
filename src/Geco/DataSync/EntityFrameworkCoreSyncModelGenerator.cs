@@ -27,8 +27,35 @@ namespace Geco.DataSync
         protected override void Generate()
         {
             IgnoreUnsuportedColumns();
+            FilterTables();
             WriteEntityFiles();
             WriteContextFile();
+            WriteChangeSetFile();
+        }
+
+        private void WriteChangeSetFile()
+        {
+            using (BeginFile($"{options.ContextName ?? Inf.Pascalise(Db.Name)}.ChangeSet.cs", options.OneFilePerEntity == false))
+            using (WriteHeader())
+            {
+
+                W("public interface ISyncEntity");
+                WI("{");
+                {
+                    W("Guid RowGuid { get;set; }");
+                }
+                DW("}");
+                W();
+
+                W("public partial class Changes<TEntity>");
+                IW("where TEntity: ISyncEntity");
+                W("{");
+                {
+                    
+                }
+                DW("}");
+                W();
+            }
         }
 
         private void WriteEntityFiles()
@@ -51,7 +78,7 @@ namespace Geco.DataSync
 
         private void WriteContextFile()
         {
-            using (BeginFile($"{options.ContextName ?? Inf.Pascalise(Db.Name)}.cs"))
+            using (BeginFile($"{options.ContextName ?? Inf.Pascalise(Db.Name)}Context.cs"))
             using (WriteHeader())
             {
                 W($"[GeneratedCode(\"Geco\", \"{Assembly.GetEntryAssembly().GetName().Version}\")]", options.GeneratedCodeAttribute);
@@ -84,7 +111,7 @@ namespace Geco.DataSync
                         W($"optionsBuilder.UseSqlServer(Configuration.GetConnectionString(\"{options.ConnectionName}\"), opt =>", options.NetCore);
                         WI("{");
                         {
-                            W("//opt.EnableRetryOnFailure();");
+                            W("opt.EnableRetryOnFailure();");
                         }
                         DW("});");
                         W();
@@ -133,7 +160,7 @@ namespace Geco.DataSync
                 W("// ReSharper disable RedundantNameQualifier");
                 W("// ReSharper disable UnusedMember.Global");
                 W("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
-                W(); 
+                W();
             }
             W("using System;");
             W("using System.CodeDom.Compiler;");
@@ -362,30 +389,42 @@ namespace Geco.DataSync
             foreach (var schema in Db.Schemas)
                 foreach (var table in schema.Tables)
                 {
+                    // Remove unsupported columns from metadata
                     foreach (var column in table.Columns.ToList())
-                        if (!Db.TypeMappings.TryGetValue(column.DataType, out var type) || type == null)
+                        if (!Db.TypeMappings.ContainsKey(column.DataType))
                         {
-                            ColorConsole.WriteLine(
-                                $"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.",
-                                ConsoleColor.DarkYellow);
-                            table.Columns.GetWritable().Remove(column.Name);
+                            ColorConsole.WriteLine($"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.", ConsoleColor.DarkYellow);
+                            column.GetWritable().Remove();
                         }
                     // Remove unsupported tables from metadata
                     if (!table.Columns.Any(c => c.IsKey))
                     {
-                        schema.Tables.GetWritable().Remove(table.Name);
-                        foreach (var col in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.Columns)).Where(c => c.ForeignKey?.TargetTable == table))
-                            col.ForeignKey.TargetTable.IncomingForeignKeys.GetWritable().Remove(col.ForeignKey.Name);
-                        foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.ForeignKeys)).Where(fk => fk.TargetTable == table))
-                            fk.ParentTable.ForeignKeys.GetWritable().Remove(fk.Name);
-                        foreach (var fk in Db.Schemas.SelectMany(s => s.Tables.SelectMany(t => t.IncomingForeignKeys)).Where(fk => fk.ParentTable == table))
-                            fk.TargetTable.IncomingForeignKeys.GetWritable().Remove(fk.Name);
-
-                        ColorConsole.WriteLine(
-                            $"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.",
-                            ConsoleColor.DarkYellow);
+                        ColorConsole.WriteLine($"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.", ConsoleColor.DarkYellow);
+                        table.GetWritable().Remove();
                     }
                 }
+        }
+
+        private void FilterTables()
+        {
+            if (options.Tables.Count == 0 && String.IsNullOrEmpty(options.TablesRegex) &&
+                options.ExcludedTables.Count == 0 && String.IsNullOrEmpty(options.ExcludedTablesRegex))
+                return;
+
+            var tables = new HashSet<Table>(
+                Db.Schemas.SelectMany(s => s.Tables)
+                    .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n)) ||
+                                 Util.TableNameMachesRegex(t, options.TablesRegex))
+                                && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
+                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex))
+                    .OrderBy(t => t.Schema.Name + "." + t.Name));
+
+            foreach (var schema in Db.Schemas)
+            foreach (var table in schema.Tables)
+            {
+                if (!tables.Contains(table))
+                    schema.Tables.GetWritable().Remove(table.Name);
+            }
         }
 
         private string GetBehavior(ForeignKeyAction fkDeleteAction)

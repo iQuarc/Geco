@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using Geco.Common;
 using Geco.Common.SimpleMetadata;
 using Microsoft.Extensions.Configuration;
@@ -32,32 +31,22 @@ namespace Geco.Database
 
         protected override void Generate()
         {
+            if (options.Tables.Count == 0 && String.IsNullOrEmpty(options.TablesRegex) &&
+                options.ExcludedTables.Count == 0 && String.IsNullOrEmpty(options.ExcludedTablesRegex))
+            {
+                ColorConsole.WriteLine($"No tables were selected. Use options Tables, TableRegex, ExcludedTables or ExcludedTablesRegex to specity the tables for which Seed data will be generated ", ConsoleColor.Red);
+                return;
+            }
+
             var tables = Db.Schemas.SelectMany(s => s.Tables)
-                .Where(t => (options.Tables.Any(n => TableNameMaches(t, n))
-                || TableNameMachesRegex(t, options.TablesRegex))
-                && !options.ExcludedTables.Any(n => TableNameMaches(t, n))
-                && !TableNameMachesRegex(t, options.ExcludedTablesRegex)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
+                .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n))
+                || Util.TableNameMachesRegex(t, options.TablesRegex))
+                && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
+                && Util.TableNameMachesRegex(t, options.ExcludedTablesRegex)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
             TopologicalSort(tables);
             GenerateSeedFile(options.OutputFileName, tables);
 
             ColorConsole.WriteLine($"File: '{Path.GetFileName(options.OutputFileName)}' was generated.", ConsoleColor.Yellow);
-        }
-
-        private bool TableNameMachesRegex(Table table, string tablesRegex)
-        {
-            return !String.IsNullOrWhiteSpace(tablesRegex) && (
-                   Regex.IsMatch(table.Name, tablesRegex) ||
-                   Regex.IsMatch($"[{table.Name}]", tablesRegex) ||
-                   Regex.IsMatch($"{table.Schema.Name}.{table.Name}", tablesRegex) ||
-                   Regex.IsMatch($"[{table.Schema.Name}].[{table.Name}]", tablesRegex));
-        }
-
-        private bool TableNameMaches(Table table, string name)
-        {
-            return string.Equals(name, table.Name, StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(name, $"[{table.Name}]", StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(name, $"{table.Schema.Name}.{table.Name}", StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(name, $"[{table.Schema.Name}].[{table.Name}]", StringComparison.OrdinalIgnoreCase);
         }
 
         private void GenerateSeedFile(string file, IEnumerable<Table> tables)
@@ -199,13 +188,13 @@ namespace Geco.Database
         private void TopologicalSort(IList<Table> tables)
         {
             bool sorted = false;
-            var comparer = new TopologicalComparer();
+            var comparer = new SeedDataGenerator.TopologicalComparer();
             var iterations = 0;
             while (!sorted)
             {
                 sorted = true;
                 iterations++;
-                if (iterations > 10000)
+                if (iterations > 100)
                     throw new InvalidOperationException("Cannot sort tables due to cyclic relation between selected tables.");
 
                 for (int i = 0; i < tables.Count - 1; i++)
@@ -229,10 +218,12 @@ namespace Geco.Database
                 if (source == null || target == null)
                     return 0;
 
+                // Source goes before any table that references is
                 if (source.IncomingForeignKeys.Any(fk => fk.ParentTable == target) || target.ForeignKeys.Any(fk => fk.TargetTable == source))
                     return -1;
 
-                if (target.IncomingForeignKeys.Any(fk => fk.ParentTable == source) || source.ForeignKeys.Any(fk => fk.TargetTable == target))
+                // Source goes after any table which it references
+                if (source.ForeignKeys.Any(fk => fk.TargetTable == target) || target.IncomingForeignKeys.Any(fk => fk.ParentTable == source))
                     return 1;
 
                 return 0;

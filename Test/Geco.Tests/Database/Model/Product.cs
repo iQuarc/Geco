@@ -51,7 +51,7 @@ namespace Geco.Tests.Database.Model
         // Foreign keys
         public ProductModel ProductModels { get; set; }
         public ProductSubcategory ProductSubcategories { get; set; }
-        public UnitMeasure UnitMeasures { get; set; }
+        public UnitMeasure UnitMeasuresUnitMeasureCode { get; set; }
         public UnitMeasure UnitMeasuresWeightUnitMeasureCode { get; set; }
 
         // Reverse navigation

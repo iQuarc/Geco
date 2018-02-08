@@ -50,7 +50,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Address Addresses { get; set; }
+        public Address AddressesAddress { get; set; }
         public CreditCard CreditCards { get; set; }
         public CurrencyRate CurrencyRates { get; set; }
         public Customer Customers { get; set; }

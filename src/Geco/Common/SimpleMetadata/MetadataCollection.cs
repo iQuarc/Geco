@@ -1,14 +1,29 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Geco.Common.SimpleMetadata.Util;
 
 namespace Geco.Common.SimpleMetadata
 {
-    public class MetadataCollection<TEntity> : IReadOnlyCollection<TEntity>, IMetadataWriteAccessor<TEntity>
+    [DebuggerNonUserCode]
+    public class MetadataCollection<TEntity> : IReadOnlyList<TEntity>, IMetadataCollectionWriteAccessor<TEntity>
         where TEntity : IMetadataItem
     {
-        private readonly Dictionary<string, TEntity> innerDictionary = new Dictionary<string, TEntity>(StringComparer.OrdinalIgnoreCase);
+        private readonly OrderedInterceptableDictionary<string,TEntity> innerDictionary;
+
+        public MetadataCollection(Action<TEntity> onAdded = null, Action<TEntity> onRemoved = null)
+            :this(Enumerable.Empty<TEntity>(), onAdded, onRemoved)
+        {
+        }
+
+        public MetadataCollection(IEnumerable<TEntity> source, Action<TEntity> onAdded = null, Action<TEntity> onRemoved = null)
+        {
+            innerDictionary = new OrderedInterceptableDictionary<string,TEntity>(StringComparer.OrdinalIgnoreCase, onAdded, onRemoved);
+            foreach (var entity in source)
+                innerDictionary.Add(entity.Name, entity);
+        }
 
         public void Add(TEntity item)
         {
@@ -19,7 +34,7 @@ namespace Geco.Common.SimpleMetadata
 
         public bool Contains(TEntity item)
         {
-            return innerDictionary.ContainsValue(item);
+            return innerDictionary.Contains( new KeyValuePair<string, TEntity>(item.Name, item));
         }
 
         public int Count => innerDictionary.Count;
@@ -35,6 +50,7 @@ namespace Geco.Common.SimpleMetadata
         }
 
         public TEntity this[string key] => innerDictionary[key];
+        public TEntity this[int index] => innerDictionary.ElementAt(index).Value;
 
         public IEnumerable<string> Keys => innerDictionary.Keys;
         public IEnumerable<TEntity> Values => innerDictionary.Values;
@@ -49,7 +65,7 @@ namespace Geco.Common.SimpleMetadata
             return GetEnumerator();
         }
 
-        IDictionary<string, TEntity> IMetadataWriteAccessor<TEntity>.GetWritable()
+        IDictionary<string, TEntity> IMetadataCollectionWriteAccessor<TEntity>.GetWritable()
         {
             return this.innerDictionary;
         }
@@ -60,18 +76,35 @@ namespace Geco.Common.SimpleMetadata
         }
     }
 
-    internal interface IMetadataWriteAccessor<TEntity>
+    [DebuggerNonUserCode]
+    internal static partial class MetadataExtensions
+    {
+        public static IDictionary<string, TEntity> GetWritable<TEntity>(this IMetadataCollectionWriteAccessor<TEntity> metadataCollection) 
+            where TEntity : IMetadataItem
+        {
+            return metadataCollection.GetWritable();
+        }
+
+        public static IMetadataItemWriter GetWritable(this IMetadataItemWriter metadataItem)
+        {
+            return metadataItem;
+        }
+    }
+
+    internal interface IMetadataCollectionWriteAccessor<TEntity>
         where TEntity : IMetadataItem
     {
         IDictionary<string, TEntity> GetWritable();
     }
 
-    internal static partial class MetadataExtensions
+    internal interface IMetadataItemWriteAccessor
     {
-        public static IDictionary<string, TEntity> GetWritable<TEntity>(this IMetadataWriteAccessor<TEntity> metadataCollection) 
-            where TEntity : IMetadataItem
-        {
-            return metadataCollection.GetWritable();
-        }
+        IMetadataItemWriter GetWritable();
+    }
+
+    public interface IMetadataItemWriter
+    {
+        void Remove();
     }
 }
+

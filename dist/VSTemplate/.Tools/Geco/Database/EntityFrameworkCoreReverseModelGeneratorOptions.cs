@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Geco.Database
 {
     public class EntityFrameworkCoreReverseModelGeneratorOptions
@@ -13,5 +15,9 @@ namespace Geco.Database
         public bool GeneratedCodeAttribute { get; set; }
         public bool NetCore { get; set; }
         public string ContextName { get; set; }
+        public List<string> Tables { get; } = new List<string>();
+        public string TablesRegex { get; set; }
+        public List<string> ExcludedTables { get; } = new List<string>();
+        public string ExcludedTablesRegex { get; set; }
     }
 }
