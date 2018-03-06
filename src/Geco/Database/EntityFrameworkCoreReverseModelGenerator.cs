@@ -494,8 +494,7 @@ namespace Geco.Database
                     .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n)) ||
                                  Util.TableNameMachesRegex(t, options.TablesRegex))
                                 && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
-                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex))
-                    .OrderBy(t => t.Schema.Name + "." + t.Name));
+                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex)));
 
             foreach (var schema in Db.Schemas)
             foreach (var table in schema.Tables)
