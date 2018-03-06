@@ -157,7 +157,7 @@ Example:
 
 **Version 1.0.4**
   - Replaced `EnglishInflector` with Humanizer based version
-  - Improved metadata API to allow easier removal of tablas and columns along with dependent objects
+  - Improved metadata API to allow easier removal of tables and columns along with dependent objects
   - Improved `SeedScriptRunner` error message when the seed file does not exist 
 
 **Version 1.0.3**
