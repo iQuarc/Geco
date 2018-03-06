@@ -24,11 +24,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="DataSync\**" />
     <None Remove="Generated\**" />
-    <Compile Remove="DataSync\**" />
     <Compile Remove="Generated\**" />
-    <EmbeddedResource Remove="DataSync\**" />
     <EmbeddedResource Remove="Generated\**" />
   </ItemGroup>
   <ItemGroup>
