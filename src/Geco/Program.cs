@@ -138,7 +138,7 @@ namespace Geco
                 .AddSingleton(ConfigurationRoot)
                 .AddOptions()
                 .AddSingleton<IMetadataProvider, SqlServerMetadataProvider>()
-                .AddSingleton<IInflector, EnglishInflector>();
+                .AddSingleton<IInflector, HumanizerInflector>();
 
             ScanTasks();
         }

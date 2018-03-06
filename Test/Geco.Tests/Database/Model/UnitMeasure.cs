@@ -27,14 +27,14 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Reverse navigation
-        public List<BillOfMateria> BillOfMaterias { get; set; }
+        public List<BillOfMaterial> BillOfMaterials { get; set; }
         public List<Product> ProductsSizeUnitMeasureCode { get; set; }
         public List<Product> ProductsWeightUnitMeasureCode { get; set; }
         public List<ProductVendor> ProductVendors { get; set; }
 
         public UnitMeasure()
         {
-            this.BillOfMaterias = new List<BillOfMateria>();
+            this.BillOfMaterials = new List<BillOfMaterial>();
             this.ProductsSizeUnitMeasureCode = new List<Product>();
             this.ProductsWeightUnitMeasureCode = new List<Product>();
             this.ProductVendors = new List<ProductVendor>();

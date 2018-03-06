@@ -55,8 +55,8 @@ namespace Geco.Tests.Database.Model
         public UnitMeasure UnitMeasuresWeightUnitMeasureCode { get; set; }
 
         // Reverse navigation
-        public List<BillOfMateria> BillOfMateriasComponent { get; set; }
-        public List<BillOfMateria> BillOfMateriasProductAssembly { get; set; }
+        public List<BillOfMaterial> BillOfMaterialsComponent { get; set; }
+        public List<BillOfMaterial> BillOfMaterialsProductAssembly { get; set; }
         public List<ProductCostHistory> ProductCostHistories { get; set; }
         public List<ProductDocument> ProductDocuments { get; set; }
         public List<ProductInventory> ProductInventories { get; set; }
@@ -72,8 +72,8 @@ namespace Geco.Tests.Database.Model
 
         public Product()
         {
-            this.BillOfMateriasComponent = new List<BillOfMateria>();
-            this.BillOfMateriasProductAssembly = new List<BillOfMateria>();
+            this.BillOfMaterialsComponent = new List<BillOfMaterial>();
+            this.BillOfMaterialsProductAssembly = new List<BillOfMaterial>();
             this.ProductCostHistories = new List<ProductCostHistory>();
             this.ProductDocuments = new List<ProductDocument>();
             this.ProductInventories = new List<ProductInventory>();

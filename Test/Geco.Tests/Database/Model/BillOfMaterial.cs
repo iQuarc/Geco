@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace Geco.Tests.Database.Model
 {
     [GeneratedCode("Geco", "1.0.3.0")]
-    public partial class BillOfMateria
+    public partial class BillOfMaterial
     {
         // Key Properties
         public int BillOfMaterialsID { get; set; }

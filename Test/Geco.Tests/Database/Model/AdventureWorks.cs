@@ -46,7 +46,7 @@ namespace Geco.Tests.Database.Model
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<AddressType> AddressTypes { get; set; }
         public virtual DbSet<AWBuildVersion> AWBuildVersions { get; set; }
-        public virtual DbSet<BillOfMateria> BillOfMaterias { get; set; }
+        public virtual DbSet<BillOfMaterial> BillOfMaterials { get; set; }
         public virtual DbSet<BusinessEntity> BusinessEntities { get; set; }
         public virtual DbSet<BusinessEntityAddress> BusinessEntityAddresses { get; set; }
         public virtual DbSet<BusinessEntityContact> BusinessEntityContacts { get; set; }
@@ -242,7 +242,7 @@ namespace Geco.Tests.Database.Model
                     .HasDefaultValueSql("getdate()");
 
             });
-            modelBuilder.Entity<BillOfMateria>(entity =>
+            modelBuilder.Entity<BillOfMaterial>(entity =>
             {
                 entity.ToTable("BillOfMaterials", "Production");
                 entity.HasKey(e => e.BillOfMaterialsID);
@@ -277,19 +277,19 @@ namespace Geco.Tests.Database.Model
                     .HasDefaultValueSql("getdate()");
 
                 entity.HasOne(e => e.ProductsProductAssembly)
-                    .WithMany(p => p.BillOfMateriasProductAssembly)
+                    .WithMany(p => p.BillOfMaterialsProductAssembly)
                     .HasForeignKey(p => p.ProductAssemblyID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BillOfMaterials_Product_ProductAssemblyID");
 
                 entity.HasOne(e => e.ProductsProduct)
-                    .WithMany(p => p.BillOfMateriasComponent)
+                    .WithMany(p => p.BillOfMaterialsComponent)
                     .HasForeignKey(p => p.ComponentID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BillOfMaterials_Product_ComponentID");
 
                 entity.HasOne(e => e.UnitMeasures)
-                    .WithMany(p => p.BillOfMaterias)
+                    .WithMany(p => p.BillOfMaterials)
                     .HasForeignKey(p => p.UnitMeasureCode)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BillOfMaterials_UnitMeasure_UnitMeasureCode");
