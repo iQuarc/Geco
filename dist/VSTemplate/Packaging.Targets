@@ -19,6 +19,7 @@
       <TemplateFiles Include="$(GecoDir)**\*.cs" Exclude="$(GecoDir)obj\**\*.*"/>
       <TemplateFiles Include="$(GecoDir)Program.cs" />
       <TemplateFiles Include="$(GecoDir)Geco.csproj;$(GecoDir)Geco.Targets" />
+      <TemplateFiles Include="$(GecoDir)LICENSE.txt" />
     </ItemGroup>
     
     <Copy SourceFiles="@(TemplateFiles)" DestinationFolder="$(GecoTargetDir)%(RecursiveDir)\" OverwriteReadOnlyFiles="true" />

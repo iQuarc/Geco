@@ -11,8 +11,18 @@ namespace Geco.Common.SimpleMetadata
             Table = table;
             IsUnique = isUnique;
             IsClustered = isClustered;
-            IncludedColumns = new MetadataCollection<Column>();
-            Columns = new MetadataCollection<Column>();
+            Columns = new MetadataCollection<Column>(OnColumnAdded, null);
+            IncludedColumns = new MetadataCollection<Column>(OnIncludedColumnAdded);
+        }
+
+        private void OnColumnAdded(Column column)
+        {
+            column.Indexes.Add(this);
+        }
+
+        private void OnIncludedColumnAdded(Column column)
+        {
+            column.IndexIncludes.Add(this);
         }
 
         public override string Name { get; }

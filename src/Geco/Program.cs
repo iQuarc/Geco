@@ -185,7 +185,7 @@ namespace Geco
                 var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
                 if (optionsAttribute != null)
                 {
-                    taskConfig.Item.ConfigIndex = taskConfig.Index + 1;
+                    taskConfig.Item.ConfigIndex = taskConfig.Index;
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
                     ConfigurationRoot.GetSection($"Tasks:{taskConfig.Item.ConfigIndex}:Options").Bind(options);
                     ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));

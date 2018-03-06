@@ -98,7 +98,7 @@ namespace Geco
         private Func<bool> BuildMenu()
         {
             Console.WriteLine();
-            WriteLine($"Select option:", White);
+            WriteLine($"Select option {("(then press Enter)", Gray)}:", White);
             var actions = new Dictionary<string, Action>();
             foreach (var taskInfo in RootConfig.Tasks.WithInfo())
             {
@@ -138,7 +138,7 @@ namespace Geco
                 .AddSingleton(ConfigurationRoot)
                 .AddOptions()
                 .AddSingleton<IMetadataProvider, SqlServerMetadataProvider>()
-                .AddSingleton<IInflector, EnglishInflector>();
+                .AddSingleton<IInflector, HumanizerInflector>();
 
             ScanTasks();
         }
@@ -185,7 +185,7 @@ namespace Geco
                 var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
                 if (optionsAttribute != null)
                 {
-                    taskConfig.Item.ConfigIndex = taskConfig.Index + 1;
+                    taskConfig.Item.ConfigIndex = taskConfig.Index;
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
                     ConfigurationRoot.GetSection($"Tasks:{taskConfig.Item.ConfigIndex}:Options").Bind(options);
                     ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));

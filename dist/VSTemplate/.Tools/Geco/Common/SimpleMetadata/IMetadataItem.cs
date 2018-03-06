@@ -22,8 +22,10 @@ namespace Geco.Common.SimpleMetadata
     /// <summary>
     /// Base class for all metadata items
     /// </summary>
-    public abstract class MetadataItem : IMetadataItem
+    public abstract class MetadataItem : IMetadataItem, IMetadataItemWriter
     {
+        private bool inRemove;
+
         /// <summary>
         /// The name of current metadata item
         /// </summary>
@@ -32,6 +34,29 @@ namespace Geco.Common.SimpleMetadata
         /// A mutable dictionary for additional metadata for current <see cref="MetadataItem"/>
         /// </summary>
         public IDictionary<string, string> Metadata { get; } = new MetadataDictionary();
+       
+        /// <summary>
+        /// Called when item is to be removed from the metadata graph. This is where the current item should remove all links from other items to itself.
+        /// </summary>
+        protected virtual void OnRemove()
+        {
+            
+        }
+
+        void IMetadataItemWriter.Remove()
+        {
+            if (inRemove)
+                return;
+            try
+            {
+                inRemove = true;
+                OnRemove();
+            }
+            finally
+            {
+                inRemove = false;
+            }
+        }
     }
 
 

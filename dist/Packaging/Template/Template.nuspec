@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>iQuarc.Geco.CSharp</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <title>Geco, dotnet new template</title>
     <authors>Catalin Pop, © iQuarc 2017</authors>
     <owners>iQuarc</owners>
@@ -13,8 +13,9 @@
     <description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</description>
     <summary>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</summary>
     <releaseNotes>
-      - Fix SqlServerMetadataProvider bug with global database triggers
-      - Added display of errors in interactive
+      - Replaced `EnglishInflector` with Humanizer based version
+      - Improved metadata API to allow easier removal of tablas and columns along with dependent objects
+      - Improved `SeedScriptRunner` error message when the seed file does not exist
     </releaseNotes>
     <copyright>Copyright © iQuarc 2017</copyright>
     <tags>Code-Generator Template-Engine CSharp Interpolated-Strings</tags>

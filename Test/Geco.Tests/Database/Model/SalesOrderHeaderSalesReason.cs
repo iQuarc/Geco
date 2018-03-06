@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.3.0")]
+    [GeneratedCode("Geco", "1.0.4.0")]
     public partial class SalesOrderHeaderSalesReason
     {
         // Key Properties

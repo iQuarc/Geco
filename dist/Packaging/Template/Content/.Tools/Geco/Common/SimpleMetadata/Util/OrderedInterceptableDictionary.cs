@@ -7,77 +7,78 @@ using System.Linq;
 namespace Geco.Common.SimpleMetadata.Util
 {
     /// <summary>
-    /// Dictionary which preserves the order of elements which were added and allows intercepting additions and deletions
+    /// A string dictionary which preserves the order of elements which were added and allows intercepting additions and deletions
     /// </summary>
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TElement">The element type</typeparam>
     [DebuggerNonUserCode]
-    internal class OrderedInterceptableDictionary<TKey, TElement> : IDictionary<TKey, TElement>
+    internal class OrderedInterceptableDictionary<TKey,TElement> : IDictionary<TKey, TElement>
     {
-        private readonly List<TElement> elements = new List<TElement>();
-        private readonly IDictionary<TKey, int> keyIndex;
+        private readonly IDictionary<TKey, int> keyOrder;
+        private readonly SortedDictionary<int, (TKey Key,TElement Element)> elements;
 
-        private readonly Action<TElement> onAdd;
-        private readonly Action<TElement> onRemove;
+        private readonly Action<TElement> onAdded;
+        private readonly Action<TElement> onRemoved;
+        private int curentOrder;
 
-        public OrderedInterceptableDictionary(IEqualityComparer<TKey> equalityComparer, Action<TElement> onAdd, Action<TElement> onRemove)
+        public OrderedInterceptableDictionary(IEqualityComparer<TKey> comparer, Action<TElement> onAdd, Action<TElement> onRemoved)
         {
-            this.onAdd = onAdd;
-            keyIndex = new Dictionary<TKey, int>(equalityComparer ?? EqualityComparer<TKey>.Default);
-            this.onRemove = onRemove;
+            this.onAdded = onAdd;
+            keyOrder = new Dictionary<TKey, int>(comparer ?? EqualityComparer<TKey>.Default);
+            elements = new SortedDictionary<int, (TKey, TElement)>();
+            this.onRemoved = onRemoved;
         }
 
-        public int Count => keyIndex.Count;
+        public int Count => elements.Count;
 
         public TElement this[TKey key]
         {
             get => GetElement(key);
             set
             {
-                if (keyIndex.TryGetValue(key, out var idx))
+                if (keyOrder.ContainsKey(key))
                 {
-                    onRemove?.Invoke(elements[idx]);
-                    elements.RemoveAt(idx);
+                    Remove(key);
                 }
-                onAdd?.Invoke(value);
-                elements.Add(value);
-                keyIndex[key] = elements.Count - 1;
+                Add(key, value);
             }
         }
 
-        public ICollection<TKey> Keys => keyIndex.Keys;
-
-        public ICollection<TElement> Values => elements;
-        bool ICollection<KeyValuePair<TKey, TElement>>.IsReadOnly => keyIndex.IsReadOnly;
+        public ICollection<TKey> Keys => elements.Values.Select(v => v.Key).ToList();
+        public ICollection<TElement> Values => elements.Values.Select(v => v.Element).ToList();
+        bool ICollection<KeyValuePair<TKey, TElement>>.IsReadOnly => false;
 
         public void Clear()
         {
-            if (onRemove != null)
-                foreach (var item in elements)
-                    onRemove(item);
-            keyIndex.Clear();
+            var values = elements.Values.ToList();
             elements.Clear();
+            keyOrder.Clear();
+            if (onRemoved != null)
+                foreach (var item in values)
+                    onRemoved(item.Element);
         }
 
         public void Add(TKey key, TElement value)
         {
-            onAdd?.Invoke(value);
-            elements.Add(value);
-            keyIndex.Add(key, elements.Count - 1);
+            keyOrder.Add(key, curentOrder);
+            elements.Add(curentOrder, (key,value));
+            onAdded?.Invoke(value);
+            curentOrder++;
         }
 
         public bool ContainsKey(TKey key)
         {
-            return keyIndex.ContainsKey(key);
+            return keyOrder.ContainsKey(key);
         }
 
         public bool Remove(TKey key)
         {
-            if (keyIndex.TryGetValue(key, out var idx))
+            if (keyOrder.TryGetValue(key, out var idx))
             {
-                onRemove?.Invoke(elements[idx]);
-                elements.RemoveAt(idx);
-                keyIndex.Remove(key);
+                var element = elements[idx].Element;
+                keyOrder.Remove(key);
+                elements.Remove(idx);
+                onRemoved?.Invoke(element);
                 return true;
             }
             return false;
@@ -85,9 +86,9 @@ namespace Geco.Common.SimpleMetadata.Util
 
         public bool TryGetValue(TKey key, out TElement value)
         {
-            if (keyIndex.TryGetValue(key, out var idx))
+            if (keyOrder.TryGetValue(key, out var idx))
             {
-                value = elements[idx];
+                value = elements[idx].Element;
                 return true;
             }
             value = default;
@@ -96,25 +97,25 @@ namespace Geco.Common.SimpleMetadata.Util
 
         public IEnumerator<KeyValuePair<TKey, TElement>> GetEnumerator()
         {
-            foreach (var innerDictionaryKey in keyIndex.Keys.OrderBy( k => keyIndex[k]) )
-                yield return new KeyValuePair<TKey, TElement>(innerDictionaryKey, GetElement(innerDictionaryKey));
+            foreach (var value in elements.Values)
+            {
+                yield return new KeyValuePair<TKey, TElement>(value.Key, value.Element);
+            }
         }
 
         private TElement GetElement(TKey key)
         {
-            return elements[keyIndex[key]];
+            return elements[keyOrder[key]].Element;
         }
 
         void ICollection<KeyValuePair<TKey, TElement>>.Add(KeyValuePair<TKey, TElement> item)
         {
-            onAdd?.Invoke(item.Value);
-            elements.Add(item.Value);
-            keyIndex.Add(item.Key, elements.Count - 1);
+            Add(item.Key, item.Value);
         }
 
         bool ICollection<KeyValuePair<TKey, TElement>>.Contains(KeyValuePair<TKey, TElement> item)
         {
-            return keyIndex.ContainsKey(item.Key) && elements[keyIndex[item.Key]].Equals(item.Value);
+            return keyOrder.ContainsKey(item.Key) && Object.Equals(elements[keyOrder[item.Key]].Element, item.Value);
         }
 
         void ICollection<KeyValuePair<TKey, TElement>>.CopyTo(KeyValuePair<TKey, TElement>[] array, int arrayIndex)
@@ -124,15 +125,7 @@ namespace Geco.Common.SimpleMetadata.Util
 
         bool ICollection<KeyValuePair<TKey, TElement>>.Remove(KeyValuePair<TKey, TElement> item)
         {
-            onRemove?.Invoke(item.Value);
-            if (keyIndex.TryGetValue(item.Key, out var idx))
-            {
-                onRemove?.Invoke(GetElement(item.Key));
-                elements.RemoveAt(idx);
-                keyIndex.Remove(item.Key);
-                return true;
-            }
-            return false;
+            return ContainsKey(item.Key) && GetElement(item.Key).Equals(item.Value) && Remove(item.Key);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

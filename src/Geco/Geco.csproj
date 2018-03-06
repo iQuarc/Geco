@@ -15,7 +15,7 @@
     <Authors>iQuarc</Authors>
     <PackageId>Geco.Core</PackageId>
     <Product>Geco Core</Product>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
@@ -24,8 +24,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="DataSync\**" />
     <None Remove="Generated\**" />
+    <Compile Remove="DataSync\**" />
     <Compile Remove="Generated\**" />
+    <EmbeddedResource Remove="DataSync\**" />
     <EmbeddedResource Remove="Generated\**" />
   </ItemGroup>
   <ItemGroup>

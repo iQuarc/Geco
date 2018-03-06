@@ -10,5 +10,10 @@
 
         public Table Table { get; }
         public override string Name { get; }
+
+        protected override void OnRemove()
+        {
+            Table.Triggers.GetWritable().Remove(this.Name);
+        }
     }
 }

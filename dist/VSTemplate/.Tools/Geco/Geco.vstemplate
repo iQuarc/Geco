@@ -13,10 +13,11 @@
 	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-    <Project File="Geco.csproj">
+    <Project TargetFileName="Geco.csproj" File="Geco.csproj" ReplaceParameters="false">
+      <Folder Name=".vs" TargetFolderName=".vs" />
       <Folder Name="Common" TargetFolderName="Common">
         <Folder Name="Inflector" TargetFolderName="Inflector">
-          <ProjectItem ReplaceParameters="false" TargetFileName="EnglishInflector.cs">EnglishInflector.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="HumanizerInflector.cs">HumanizerInflector.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="IInflector.cs">IInflector.cs</ProjectItem>
         </Folder>
         <Folder Name="MetadataProviders" TargetFolderName="MetadataProviders">
@@ -28,6 +29,9 @@
           <ProjectItem ReplaceParameters="false" TargetFileName="QueryUtil.cs">QueryUtil.cs</ProjectItem>
         </Folder>
         <Folder Name="SimpleMetadata" TargetFolderName="SimpleMetadata">
+          <Folder Name="Util" TargetFolderName="Util">
+            <ProjectItem ReplaceParameters="false" TargetFileName="OrderedInterceptableDictionary.cs">OrderedInterceptableDictionary.cs</ProjectItem>
+          </Folder>
           <ProjectItem ReplaceParameters="false" TargetFileName="Column.cs">Column.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="DatabaseMetadata.cs">DatabaseMetadata.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="ForeignKey.cs">ForeignKey.cs</ProjectItem>
@@ -63,10 +67,13 @@
         <ProjectItem ReplaceParameters="false" TargetFileName="SeedScriptRunner.cs">SeedScriptRunner.cs</ProjectItem>
         <ProjectItem ReplaceParameters="false" TargetFileName="SeedScriptRunnerOptions.cs">SeedScriptRunnerOptions.cs</ProjectItem>
       </Folder>
+      <Folder Name="Util" TargetFolderName="Util">
+        <ProjectItem ReplaceParameters="false" TargetFileName="Util.cs">Util.cs</ProjectItem>
+      </Folder>
       <ProjectItem ReplaceParameters="false" TargetFileName="appsettings.json">appsettings.json</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="Geco.Targets">Geco.Targets</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="LICENSE.txt">LICENSE.txt</ProjectItem>
       <ProjectItem ReplaceParameters="false" TargetFileName="Program.cs">Program.cs</ProjectItem>
-
     </Project>
   </TemplateContent>
 </VSTemplate>

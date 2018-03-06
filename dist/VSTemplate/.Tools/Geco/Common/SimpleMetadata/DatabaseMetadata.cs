@@ -7,7 +7,7 @@ namespace Geco.Common.SimpleMetadata
     {
         public DatabaseMetadata(string name, IReadOnlyDictionary<string, Type> typeMappings)
         {
-            Schemas = new MetadataCollection<Schema>();
+            Schemas = new MetadataCollection<Schema>(null, OnRemoveSchema);
             TypeMappings = typeMappings;
             Name = name;
         }
@@ -24,6 +24,11 @@ namespace Geco.Common.SimpleMetadata
         public void Freeze()
         {
             this.IsFrozen = true;
+        }
+
+        private void OnRemoveSchema(Schema schema)
+        {
+            schema.GetWritable().Remove();
         }
     }
 }

@@ -20,12 +20,18 @@ namespace Geco.Common.SimpleMetadata
         private void OnRemove(Table table)
         {
             // Remove all FK references a table when it is removed from the model
-            foreach (var col in Tables.SelectMany(t => t.Columns).Where(c => c.ForeignKey?.TargetTable == table))
-                col.ForeignKey.TargetTable.IncomingForeignKeys.GetWritable().Remove(col.ForeignKey.Name);
-            foreach (var fk in Tables.SelectMany(t => t.ForeignKeys).Where(fk => fk.TargetTable == table))
-                fk.ParentTable.ForeignKeys.GetWritable().Remove(fk.Name);
-            foreach (var fk in Tables.SelectMany(t => t.IncomingForeignKeys).Where(fk => fk.ParentTable == table))
+            foreach (var fk in table.ForeignKeys)
+            {
                 fk.TargetTable.IncomingForeignKeys.GetWritable().Remove(fk.Name);
+                foreach (var fkToColumn in fk.ToColumns)
+                    fkToColumn.ForeignKey = null;
+            }
+            foreach (var fk in table.IncomingForeignKeys)
+            {
+                fk.ParentTable.ForeignKeys.GetWritable().Remove(fk.Name);
+                foreach (var fkToColumn in fk.FromColumns)
+                    fkToColumn.ForeignKey = null;
+            }
         }
 
         public override string Name { get; }

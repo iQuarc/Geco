@@ -43,8 +43,14 @@ namespace Geco.Database
 
         private void RunScripts(string file)
         {
-            Console.WriteLine($"Running scripts from: {file}");
+            WriteLine($"Running scripts from: {(file, Yellow)}", Gray);
             var connectionString = configurationRoot.GetConnectionString(options.ConnectionName);
+            if (!File.Exists(file))
+            {
+                
+                WriteLine($"File:[{(Path.GetFullPath(file), Yellow)}] does not exit on disk. {("Skipping!", Red)}", Gray);
+                return;
+            }
             using (var f = File.OpenText(file))
             using (var cnn = new SqlConnection(connectionString))
             {

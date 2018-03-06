@@ -11,30 +11,49 @@ namespace Geco.Common.SimpleMetadata
         {
             Name = name;
             Schema = schema;
-            Indexes = new MetadataCollection<Index>();
-            Triggers = new MetadataCollection<Trigger>();
-            IncomingForeignKeys = new MetadataCollection<ForeignKey>();
-            ForeignKeys = new MetadataCollection<ForeignKey>();
-            Columns = new MetadataCollection<Column>(null, OnRemove);
+            Indexes = new MetadataCollection<Index>(null, OnIndexRemove);
+            Triggers = new MetadataCollection<Trigger>(null, OnRemoveIndex);
+            IncomingForeignKeys = new MetadataCollection<ForeignKey>(null, OnRemoveForeignKey);
+            ForeignKeys = new MetadataCollection<ForeignKey>(null, OnRemoveForeignKey);
+            Columns = new MetadataCollection<Column>(null, OnRemoveColumn);
         }
 
         public override string Name { get; }
         public Schema Schema { get; }
 
         public MetadataCollection<Column> Columns { get; }
-        public MetadataCollection<ForeignKey> ForeignKeys { get;}
-        public MetadataCollection<ForeignKey> IncomingForeignKeys { get;}
+        public MetadataCollection<ForeignKey> ForeignKeys { get; }
+        public MetadataCollection<ForeignKey> IncomingForeignKeys { get; }
         public MetadataCollection<Trigger> Triggers { get; }
         public MetadataCollection<Index> Indexes { get; }
 
-
-        private void OnRemove(Column column)
+        protected override void OnRemove()
         {
+            Schema.Tables.GetWritable().Remove(this.Name);
+            foreach (var foreignKey in ForeignKeys)
+                foreignKey.GetWritable().Remove();
             foreach (var incomingForeignKey in IncomingForeignKeys)
-            {
-                if (incomingForeignKey.ToColumns.Contains(column))
-                    incomingForeignKey.ToColumns.GetWritable().Remove(incomingForeignKey.Name);
-            }
+                incomingForeignKey.GetWritable().Remove();
+        }
+
+        private void OnRemoveIndex(Trigger trigger)
+        {
+            trigger.GetWritable().Remove();
+        }
+
+        private void OnRemoveColumn(Column column)
+        {
+            column.GetWritable().Remove();
+        }
+
+        private void OnRemoveForeignKey(ForeignKey foreignKey)
+        {
+            foreignKey.GetWritable().Remove();
+        }
+
+        private void OnIndexRemove(Index index)
+        {
+            index.GetWritable().Remove();
         }
     }
 }
