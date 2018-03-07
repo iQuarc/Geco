@@ -215,13 +215,13 @@ namespace Geco.Database
 
                         string propertyName;
                         if (table.ForeignKeys.Count(f => f.TargetTable == fk.TargetTable) > 1)
-                            propertyName = Inf.Pluralise(targetClassName) + GetFkName(fk.ToColumns);
+                            propertyName = Inf.Singularise(targetClassName) + GetFkName(fk.ToColumns);
                         else
-                            propertyName = Inf.Pluralise(targetClassName);
+                            propertyName = Inf.Singularise(targetClassName);
 
                         if (CheckClash(ref propertyName, existingNames, ref i))
                         {
-                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.TargetTable.Name)) + GetFkName(fk.FromColumns);
+                            propertyName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name)) + GetFkName(fk.FromColumns);
                             CheckClash(ref propertyName, existingNames, ref i);
                         }
 
