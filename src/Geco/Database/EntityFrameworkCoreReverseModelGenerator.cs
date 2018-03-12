@@ -492,9 +492,9 @@ namespace Geco.Database
             var tables = new HashSet<Table>(
                 Db.Schemas.SelectMany(s => s.Tables)
                     .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n)) ||
-                                 Util.TableNameMachesRegex(t, options.TablesRegex))
+                                 Util.TableNameMachesRegex(t, options.TablesRegex, true))
                                 && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
-                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex)));
+                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex, false)));
 
             foreach (var schema in Db.Schemas)
             foreach (var table in schema.Tables)

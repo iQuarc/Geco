@@ -6,9 +6,11 @@ namespace Geco
 {
     public class Util
     {
-        public static bool TableNameMachesRegex(Table table, string tablesRegex)
+        public static bool TableNameMachesRegex(Table table, string tablesRegex, bool onNull)
         {
-            return !String.IsNullOrWhiteSpace(tablesRegex) &&
+            if (String.IsNullOrWhiteSpace(tablesRegex))
+                return onNull;
+            return
                 (
                     Regex.IsMatch(table.Name, tablesRegex) ||
                     Regex.IsMatch($"[{table.Name}]", tablesRegex) ||

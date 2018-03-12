@@ -40,9 +40,9 @@ namespace Geco.Database
 
             var tables = Db.Schemas.SelectMany(s => s.Tables)
                 .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n))
-                || Util.TableNameMachesRegex(t, options.TablesRegex))
+                || Util.TableNameMachesRegex(t, options.TablesRegex, true))
                 && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
-                && Util.TableNameMachesRegex(t, options.ExcludedTablesRegex)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
+                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex, false)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
             TopologicalSort(tables);
             GenerateSeedFile(options.OutputFileName, tables);
 
@@ -66,7 +66,7 @@ namespace Geco.Database
         private void GenerateTableSeed(Table table, IEnumerable<IEnumerable<object>> rowValues)
         {
             var columns = table.Columns.Where(columnsFilter).ToList();
-            var rows = rowValues.WithInfo();
+            var rows = rowValues.WithInfo().ToList();
             if (!rows.Any())
                 return;
 
