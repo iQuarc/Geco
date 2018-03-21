@@ -211,17 +211,15 @@ namespace Geco.Database
                     foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name));
-                        //var propertyName = Inf.Pascalise(Inf.Singularise(RemoveSuffix(column.Name)));
-
                         string propertyName;
                         if (table.ForeignKeys.Count(f => f.TargetTable == fk.TargetTable) > 1)
-                            propertyName = Inf.Pluralise(targetClassName) + GetFkName(fk.ToColumns);
+                            propertyName = GetFkName(fk.FromColumns);
                         else
-                            propertyName = Inf.Pluralise(targetClassName);
+                            propertyName = Inf.Singularise(targetClassName);
 
                         if (CheckClash(ref propertyName, existingNames, ref i))
                         {
-                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.TargetTable.Name)) + GetFkName(fk.FromColumns);
+                            propertyName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name)) + GetFkName(fk.FromColumns);
                             CheckClash(ref propertyName, existingNames, ref i);
                         }
 
@@ -415,7 +413,7 @@ namespace Geco.Database
 
         private string GetNullable(Column column)
         {
-            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsPrimitive && Db.TypeMappings[column.DataType] != typeof(char))
+            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsValueType && Db.TypeMappings[column.DataType] != typeof(char))
             {
                 return "?";
             }
@@ -492,9 +490,9 @@ namespace Geco.Database
             var tables = new HashSet<Table>(
                 Db.Schemas.SelectMany(s => s.Tables)
                     .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n)) ||
-                                 Util.TableNameMachesRegex(t, options.TablesRegex))
+                                 Util.TableNameMachesRegex(t, options.TablesRegex, true))
                                 && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
-                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex)));
+                                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex, false)));
 
             foreach (var schema in Db.Schemas)
             foreach (var table in schema.Tables)

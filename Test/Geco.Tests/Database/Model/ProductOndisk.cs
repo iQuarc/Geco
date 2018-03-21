@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.4.0")]
+    [GeneratedCode("Geco", "1.0.5.0")]
     public partial class ProductOndisk
     {
         // Key Properties
@@ -35,7 +35,7 @@ namespace Geco.Tests.Database.Model
         public string Size { get; set; }
         public string SizeUnitMeasureCode { get; set; }
         public string WeightUnitMeasureCode { get; set; }
-        public decimal Weight { get; set; }
+        public decimal? Weight { get; set; }
         public int DaysToManufacture { get; set; }
         public string ProductLine { get; set; }
         public string Class { get; set; }
@@ -43,8 +43,8 @@ namespace Geco.Tests.Database.Model
         public int? ProductSubcategoryID { get; set; }
         public int? ProductModelID { get; set; }
         public DateTime SellStartDate { get; set; }
-        public DateTime SellEndDate { get; set; }
-        public DateTime DiscontinuedDate { get; set; }
+        public DateTime? SellEndDate { get; set; }
+        public DateTime? DiscontinuedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Reverse navigation

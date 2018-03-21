@@ -13,6 +13,7 @@ namespace Geco.Common
         private int _indent;
         private bool initialized;
         private readonly HashSet<string> filesToDelete = new HashSet<string>();
+        private bool commaNewLine;
 
         protected BaseGenerator(IInflector inf)
         {
@@ -97,6 +98,21 @@ namespace Geco.Common
             if (OutputToConsole) Console.Write(",");
         }
 
+        /// <summary>
+        /// Write comma , on the previous line if a new line is written
+        /// </summary>
+        protected void CommaIfNewLine()
+        {
+            this.commaNewLine = true;
+        }
+
+        /// <summary>
+        /// Stops write comma , on the previous line if a line is written
+        /// </summary>
+        protected void NoCommaIfNewLine()
+        {
+            this.commaNewLine = false;
+        }
 
         /// <summary>
         /// Write line and increase indent
@@ -105,8 +121,10 @@ namespace Geco.Common
         /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
         protected void WI(string text = "", bool write = true)
         {
-            W(text);
-            Indent();
+
+            W(text, write);
+            if (write)
+                Indent();
         }
 
         /// <summary>
@@ -116,8 +134,9 @@ namespace Geco.Common
         /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
         protected void IW(string text = "", bool write = true)
         {
-            Indent();
-            W(text);
+            if (write)
+                Indent();
+            W(text, write);
         }
 
         /// <summary>
@@ -127,8 +146,9 @@ namespace Geco.Common
         /// <param name="write">boolean parameter to indicate if the text should be written or not</param>
         protected void DW(string text = "", bool write = true)
         {
-            Dedent();
-            W(text);
+            if (write)
+                Dedent();
+            W(text, write);
         }
 
         /// <summary>
@@ -139,7 +159,8 @@ namespace Geco.Common
         protected void WD(string text = "", bool write = true)
         {
             W(text, write);
-            Dedent();
+            if (write)
+                Dedent();
         }
 
         /// <summary>
@@ -153,6 +174,11 @@ namespace Geco.Common
                 return;
             if (initialized)
             {
+                if (commaNewLine)
+                {
+                    _tw.Write(",");
+                    if (OutputToConsole) Console.Write(",");
+                }
                 _tw.WriteLine();
                 if (OutputToConsole) Console.WriteLine();
             }

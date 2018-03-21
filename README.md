@@ -155,6 +155,11 @@ Example:
 
 ## Version History
 
+**Version 1.0.5**
+  - Fixed pluralization bug
+  - Fixed issue with current directory, not being set to bin\
+  - Fixed nullable date time not being generated correctly
+
 **Version 1.0.4**
   - Replaced `EnglishInflector` with Humanizer based version
   - Improved metadata API to allow easier removal of tables and columns along with dependent objects

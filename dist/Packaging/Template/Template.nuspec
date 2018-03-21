@@ -2,20 +2,20 @@
 <package >
   <metadata>
     <id>iQuarc.Geco.CSharp</id>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <title>Geco, dotnet new template</title>
     <authors>Catalin Pop, © iQuarc 2017</authors>
     <owners>iQuarc</owners>
     <licenseUrl>https://github.com/iQuarc/Geco/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/iQuarc/Geco</projectUrl>
-    <iconUrl>https://github.com/iQuarc/Geco/blob/master/.Tools/Geco/Logo.png?raw=true</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/iQuarc/Geco/master/src/Geco/Logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</description>
     <summary>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</summary>
     <releaseNotes>
-      - Replaced `EnglishInflector` with Humanizer based version
-      - Improved metadata API to allow easier removal of tablas and columns along with dependent objects
-      - Improved `SeedScriptRunner` error message when the seed file does not exist
+      - Fixed pluralization bug
+      - Fixed issue with current directory, not being set to bin\
+      - Fixed nullable date time not being generated correctly
     </releaseNotes>
     <copyright>Copyright © iQuarc 2017</copyright>
     <tags>Code-Generator Template-Engine CSharp Interpolated-Strings</tags>

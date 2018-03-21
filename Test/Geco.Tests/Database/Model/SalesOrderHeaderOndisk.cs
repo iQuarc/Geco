@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.4.0")]
+    [GeneratedCode("Geco", "1.0.5.0")]
     public partial class SalesOrderHeaderOndisk
     {
         // Key Properties
@@ -26,7 +26,7 @@ namespace Geco.Tests.Database.Model
         public byte RevisionNumber { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime DueDate { get; set; }
-        public DateTime ShipDate { get; set; }
+        public DateTime? ShipDate { get; set; }
         public byte Status { get; set; }
         public bool OnlineOrderFlag { get; set; }
         public string PurchaseOrderNumber { get; set; }
