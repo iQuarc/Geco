@@ -29,7 +29,7 @@ namespace Geco.Tests.Database.Model
         public int VendorID { get; set; }
         public int ShipMethodID { get; set; }
         public DateTime OrderDate { get; set; }
-        public DateTime ShipDate { get; set; }
+        public DateTime? ShipDate { get; set; }
         public decimal SubTotal { get; set; }
         public decimal TaxAmt { get; set; }
         public decimal Freight { get; set; }
@@ -37,9 +37,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Employee Employees { get; set; }
-        public ShipMethod ShipMethods { get; set; }
-        public Vendor Vendors { get; set; }
+        public Employee Employee { get; set; }
+        public ShipMethod ShipMethod { get; set; }
+        public Vendor Vendor { get; set; }
 
         // Reverse navigation
         public List<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }

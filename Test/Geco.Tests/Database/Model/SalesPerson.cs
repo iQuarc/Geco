@@ -24,7 +24,7 @@ namespace Geco.Tests.Database.Model
 
         // Scalar Properties
         public int? TerritoryID { get; set; }
-        public decimal SalesQuota { get; set; }
+        public decimal? SalesQuota { get; set; }
         public decimal Bonus { get; set; }
         public decimal CommissionPct { get; set; }
         public decimal SalesYTD { get; set; }
@@ -33,8 +33,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Employee Employees { get; set; }
-        public SalesTerritory SalesTerritories { get; set; }
+        public Employee Employee { get; set; }
+        public SalesTerritory SalesTerritory { get; set; }
 
         // Reverse navigation
         public List<SalesOrderHeader> SalesOrderHeaders { get; set; }

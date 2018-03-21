@@ -29,7 +29,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public ProductCategory ProductCategories { get; set; }
+        public ProductCategory ProductCategory { get; set; }
 
         // Reverse navigation
         public List<Product> Products { get; set; }

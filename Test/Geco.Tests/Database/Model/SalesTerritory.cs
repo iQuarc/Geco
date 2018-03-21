@@ -34,7 +34,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public CountryRegion CountryRegions { get; set; }
+        public CountryRegion CountryRegion { get; set; }
 
         // Reverse navigation
         public List<Customer> Customers { get; set; }

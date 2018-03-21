@@ -31,8 +31,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Location Locations { get; set; }
-        public Product Products { get; set; }
+        public Location Location { get; set; }
+        public Product Product { get; set; }
 
     }
 }

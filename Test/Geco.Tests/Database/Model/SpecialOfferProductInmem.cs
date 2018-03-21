@@ -27,8 +27,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public ProductInmem ProductInmems { get; set; }
-        public SpecialOfferInmem SpecialOfferInmems { get; set; }
+        public ProductInmem ProductInmem { get; set; }
+        public SpecialOfferInmem SpecialOfferInmem { get; set; }
 
         // Reverse navigation
         public List<SalesOrderDetailInmem> SalesOrderDetailInmems { get; set; }

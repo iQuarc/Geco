@@ -31,9 +31,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Person People { get; set; }
-        public Store Stores { get; set; }
-        public SalesTerritory SalesTerritories { get; set; }
+        public Person Person { get; set; }
+        public Store Store { get; set; }
+        public SalesTerritory SalesTerritory { get; set; }
 
         // Reverse navigation
         public List<SalesOrderHeader> SalesOrderHeaders { get; set; }

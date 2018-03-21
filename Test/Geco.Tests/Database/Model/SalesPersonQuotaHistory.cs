@@ -29,7 +29,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public SalesPerson SalesPeople { get; set; }
+        public SalesPerson SalesPerson { get; set; }
 
     }
 }

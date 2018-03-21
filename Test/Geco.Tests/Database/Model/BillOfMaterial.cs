@@ -26,16 +26,16 @@ namespace Geco.Tests.Database.Model
         public int? ProductAssemblyID { get; set; }
         public int ComponentID { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string UnitMeasureCode { get; set; }
         public short BOMLevel { get; set; }
         public decimal PerAssemblyQty { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Product ProductsProduct { get; set; }
-        public Product ProductsProductAssembly { get; set; }
-        public UnitMeasure UnitMeasures { get; set; }
+        public Product Component { get; set; }
+        public Product ProductAssembly { get; set; }
+        public UnitMeasure UnitMeasure { get; set; }
 
     }
 }

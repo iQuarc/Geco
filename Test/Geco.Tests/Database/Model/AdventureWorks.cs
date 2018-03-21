@@ -179,7 +179,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.StateProvinces)
+                entity.HasOne(e => e.StateProvince)
                     .WithMany(p => p.Addresses)
                     .HasForeignKey(p => p.StateProvinceID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -276,19 +276,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.ProductsProductAssembly)
+                entity.HasOne(e => e.ProductAssembly)
                     .WithMany(p => p.BillOfMaterialsProductAssembly)
                     .HasForeignKey(p => p.ProductAssemblyID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BillOfMaterials_Product_ProductAssemblyID");
 
-                entity.HasOne(e => e.ProductsProduct)
+                entity.HasOne(e => e.Component)
                     .WithMany(p => p.BillOfMaterialsComponent)
                     .HasForeignKey(p => p.ComponentID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BillOfMaterials_Product_ComponentID");
 
-                entity.HasOne(e => e.UnitMeasures)
+                entity.HasOne(e => e.UnitMeasure)
                     .WithMany(p => p.BillOfMaterials)
                     .HasForeignKey(p => p.UnitMeasureCode)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -334,19 +334,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Addresses)
+                entity.HasOne(e => e.Address)
                     .WithMany(p => p.BusinessEntityAddresses)
                     .HasForeignKey(p => p.AddressID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BusinessEntityAddress_Address_AddressID");
 
-                entity.HasOne(e => e.AddressTypes)
+                entity.HasOne(e => e.AddressType)
                     .WithMany(p => p.BusinessEntityAddresses)
                     .HasForeignKey(p => p.AddressTypeID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BusinessEntityAddress_AddressType_AddressTypeID");
 
-                entity.HasOne(e => e.BusinessEntities)
+                entity.HasOne(e => e.BusinessEntity)
                     .WithMany(p => p.BusinessEntityAddresses)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -369,19 +369,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.BusinessEntities)
+                entity.HasOne(e => e.BusinessEntity)
                     .WithMany(p => p.BusinessEntityContacts)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BusinessEntityContact_BusinessEntity_BusinessEntityID");
 
-                entity.HasOne(e => e.ContactTypes)
+                entity.HasOne(e => e.ContactType)
                     .WithMany(p => p.BusinessEntityContacts)
                     .HasForeignKey(p => p.ContactTypeID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BusinessEntityContact_ContactType_ContactTypeID");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.BusinessEntityContacts)
                     .HasForeignKey(p => p.PersonID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -444,13 +444,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.CountryRegions)
+                entity.HasOne(e => e.CountryRegion)
                     .WithMany(p => p.CountryRegionCurrencies)
                     .HasForeignKey(p => p.CountryRegionCode)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CountryRegionCurrency_CountryRegion_CountryRegionCode");
 
-                entity.HasOne(e => e.Currencies)
+                entity.HasOne(e => e.Currency)
                     .WithMany(p => p.CountryRegionCurrencies)
                     .HasForeignKey(p => p.CurrencyCode)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -568,13 +568,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.CurrenciesCurrencyCode)
+                entity.HasOne(e => e.CurrencyFromCurrencyCode)
                     .WithMany(p => p.CurrencyRatesFromCurrencyCode)
                     .HasForeignKey(p => p.FromCurrencyCode)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CurrencyRate_Currency_FromCurrencyCode");
 
-                entity.HasOne(e => e.CurrenciesToCurrencyCode)
+                entity.HasOne(e => e.CurrencyToCurrencyCode)
                     .WithMany(p => p.CurrencyRatesToCurrencyCode)
                     .HasForeignKey(p => p.ToCurrencyCode)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -609,19 +609,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesTerritories)
+                entity.HasOne(e => e.SalesTerritory)
                     .WithMany(p => p.Customers)
                     .HasForeignKey(p => p.TerritoryID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Customer_SalesTerritory_TerritoryID");
 
-                entity.HasOne(e => e.Stores)
+                entity.HasOne(e => e.Store)
                     .WithMany(p => p.Customers)
                     .HasForeignKey(p => p.StoreID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Customer_Store_StoreID");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.Customers)
                     .HasForeignKey(p => p.PersonID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -795,7 +795,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.EmailAddresses)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -884,7 +884,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.Employees)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -977,19 +977,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Shifts)
+                entity.HasOne(e => e.Shift)
                     .WithMany(p => p.EmployeeDepartmentHistories)
                     .HasForeignKey(p => p.ShiftID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_EmployeeDepartmentHistory_Shift_ShiftID");
 
-                entity.HasOne(e => e.Departments)
+                entity.HasOne(e => e.Department)
                     .WithMany(p => p.EmployeeDepartmentHistories)
                     .HasForeignKey(p => p.DepartmentID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_EmployeeDepartmentHistory_Department_DepartmentID");
 
-                entity.HasOne(e => e.Employees)
+                entity.HasOne(e => e.Employee)
                     .WithMany(p => p.EmployeeDepartmentHistories)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1018,7 +1018,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Employees)
+                entity.HasOne(e => e.Employee)
                     .WithMany(p => p.EmployeePayHistories)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1116,7 +1116,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Employees)
+                entity.HasOne(e => e.Employee)
                     .WithMany(p => p.JobCandidates)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1219,7 +1219,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.Passwords)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1293,7 +1293,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.BusinessEntities)
+                entity.HasOne(e => e.BusinessEntity)
                     .WithMany(p => p.People)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1443,13 +1443,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.CreditCards)
+                entity.HasOne(e => e.CreditCard)
                     .WithMany(p => p.PersonCreditCards)
                     .HasForeignKey(p => p.CreditCardID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_PersonCreditCard_CreditCard_CreditCardID");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.PersonCreditCards)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1472,13 +1472,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.PhoneNumberTypes)
+                entity.HasOne(e => e.PhoneNumberType)
                     .WithMany(p => p.PersonPhones)
                     .HasForeignKey(p => p.PhoneNumberTypeID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_PersonPhone_PhoneNumberType_PhoneNumberTypeID");
 
-                entity.HasOne(e => e.People)
+                entity.HasOne(e => e.Person)
                     .WithMany(p => p.PersonPhones)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1613,25 +1613,25 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.ProductModels)
+                entity.HasOne(e => e.ProductModel)
                     .WithMany(p => p.Products)
                     .HasForeignKey(p => p.ProductModelID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Product_ProductModel_ProductModelID");
 
-                entity.HasOne(e => e.ProductSubcategories)
+                entity.HasOne(e => e.ProductSubcategory)
                     .WithMany(p => p.Products)
                     .HasForeignKey(p => p.ProductSubcategoryID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Product_ProductSubcategory_ProductSubcategoryID");
 
-                entity.HasOne(e => e.UnitMeasuresUnitMeasureCode)
+                entity.HasOne(e => e.UnitMeasureSizeUnitMeasureCode)
                     .WithMany(p => p.ProductsSizeUnitMeasureCode)
                     .HasForeignKey(p => p.SizeUnitMeasureCode)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Product_UnitMeasure_SizeUnitMeasureCode");
 
-                entity.HasOne(e => e.UnitMeasuresWeightUnitMeasureCode)
+                entity.HasOne(e => e.UnitMeasureWeightUnitMeasureCode)
                     .WithMany(p => p.ProductsWeightUnitMeasureCode)
                     .HasForeignKey(p => p.WeightUnitMeasureCode)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1925,7 +1925,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductCostHistories)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -1971,7 +1971,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductDocuments)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2009,13 +2009,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductInventories)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductInventory_Product_ProductID");
 
-                entity.HasOne(e => e.Locations)
+                entity.HasOne(e => e.Location)
                     .WithMany(p => p.ProductInventories)
                     .HasForeignKey(p => p.LocationID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2044,7 +2044,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductListPriceHistories)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2098,13 +2098,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.ProductModels)
+                entity.HasOne(e => e.ProductModel)
                     .WithMany(p => p.ProductModelIllustrations)
                     .HasForeignKey(p => p.ProductModelID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductModelIllustration_ProductModel_ProductModelID");
 
-                entity.HasOne(e => e.Illustrations)
+                entity.HasOne(e => e.Illustration)
                     .WithMany(p => p.ProductModelIllustrations)
                     .HasForeignKey(p => p.IllustrationID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2121,19 +2121,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.ProductDescriptions)
+                entity.HasOne(e => e.ProductDescription)
                     .WithMany(p => p.ProductModelProductDescriptionCultures)
                     .HasForeignKey(p => p.ProductDescriptionID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductModelProductDescriptionCulture_ProductDescription_ProductDescriptionID");
 
-                entity.HasOne(e => e.ProductModels)
+                entity.HasOne(e => e.ProductModel)
                     .WithMany(p => p.ProductModelProductDescriptionCultures)
                     .HasForeignKey(p => p.ProductModelID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductModelProductDescriptionCulture_ProductModel_ProductModelID");
 
-                entity.HasOne(e => e.Cultures)
+                entity.HasOne(e => e.Culture)
                     .WithMany(p => p.ProductModelProductDescriptionCultures)
                     .HasForeignKey(p => p.CultureID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2190,13 +2190,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductProductPhotos)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductProductPhoto_Product_ProductID");
 
-                entity.HasOne(e => e.ProductPhotos)
+                entity.HasOne(e => e.ProductPhoto)
                     .WithMany(p => p.ProductProductPhotos)
                     .HasForeignKey(p => p.ProductPhotoID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2245,7 +2245,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductReviews)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2280,7 +2280,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.ProductCategories)
+                entity.HasOne(e => e.ProductCategory)
                     .WithMany(p => p.ProductSubcategories)
                     .HasForeignKey(p => p.ProductCategoryID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2325,19 +2325,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ProductVendors)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductVendor_Product_ProductID");
 
-                entity.HasOne(e => e.UnitMeasures)
+                entity.HasOne(e => e.UnitMeasure)
                     .WithMany(p => p.ProductVendors)
                     .HasForeignKey(p => p.UnitMeasureCode)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ProductVendor_UnitMeasure_UnitMeasureCode");
 
-                entity.HasOne(e => e.Vendors)
+                entity.HasOne(e => e.Vendor)
                     .WithMany(p => p.ProductVendors)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2388,13 +2388,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.PurchaseOrderDetails)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_PurchaseOrderDetail_Product_ProductID");
 
-                entity.HasOne(e => e.PurchaseOrderHeaders)
+                entity.HasOne(e => e.PurchaseOrderHeader)
                     .WithMany(p => p.PurchaseOrderDetails)
                     .HasForeignKey(p => p.PurchaseOrderID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2455,19 +2455,19 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.ShipMethods)
+                entity.HasOne(e => e.ShipMethod)
                     .WithMany(p => p.PurchaseOrderHeaders)
                     .HasForeignKey(p => p.ShipMethodID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_PurchaseOrderHeader_ShipMethod_ShipMethodID");
 
-                entity.HasOne(e => e.Vendors)
+                entity.HasOne(e => e.Vendor)
                     .WithMany(p => p.PurchaseOrderHeaders)
                     .HasForeignKey(p => p.VendorID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_PurchaseOrderHeader_Vendor_VendorID");
 
-                entity.HasOne(e => e.Employees)
+                entity.HasOne(e => e.Employee)
                     .WithMany(p => p.PurchaseOrderHeaders)
                     .HasForeignKey(p => p.EmployeeID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2644,13 +2644,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SpecialOfferProducts)
+                entity.HasOne(e => e.SpecialOfferProduct)
                     .WithMany(p => p.SalesOrderDetails)
                     .HasForeignKey(p => new {p.SpecialOfferID, p.ProductID})
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderDetail_SpecialOfferProduct_SpecialOfferIDProductID");
 
-                entity.HasOne(e => e.SalesOrderHeaders)
+                entity.HasOne(e => e.SalesOrderHeader)
                     .WithMany(p => p.SalesOrderDetails)
                     .HasForeignKey(p => p.SalesOrderID)
                     .OnDelete(DeleteBehavior.Cascade)
@@ -2690,13 +2690,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnName("ModifiedDate")
                     .HasColumnType("datetime2");
 
-                entity.HasOne(e => e.SpecialOfferProductInmems)
+                entity.HasOne(e => e.SpecialOfferProductInmem)
                     .WithMany(p => p.SalesOrderDetailInmems)
                     .HasForeignKey(p => new {p.SpecialOfferID, p.ProductID})
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("IMFK_SalesOrderDetail_SpecialOfferProduct_SpecialOfferIDProductID");
 
-                entity.HasOne(e => e.SalesOrderHeaderInmems)
+                entity.HasOne(e => e.SalesOrderHeaderInmem)
                     .WithMany(p => p.SalesOrderDetailInmems)
                     .HasForeignKey(p => p.SalesOrderID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2736,13 +2736,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnName("ModifiedDate")
                     .HasColumnType("datetime2");
 
-                entity.HasOne(e => e.SpecialOfferProductOndisks)
+                entity.HasOne(e => e.SpecialOfferProductOndisk)
                     .WithMany(p => p.SalesOrderDetailOndisks)
                     .HasForeignKey(p => new {p.SpecialOfferID, p.ProductID})
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("ODFK_SalesOrderDetail_SpecialOfferProduct_SpecialOfferIDProductID");
 
-                entity.HasOne(e => e.SalesOrderHeaderOndisks)
+                entity.HasOne(e => e.SalesOrderHeaderOndisk)
                     .WithMany(p => p.SalesOrderDetailOndisks)
                     .HasForeignKey(p => p.SalesOrderID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -2844,49 +2844,49 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesTerritories)
+                entity.HasOne(e => e.SalesTerritory)
                     .WithMany(p => p.SalesOrderHeaders)
                     .HasForeignKey(p => p.TerritoryID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_SalesTerritory_TerritoryID");
 
-                entity.HasOne(e => e.ShipMethods)
+                entity.HasOne(e => e.ShipMethod)
                     .WithMany(p => p.SalesOrderHeaders)
                     .HasForeignKey(p => p.ShipMethodID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_ShipMethod_ShipMethodID");
 
-                entity.HasOne(e => e.AddressesAddress)
+                entity.HasOne(e => e.BillToAddress)
                     .WithMany(p => p.SalesOrderHeadersBillToAddress)
                     .HasForeignKey(p => p.BillToAddressID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_Address_BillToAddressID");
 
-                entity.HasOne(e => e.AddressesShipToAddress)
+                entity.HasOne(e => e.ShipToAddress)
                     .WithMany(p => p.SalesOrderHeadersShipToAddress)
                     .HasForeignKey(p => p.ShipToAddressID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_Address_ShipToAddressID");
 
-                entity.HasOne(e => e.CreditCards)
+                entity.HasOne(e => e.CreditCard)
                     .WithMany(p => p.SalesOrderHeaders)
                     .HasForeignKey(p => p.CreditCardID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_CreditCard_CreditCardID");
 
-                entity.HasOne(e => e.CurrencyRates)
+                entity.HasOne(e => e.CurrencyRate)
                     .WithMany(p => p.SalesOrderHeaders)
                     .HasForeignKey(p => p.CurrencyRateID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_CurrencyRate_CurrencyRateID");
 
-                entity.HasOne(e => e.Customers)
+                entity.HasOne(e => e.Customer)
                     .WithMany(p => p.SalesOrderHeaders)
                     .HasForeignKey(p => p.CustomerID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesOrderHeader_Customer_CustomerID");
 
-                entity.HasOne(e => e.SalesPeople)
+                entity.HasOne(e => e.SalesPerson)
                     .WithMany(p => p.SalesOrderHeaders)
                     .HasForeignKey(p => p.SalesPersonID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3125,13 +3125,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesOrderHeaders)
+                entity.HasOne(e => e.SalesOrderHeader)
                     .WithMany(p => p.SalesOrderHeaderSalesReasons)
                     .HasForeignKey(p => p.SalesOrderID)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_SalesOrderHeaderSalesReason_SalesOrderHeader_SalesOrderID");
 
-                entity.HasOne(e => e.SalesReasons)
+                entity.HasOne(e => e.SalesReason)
                     .WithMany(p => p.SalesOrderHeaderSalesReasons)
                     .HasForeignKey(p => p.SalesReasonID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3178,13 +3178,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesTerritories)
+                entity.HasOne(e => e.SalesTerritory)
                     .WithMany(p => p.SalesPeople)
                     .HasForeignKey(p => p.TerritoryID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesPerson_SalesTerritory_TerritoryID");
 
-                entity.HasOne(e => e.Employees)
+                entity.HasOne(e => e.Employee)
                     .WithMany(p => p.SalesPeople)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3215,7 +3215,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesPeople)
+                entity.HasOne(e => e.SalesPerson)
                     .WithMany(p => p.SalesPersonQuotaHistories)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3288,7 +3288,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.StateProvinces)
+                entity.HasOne(e => e.StateProvince)
                     .WithMany(p => p.SalesTaxRates)
                     .HasForeignKey(p => p.StateProvinceID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3349,7 +3349,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.CountryRegions)
+                entity.HasOne(e => e.CountryRegion)
                     .WithMany(p => p.SalesTerritories)
                     .HasForeignKey(p => p.CountryRegionCode)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3380,13 +3380,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesTerritories)
+                entity.HasOne(e => e.SalesTerritory)
                     .WithMany(p => p.SalesTerritoryHistories)
                     .HasForeignKey(p => p.TerritoryID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SalesTerritoryHistory_SalesTerritory_TerritoryID");
 
-                entity.HasOne(e => e.SalesPeople)
+                entity.HasOne(e => e.SalesPerson)
                     .WithMany(p => p.SalesTerritoryHistories)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3518,7 +3518,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.ShoppingCartItems)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3718,13 +3718,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.SpecialOfferProducts)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SpecialOfferProduct_Product_ProductID");
 
-                entity.HasOne(e => e.SpecialOffers)
+                entity.HasOne(e => e.SpecialOffer)
                     .WithMany(p => p.SpecialOfferProducts)
                     .HasForeignKey(p => p.SpecialOfferID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3741,13 +3741,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime2")
                     .HasDefaultValueSql("sysdatetime()");
 
-                entity.HasOne(e => e.SpecialOfferInmems)
+                entity.HasOne(e => e.SpecialOfferInmem)
                     .WithMany(p => p.SpecialOfferProductInmems)
                     .HasForeignKey(p => p.SpecialOfferID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("IMFK_SpecialOfferProduct_SpecialOffer_SpecialOfferID");
 
-                entity.HasOne(e => e.ProductInmems)
+                entity.HasOne(e => e.ProductInmem)
                     .WithMany(p => p.SpecialOfferProductInmems)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3764,13 +3764,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime2")
                     .HasDefaultValueSql("sysdatetime()");
 
-                entity.HasOne(e => e.SpecialOfferOndisks)
+                entity.HasOne(e => e.SpecialOfferOndisk)
                     .WithMany(p => p.SpecialOfferProductOndisks)
                     .HasForeignKey(p => p.SpecialOfferID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("ODFK_SpecialOfferProduct_SpecialOffer_SpecialOfferID");
 
-                entity.HasOne(e => e.ProductOndisks)
+                entity.HasOne(e => e.ProductOndisk)
                     .WithMany(p => p.SpecialOfferProductOndisks)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3816,13 +3816,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.SalesTerritories)
+                entity.HasOne(e => e.SalesTerritory)
                     .WithMany(p => p.StateProvinces)
                     .HasForeignKey(p => p.TerritoryID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_StateProvince_SalesTerritory_TerritoryID");
 
-                entity.HasOne(e => e.CountryRegions)
+                entity.HasOne(e => e.CountryRegion)
                     .WithMany(p => p.StateProvinces)
                     .HasForeignKey(p => p.CountryRegionCode)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3855,13 +3855,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.BusinessEntities)
+                entity.HasOne(e => e.BusinessEntity)
                     .WithMany(p => p.Stores)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Store_BusinessEntity_BusinessEntityID");
 
-                entity.HasOne(e => e.SalesPeople)
+                entity.HasOne(e => e.SalesPerson)
                     .WithMany(p => p.Stores)
                     .HasForeignKey(p => p.SalesPersonID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -3930,7 +3930,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.TransactionHistories)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -4048,7 +4048,7 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.BusinessEntities)
+                entity.HasOne(e => e.BusinessEntity)
                     .WithMany(p => p.Vendors)
                     .HasForeignKey(p => p.BusinessEntityID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -4095,13 +4095,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.Products)
+                entity.HasOne(e => e.Product)
                     .WithMany(p => p.WorkOrders)
                     .HasForeignKey(p => p.ProductID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_WorkOrder_Product_ProductID");
 
-                entity.HasOne(e => e.ScrapReasons)
+                entity.HasOne(e => e.ScrapReason)
                     .WithMany(p => p.WorkOrders)
                     .HasForeignKey(p => p.ScrapReasonID)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -4154,13 +4154,13 @@ namespace Geco.Tests.Database.Model
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.HasOne(e => e.WorkOrders)
+                entity.HasOne(e => e.WorkOrder)
                     .WithMany(p => p.WorkOrderRoutings)
                     .HasForeignKey(p => p.WorkOrderID)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_WorkOrderRouting_WorkOrder_WorkOrderID");
 
-                entity.HasOne(e => e.Locations)
+                entity.HasOne(e => e.Location)
                     .WithMany(p => p.WorkOrderRoutings)
                     .HasForeignKey(p => p.LocationID)
                     .OnDelete(DeleteBehavior.Restrict)

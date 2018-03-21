@@ -31,8 +31,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Currency CurrenciesCurrencyCode { get; set; }
-        public Currency CurrenciesToCurrencyCode { get; set; }
+        public Currency CurrencyFromCurrencyCode { get; set; }
+        public Currency CurrencyToCurrencyCode { get; set; }
 
         // Reverse navigation
         public List<SalesOrderHeader> SalesOrderHeaders { get; set; }

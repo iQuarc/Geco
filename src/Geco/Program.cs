@@ -42,6 +42,8 @@ namespace Geco
         {
             try
             {
+                Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
                 var app = new CommandLineApplication();
                 app.Name = "Geco";
                 app.HelpOption("-?|-h|--help");

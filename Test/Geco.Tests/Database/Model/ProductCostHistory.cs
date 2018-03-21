@@ -24,12 +24,12 @@ namespace Geco.Tests.Database.Model
         public DateTime StartDate { get; set; }
 
         // Scalar Properties
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public decimal StandardCost { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Product Products { get; set; }
+        public Product Product { get; set; }
 
     }
 }

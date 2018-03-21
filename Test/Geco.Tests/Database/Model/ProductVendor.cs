@@ -26,8 +26,8 @@ namespace Geco.Tests.Database.Model
         // Scalar Properties
         public int AverageLeadTime { get; set; }
         public decimal StandardPrice { get; set; }
-        public decimal LastReceiptCost { get; set; }
-        public DateTime LastReceiptDate { get; set; }
+        public decimal? LastReceiptCost { get; set; }
+        public DateTime? LastReceiptDate { get; set; }
         public int MinOrderQty { get; set; }
         public int MaxOrderQty { get; set; }
         public int? OnOrderQty { get; set; }
@@ -35,9 +35,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Vendor Vendors { get; set; }
-        public Product Products { get; set; }
-        public UnitMeasure UnitMeasures { get; set; }
+        public Vendor Vendor { get; set; }
+        public Product Product { get; set; }
+        public UnitMeasure UnitMeasure { get; set; }
 
     }
 }

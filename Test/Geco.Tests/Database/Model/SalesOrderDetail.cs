@@ -35,8 +35,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public SalesOrderHeader SalesOrderHeaders { get; set; }
-        public SpecialOfferProduct SpecialOfferProducts { get; set; }
+        public SalesOrderHeader SalesOrderHeader { get; set; }
+        public SpecialOfferProduct SpecialOfferProduct { get; set; }
 
     }
 }

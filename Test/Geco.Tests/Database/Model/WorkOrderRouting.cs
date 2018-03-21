@@ -28,16 +28,16 @@ namespace Geco.Tests.Database.Model
         public short LocationID { get; set; }
         public DateTime ScheduledStartDate { get; set; }
         public DateTime ScheduledEndDate { get; set; }
-        public DateTime ActualStartDate { get; set; }
-        public DateTime ActualEndDate { get; set; }
-        public decimal ActualResourceHrs { get; set; }
+        public DateTime? ActualStartDate { get; set; }
+        public DateTime? ActualEndDate { get; set; }
+        public decimal? ActualResourceHrs { get; set; }
         public decimal PlannedCost { get; set; }
-        public decimal ActualCost { get; set; }
+        public decimal? ActualCost { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Location Locations { get; set; }
-        public WorkOrder WorkOrders { get; set; }
+        public Location Location { get; set; }
+        public WorkOrder WorkOrder { get; set; }
 
     }
 }

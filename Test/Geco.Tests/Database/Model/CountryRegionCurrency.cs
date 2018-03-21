@@ -27,8 +27,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public CountryRegion CountryRegions { get; set; }
-        public Currency Currencies { get; set; }
+        public CountryRegion CountryRegion { get; set; }
+        public Currency Currency { get; set; }
 
     }
 }

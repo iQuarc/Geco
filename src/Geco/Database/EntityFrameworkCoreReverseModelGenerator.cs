@@ -211,11 +211,9 @@ namespace Geco.Database
                     foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name));
-                        //var propertyName = Inf.Pascalise(Inf.Singularise(RemoveSuffix(column.Name)));
-
                         string propertyName;
                         if (table.ForeignKeys.Count(f => f.TargetTable == fk.TargetTable) > 1)
-                            propertyName = Inf.Singularise(targetClassName) + GetFkName(fk.ToColumns);
+                            propertyName = GetFkName(fk.FromColumns);
                         else
                             propertyName = Inf.Singularise(targetClassName);
 
@@ -415,7 +413,7 @@ namespace Geco.Database
 
         private string GetNullable(Column column)
         {
-            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsPrimitive && Db.TypeMappings[column.DataType] != typeof(char))
+            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsValueType && Db.TypeMappings[column.DataType] != typeof(char))
             {
                 return "?";
             }

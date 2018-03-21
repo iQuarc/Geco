@@ -28,14 +28,14 @@ namespace Geco.Tests.Database.Model
         public int StockedQty { get; set; }
         public short ScrappedQty { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public DateTime DueDate { get; set; }
         public short? ScrapReasonID { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Product Products { get; set; }
-        public ScrapReason ScrapReasons { get; set; }
+        public Product Product { get; set; }
+        public ScrapReason ScrapReason { get; set; }
 
         // Reverse navigation
         public List<WorkOrderRouting> WorkOrderRoutings { get; set; }

@@ -25,13 +25,13 @@ namespace Geco.Tests.Database.Model
         public DateTime StartDate { get; set; }
 
         // Scalar Properties
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public Guid Rowguid { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public SalesPerson SalesPeople { get; set; }
-        public SalesTerritory SalesTerritories { get; set; }
+        public SalesPerson SalesPerson { get; set; }
+        public SalesTerritory SalesTerritory { get; set; }
 
     }
 }

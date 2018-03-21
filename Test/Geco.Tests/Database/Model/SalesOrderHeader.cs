@@ -26,7 +26,7 @@ namespace Geco.Tests.Database.Model
         public byte RevisionNumber { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime DueDate { get; set; }
-        public DateTime ShipDate { get; set; }
+        public DateTime? ShipDate { get; set; }
         public byte Status { get; set; }
         public bool OnlineOrderFlag { get; set; }
         public string SalesOrderNumber { get; set; }
@@ -50,14 +50,14 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Address AddressesAddress { get; set; }
-        public CreditCard CreditCards { get; set; }
-        public CurrencyRate CurrencyRates { get; set; }
-        public Customer Customers { get; set; }
-        public SalesPerson SalesPeople { get; set; }
-        public ShipMethod ShipMethods { get; set; }
-        public Address AddressesShipToAddress { get; set; }
-        public SalesTerritory SalesTerritories { get; set; }
+        public Address BillToAddress { get; set; }
+        public CreditCard CreditCard { get; set; }
+        public CurrencyRate CurrencyRate { get; set; }
+        public Customer Customer { get; set; }
+        public SalesPerson SalesPerson { get; set; }
+        public ShipMethod ShipMethod { get; set; }
+        public Address ShipToAddress { get; set; }
+        public SalesTerritory SalesTerritory { get; set; }
 
         // Reverse navigation
         public List<SalesOrderDetail> SalesOrderDetails { get; set; }

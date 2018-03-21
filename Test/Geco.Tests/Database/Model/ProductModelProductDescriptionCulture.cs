@@ -28,9 +28,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Culture Cultures { get; set; }
-        public ProductDescription ProductDescriptions { get; set; }
-        public ProductModel ProductModels { get; set; }
+        public Culture Culture { get; set; }
+        public ProductDescription ProductDescription { get; set; }
+        public ProductModel ProductModel { get; set; }
 
     }
 }

@@ -29,9 +29,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Address Addresses { get; set; }
-        public AddressType AddressTypes { get; set; }
-        public BusinessEntity BusinessEntities { get; set; }
+        public Address Address { get; set; }
+        public AddressType AddressType { get; set; }
+        public BusinessEntity BusinessEntity { get; set; }
 
     }
 }

@@ -37,7 +37,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public BusinessEntity BusinessEntities { get; set; }
+        public BusinessEntity BusinessEntity { get; set; }
 
         // Reverse navigation
         public List<BusinessEntityContact> BusinessEntityContacts { get; set; }

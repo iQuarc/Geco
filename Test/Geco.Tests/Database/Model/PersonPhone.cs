@@ -28,8 +28,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Person People { get; set; }
-        public PhoneNumberType PhoneNumberTypes { get; set; }
+        public Person Person { get; set; }
+        public PhoneNumberType PhoneNumberType { get; set; }
 
     }
 }

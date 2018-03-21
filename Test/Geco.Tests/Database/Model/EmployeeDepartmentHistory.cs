@@ -26,13 +26,13 @@ namespace Geco.Tests.Database.Model
         public DateTime StartDate { get; set; }
 
         // Scalar Properties
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Employee Employees { get; set; }
-        public Department Departments { get; set; }
-        public Shift Shifts { get; set; }
+        public Employee Employee { get; set; }
+        public Department Department { get; set; }
+        public Shift Shift { get; set; }
 
     }
 }

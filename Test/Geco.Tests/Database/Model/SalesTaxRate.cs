@@ -31,7 +31,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public StateProvince StateProvinces { get; set; }
+        public StateProvince StateProvince { get; set; }
 
     }
 }
