@@ -34,11 +34,11 @@ To create a Geco project when installed as a Visual Studio Project template, Sel
 
 Bellow are some snippets from the included code generation tasks that are in the default Geco package.
 
-Next snippet is from the included Entity Framework Core Reverse model generator, which exemplifies part of the code generation:
+Next snippet is from the included Entity Framework Core Reverse model generator [EntityFrameworkCoreReverseModelGenerator.cs](https://github.com/iQuarc/Geco/blob/master/src/Geco/Database/EntityFrameworkCoreReverseModelGenerator.cs), which exemplifies part of the code generation:
 
 ![Geco Preview1](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage.JPG?raw=true)
 
-This snippet is from the SQL Seed Scrip Generator, which generates SQL Merge scripts for Seed data:
+This snippet is from the SQL Seed Scrip Generator [SeedDataGenerator.cs](https://github.com/iQuarc/Geco/blob/master/src/Geco/Database/SeedDataGenerator.cs), which generates SQL Merge scripts for Seed data:
 
 ![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage2.JPG?raw=true)
 
