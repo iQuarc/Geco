@@ -155,6 +155,9 @@ Example:
 
 ## Version History
 
+**Version 1.0.6**
+  - Update to *netcoreapp2.1*
+
 **Version 1.0.5**
   - Fixed pluralization bug
   - Fixed issue with current directory, not being set to bin\
