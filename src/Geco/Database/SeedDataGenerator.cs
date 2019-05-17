@@ -22,6 +22,8 @@ namespace Geco.Database
         private readonly Func<Column, bool> columnsFilter = c => !c.IsComputed;
         private readonly Func<Table, string> whereClause = _ => null;
         private readonly Func<Table, string> mergeFilter = _ => null;
+        private readonly Func<Table, string> orderByClause = t => string.Join(", ",
+            t.Indexes.First(i => i.IsClustered).Columns.Select(c => $"[{c.Name}]").ToArray());
 
         public SeedDataGenerator(SeedDataGeneratorOptions options, IMetadataProvider provider, IInflector inflector, IConfigurationRoot configurationRoot) : base(provider, inflector, options.ConnectionName)
         {
@@ -34,15 +36,21 @@ namespace Geco.Database
             if (options.Tables.Count == 0 && String.IsNullOrEmpty(options.TablesRegex) &&
                 options.ExcludedTables.Count == 0 && String.IsNullOrEmpty(options.ExcludedTablesRegex))
             {
-                ColorConsole.WriteLine($"No tables were selected. Use options Tables, TableRegex, ExcludedTables or ExcludedTablesRegex to specity the tables for which Seed data will be generated ", ConsoleColor.Red);
+                ColorConsole.WriteLine($"No tables were selected. Use options Tables, TableRegex, ExcludedTables or ExcludedTablesRegex to specify the tables for which Seed data will be generated ", ConsoleColor.Red);
                 return;
             }
 
             var tables = Db.Schemas.SelectMany(s => s.Tables)
                 .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n))
-                || Util.TableNameMachesRegex(t, options.TablesRegex, true))
+                || Util.TableNameMachesRegex(t, options.TablesRegex, false))
                 && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
                 && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex, false)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
+
+            if (options.IgnoreColumns.Count > 0)
+                foreach (var tableColumn in tables.SelectMany(t => t.Columns)
+                    .Where(c => options.IgnoreColumns.Contains(c.Name)))
+                    tableColumn.GetWritable().Remove();
+
             TopologicalSort(tables);
             GenerateSeedFile(options.OutputFileName, tables);
 
@@ -66,7 +74,7 @@ namespace Geco.Database
         private void GenerateTableSeed(Table table, IEnumerable<IEnumerable<object>> rowValues)
         {
             var columns = table.Columns.Where(columnsFilter).ToList();
-            var rows = rowValues.WithInfo().ToList();
+            var rows = rowValues.ToList().WithInfo();
             if (!rows.Any())
                 return;
 
@@ -128,7 +136,8 @@ namespace Geco.Database
                     .Where(columnsFilter)
                     .ToList();
                 var where = whereClause(table);
-                cmd.CommandText = $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)}";
+                var orderBy = orderByClause(table);
+                cmd.CommandText = $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)} ORDER BY {orderBy}";
                 cnn.Open();
                 cmd.Connection = cnn;
                 using (var rdr = cmd.ExecuteReader())
