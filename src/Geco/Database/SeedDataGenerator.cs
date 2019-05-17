@@ -23,7 +23,7 @@ namespace Geco.Database
         private readonly Func<Table, string> whereClause = _ => null;
         private readonly Func<Table, string> mergeFilter = _ => null;
         private readonly Func<Table, string> orderByClause = t => string.Join(", ",
-            t.Indexes.First(i => i.IsClustered).Columns.Select(c => $"[{c.Name}]").ToArray());
+            t.Indexes.FirstOrDefault(i => i.IsClustered)?.Columns.Select(c => $"[{c.Name}]").ToArray() ?? new string[]{});
 
         public SeedDataGenerator(SeedDataGeneratorOptions options, IMetadataProvider provider, IInflector inflector, IConfigurationRoot configurationRoot) : base(provider, inflector, options.ConnectionName)
         {
@@ -137,7 +137,10 @@ namespace Geco.Database
                     .ToList();
                 var where = whereClause(table);
                 var orderBy = orderByClause(table);
-                cmd.CommandText = $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)} ORDER BY {orderBy}";
+                if (!string.IsNullOrEmpty(orderBy))
+                    orderBy = $" ORDER BY {orderBy}";
+
+                cmd.CommandText = $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(string.IsNullOrEmpty(where) ? "1=1" : where)}{orderBy}";
                 cnn.Open();
                 cmd.Connection = cnn;
                 using (var rdr = cmd.ExecuteReader())
