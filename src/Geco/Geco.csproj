@@ -15,7 +15,7 @@
     <Authors>iQuarc</Authors>
     <PackageId>Geco.Core</PackageId>
     <Product>Geco Core</Product>
-    <Version>1.0.6</Version>
+    <Version>1.0.8</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

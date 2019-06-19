@@ -154,6 +154,10 @@ Example:
  - SQL Sever to SQL Compact data sync template (Api to synchronize schema compatible SQL Server and SQL Compact databases including Web Api and .Net client methods)
 
 ## Version History
+
+**Version 1.0.8**
+  - Fix VS dependency version
+
 **Version 1.0.7**
   - Add support for VS 2019
   - Add support for Ignored columns in Seed Data generator (Sergiu Damian)

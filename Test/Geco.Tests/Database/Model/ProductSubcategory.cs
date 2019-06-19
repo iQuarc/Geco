@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.6.0")]
+    [GeneratedCode("Geco", "1.0.8.0")]
     public partial class ProductSubcategory
     {
         // Key Properties
