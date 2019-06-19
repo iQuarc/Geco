@@ -151,9 +151,13 @@ Example:
 
  - ASP.Net MVC Template (scaffolds controllers and views)
  - ASP.Net + Angular scaffolder (scaffolds Web Api and components)
- - SQL Sever to SQL Compact data sync template (Api to syncrhonize schema compatible SQL Server and SQL Compact databases including Web Api and .Net client methods)
+ - SQL Sever to SQL Compact data sync template (Api to synchronize schema compatible SQL Server and SQL Compact databases including Web Api and .Net client methods)
 
 ## Version History
+**Version 1.0.7**
+  - Add support for VS 2019
+  - Add support for Ignored columns in Seed Data generator (Sergiu Damian)
+  - Add support in Seed Data Generator to order rows by clustered Index (Sergiu Damian)
 
 **Version 1.0.6**
   - Update to *netcoreapp2.1*
