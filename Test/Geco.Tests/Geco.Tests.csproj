@@ -5,13 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Database\Seed\DataSeed.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Database\Seed\DataSeed.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Compile Remove="Database\Seed\**" />
+    <EmbeddedResource Remove="Database\Seed\**" />
+    <None Remove="Database\Seed\**" />
   </ItemGroup>
 
   <ItemGroup>

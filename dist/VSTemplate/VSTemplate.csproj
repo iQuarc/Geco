@@ -95,7 +95,7 @@
     <None Include=".Tools\Geco\Common\SimpleMetadata\ForeignKey.cs" />
     <None Include=".Tools\Geco\Common\SimpleMetadata\IMetadataItem.cs" />
     <None Include=".Tools\Geco\Common\SimpleMetadata\IMetadataProvider.cs" />
-    <None Include=".Tools\Geco\Common\SimpleMetadata\Index.cs" />
+    <None Include=".Tools\Geco\Common\SimpleMetadata\DataBaseIndex.cs" />
     <None Include=".Tools\Geco\Common\SimpleMetadata\MetadataCollection.cs" />
     <None Include=".Tools\Geco\Common\SimpleMetadata\MetadataDictionary.cs" />
     <None Include=".Tools\Geco\Common\SimpleMetadata\Schema.cs" />

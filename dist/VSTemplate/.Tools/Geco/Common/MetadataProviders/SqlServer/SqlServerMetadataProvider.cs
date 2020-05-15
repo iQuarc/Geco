@@ -109,7 +109,7 @@ namespace Geco.Common.MetadataProviders.SqlServer
                 ORDER BY SchemaName, TableName, si.index_id, ic.column_id");
         }
 
-        protected override DbConnection CreateConection()
+        protected override DbConnection CreateConnection()
         {
             return new SqlConnection(configurationRoot.GetConnectionString(ConnectionName));
         }

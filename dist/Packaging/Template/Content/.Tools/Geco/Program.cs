@@ -41,9 +41,9 @@ namespace Geco
     public class Program
     {
         private Dictionary<string, Type> runnableTypes;
-        private IServiceCollection ServiceCollection;
-        private RootConfig RootConfig;
-        private IConfigurationRoot ConfigurationRoot;
+        private IServiceCollection serviceCollection;
+        private RootConfig rootConfig;
+        private IConfigurationRoot configurationRoot;
         private bool Interactive { get; set; }
         static int Main(string[] args)
         {
@@ -115,7 +115,7 @@ namespace Geco
             Console.WriteLine();
             WriteLine($"Select option {("(then press Enter)", Gray)}:", White);
             var actions = new Dictionary<string, Action>();
-            foreach (var taskInfo in RootConfig.Tasks.WithInfo())
+            foreach (var taskInfo in rootConfig.Tasks.WithInfo())
             {
                 var taskNr = (taskInfo.Index + 1).ToString();
                 WriteLine(($"{taskNr}. ", White), ($"{taskInfo.Item.Name}", Blue));
@@ -141,16 +141,16 @@ namespace Geco
 
         private void ConfigureServices(string[] args)
         {
-            ConfigurationRoot = new ConfigurationBuilder()
+            configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(args)
                 .Build();
 
             //setup the DI
-            ServiceCollection = new ServiceCollection()
+            serviceCollection = new ServiceCollection()
                 .AddLogging()
-                .AddSingleton(ConfigurationRoot)
+                .AddSingleton(configurationRoot)
                 .AddOptions()
                 .AddSingleton<IMetadataProvider, SqlServerMetadataProvider>()
                 .AddSingleton<IInflector, HumanizerInflector>();
@@ -169,13 +169,14 @@ namespace Geco
             WriteLine(("*", Blue), (@"  ,  _,-=\,-.__,-.-.__@/    ", Green), ("    - Generator Console - *", Blue));
             WriteLine(("*", Blue), (@" (_,'    )\`    '(`         ", Green), ("           - Geco -       *", Blue));
             WriteLine($"*                                                      *", Blue);
+            WriteLine($"*          {("https://github.com/iQuarc/Geco.Core", DarkMagenta)}         *", Blue);
             WriteLine($"********************************************************", Blue);
         }
 
         private void ScanTasks()
         {
-            RootConfig = new RootConfig();
-            ConfigurationRoot.Bind(RootConfig);
+            rootConfig = new RootConfig();
+            configurationRoot.Bind(rootConfig);
 
             runnableTypes = Assembly.GetAssembly(typeof(Program))
                 .GetTypes()
@@ -185,11 +186,11 @@ namespace Geco
 
             foreach (var runnableType in runnableTypes.Values)
             {
-                ServiceCollection.Add(new ServiceDescriptor(runnableType, runnableType, ServiceLifetime.Transient));
+                serviceCollection.Add(new ServiceDescriptor(runnableType, runnableType, ServiceLifetime.Transient));
             }
 
             //RootConfig rootConfig
-            foreach (var taskConfig in RootConfig.Tasks.WithInfo())
+            foreach (var taskConfig in rootConfig.Tasks.WithInfo())
             {
                 if (!runnableTypes.ContainsKey(taskConfig.Item.TaskClass))
                 {
@@ -202,8 +203,8 @@ namespace Geco
                 {
                     taskConfig.Item.ConfigIndex = taskConfig.Index;
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
-                    ConfigurationRoot.GetSection($"Tasks:{taskConfig.Item.ConfigIndex}:Options").Bind(options);
-                    ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
+                    configurationRoot.GetSection($"Tasks:{taskConfig.Item.ConfigIndex}:Options").Bind(options);
+                    serviceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
                 }
             }
         }
@@ -211,7 +212,7 @@ namespace Geco
         private void RunTaskListFromConfig(string taskListName)
         {
             var taskList = new List<string>();
-            ConfigurationRoot.Bind(taskListName, taskList);
+            configurationRoot.Bind(taskListName, taskList);
             RunTasksList(taskList);
         }
 
@@ -219,7 +220,7 @@ namespace Geco
         {
             foreach (var taskName in taskList)
             {
-                var task = RootConfig.Tasks.Find(t => t.Name == taskName);
+                var task = rootConfig.Tasks.Find(t => t.Name == taskName);
                 task.OutputToConsole = false;
                 RunTask(task);
             }
@@ -238,11 +239,11 @@ namespace Geco
                 if (optionsAttribute != null)
                 {
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
-                    ConfigurationRoot.GetSection($"Tasks:{itemInfo.ConfigIndex}:Options").Bind(options);
-                    ServiceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
+                    configurationRoot.GetSection($"Tasks:{itemInfo.ConfigIndex}:Options").Bind(options);
+                    serviceCollection.Replace(new ServiceDescriptor(optionsAttribute.OptionType, options));
                 }
 
-                using (var provider = ServiceCollection.BuildServiceProvider())
+                using (var provider = serviceCollection.BuildServiceProvider())
                 {
                     sw.Start();
                     var task = (IRunnable)provider.GetService(taskType);

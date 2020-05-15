@@ -11,7 +11,7 @@ namespace Geco.Common.SimpleMetadata
         {
             Name = name;
             Schema = schema;
-            Indexes = new MetadataCollection<Index>(null, OnIndexRemove);
+            Indexes = new MetadataCollection<DataBaseIndex>(null, OnIndexRemove);
             Triggers = new MetadataCollection<Trigger>(null, OnRemoveIndex);
             IncomingForeignKeys = new MetadataCollection<ForeignKey>(null, OnRemoveForeignKey);
             ForeignKeys = new MetadataCollection<ForeignKey>(null, OnRemoveForeignKey);
@@ -25,7 +25,7 @@ namespace Geco.Common.SimpleMetadata
         public MetadataCollection<ForeignKey> ForeignKeys { get; }
         public MetadataCollection<ForeignKey> IncomingForeignKeys { get; }
         public MetadataCollection<Trigger> Triggers { get; }
-        public MetadataCollection<Index> Indexes { get; }
+        public MetadataCollection<DataBaseIndex> Indexes { get; }
 
         protected override void OnRemove()
         {
@@ -51,7 +51,7 @@ namespace Geco.Common.SimpleMetadata
             foreignKey.GetWritable().Remove();
         }
 
-        private void OnIndexRemove(Index index)
+        private void OnIndexRemove(DataBaseIndex index)
         {
             index.GetWritable().Remove();
         }

@@ -8,5 +8,15 @@
     <None Include="Template\**\*.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
   <Import Condition="Exists('Packaging.Targets')" Project="Packaging.Targets" />
+
+  <ItemGroup>
+    <None Remove="obj\Debug\netcoreapp2.0\Packaging.AssemblyInfo.cs" />
+  </ItemGroup>
 </Project>

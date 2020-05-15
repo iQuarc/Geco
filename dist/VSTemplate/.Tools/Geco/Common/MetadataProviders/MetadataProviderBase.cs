@@ -24,7 +24,7 @@ namespace Geco.Common.MetadataProviders
             sw.Start();
             this.ConnectionName = connectionName;
             DatabaseMetadata db;
-            using (Connection = CreateConection())
+            using (Connection = CreateConnection())
             {
                 Connection.Open();
                 db = new DatabaseMetadata(GetName(), GetClrTypeMappings());
@@ -40,7 +40,7 @@ namespace Geco.Common.MetadataProviders
                     var table = schema.Tables[columnInfo.TableName];
                     var index = table.Columns.Count;
                     table.Columns.Add(new Column(columnInfo.Name, table, index, columnInfo.DataType, columnInfo.Precision, columnInfo.Scale, columnInfo.MaxLength,
-                        columnInfo.IsNullable, columnInfo.IsKey, columnInfo.IsIdentity, columnInfo.IsRowguidCol, columnInfo.IsComputed, columnInfo.DefaultValue).WithMetadata(columnInfo));
+                        columnInfo.IsNullable, columnInfo.IsKey, columnInfo.IsIdentity, columnInfo.IsRowGuidCol, columnInfo.IsComputed, columnInfo.DefaultValue).WithMetadata(columnInfo));
                 }
 
                 foreach (var foreignKeyInfo in LoadForeignKeys())
@@ -76,7 +76,7 @@ namespace Geco.Common.MetadataProviders
                     var table = schema.Tables[indexInfo.TableName];
                     var column = table.Columns[indexInfo.ColumnName];
 
-                    var index = table.Indexes.GetOrAdd(indexInfo.IndexName, () => new Index(indexInfo.IndexName, table, indexInfo.IsUnique, indexInfo.IsClustered).WithMetadata(indexInfo));
+                    var index = table.Indexes.GetOrAdd(indexInfo.IndexName, () => new DataBaseIndex(indexInfo.IndexName, table, indexInfo.IsUnique, indexInfo.IsClustered).WithMetadata(indexInfo));
                     if (indexInfo.IsIncluded)
                         index.IncludedColumns.Add(column);
                     else
@@ -92,7 +92,7 @@ namespace Geco.Common.MetadataProviders
 
         public DatabaseMetadata GetMetadata(string connectionName)
         {
-            return metadata ?? (metadata = LoadMetadata(connectionName));
+            return metadata ??= LoadMetadata(connectionName);
         }
 
         public void Reload()
@@ -108,7 +108,7 @@ namespace Geco.Common.MetadataProviders
         protected abstract IEnumerable<IndexColumnInfo> LoadIndexInfo();
 
 
-        protected abstract DbConnection CreateConection();
+        protected abstract DbConnection CreateConnection();
         protected abstract DbCommand CreateCommand(DbConnection cnn, string commandText);
         protected abstract IReadOnlyDictionary<string, Type> GetClrTypeMappings();
 
@@ -169,7 +169,7 @@ namespace Geco.Common.MetadataProviders
             public bool IsKey { get; set; }
             public bool IsIdentity { get; set; }
             public bool IsNullable { get; set; }
-            public bool IsRowguidCol { get; set; }
+            public bool IsRowGuidCol { get; set; }
             public bool IsComputed { get; set; }
             public int MaxLength { get; set; }
             public string Name { get; set; }

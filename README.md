@@ -1,7 +1,7 @@
 # Geco, (Ge)nerator (Co)nsole
 Simple code generator based on a console project, running on .Net Core and using C# interpolated strings.
 
-Geco runs on .Net Core 2.0. [Download and Install](http://dot.net)
+Geco runs on .Net Core 3.1. [Download and Install](http://dot.net)
 
 What's the reasoning behind this utility?
 
@@ -29,6 +29,12 @@ dotnet new geco
 To create a Geco project when installed as a Visual Studio Project template, Select File -> New project select the Geco template. 
 
 ### A more indetail Getting Sstarted with Visual Studio walkthrough can be found on the Wiki: [Geting Started](https://github.com/iQuarc/Geco/wiki)
+
+Geco can also be installed as a Git submodule. `Geco.Core` is the git repository which should be added. The recomendation is to add it to a folder called .Tools
+
+```Batchfile
+git submodule add https://github.com/iQuarc/Geco.Core.git .Tools
+```
 
 ## Code Generation examples
 
@@ -154,6 +160,9 @@ Example:
  - SQL Sever to SQL Compact data sync template (Api to synchronize schema compatible SQL Server and SQL Compact databases including Web Api and .Net client methods)
 
 ## Version History
+
+**Version 1.0.9**
+  - Updated Geco to .Net Core 3.1
 
 **Version 1.0.8**
   - Fix VS dependency version

@@ -21,8 +21,8 @@ namespace Geco.Common.SimpleMetadata
             Table = table;
             DefaultValue = defaultValue;
 
-            Indexes = new MetadataCollection<Index>();
-            IndexIncludes = new MetadataCollection<Index>();
+            Indexes = new MetadataCollection<DataBaseIndex>();
+            IndexIncludes = new MetadataCollection<DataBaseIndex>();
             IncommingForeignKeys = new MetadataCollection<ForeignKey>();
         }
 
@@ -41,8 +41,8 @@ namespace Geco.Common.SimpleMetadata
         public Table Table { get;  }
         public ForeignKey ForeignKey { get; set; }
         public MetadataCollection<ForeignKey> IncommingForeignKeys { get; set; }
-        public MetadataCollection<Index> Indexes { get; set; }
-        public MetadataCollection<Index> IndexIncludes { get; set; }
+        public MetadataCollection<DataBaseIndex> Indexes { get; set; }
+        public MetadataCollection<DataBaseIndex> IndexIncludes { get; set; }
 
         public string DefaultValue { get;}
 

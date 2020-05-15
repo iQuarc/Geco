@@ -37,7 +37,7 @@
           <ProjectItem ReplaceParameters="false" TargetFileName="ForeignKey.cs">ForeignKey.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="IMetadataItem.cs">IMetadataItem.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="IMetadataProvider.cs">IMetadataProvider.cs</ProjectItem>
-          <ProjectItem ReplaceParameters="false" TargetFileName="Index.cs">Index.cs</ProjectItem>
+          <ProjectItem ReplaceParameters="false" TargetFileName="DataBaseIndex.cs">DataBaseIndex.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="MetadataCollection.cs">MetadataCollection.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="MetadataDictionary.cs">MetadataDictionary.cs</ProjectItem>
           <ProjectItem ReplaceParameters="false" TargetFileName="Schema.cs">Schema.cs</ProjectItem>
