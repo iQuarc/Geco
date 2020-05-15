@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Geco.Tests.Database.Model;
@@ -8,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
-namespace Geco.Tests
+namespace Geco.Tests.Database
 {
     public class EntityFrameworkGeneratorTests
     {

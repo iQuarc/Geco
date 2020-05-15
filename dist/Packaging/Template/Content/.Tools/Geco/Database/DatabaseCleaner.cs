@@ -45,7 +45,7 @@ namespace Geco.Database
             CleanDatabase(connectionString);
         }
 
-        public void CleanDatabase(string connectionString)
+        public static void CleanDatabase(string connectionString)
         {
             using (var cnn = new SqlConnection(connectionString))
             {
@@ -54,7 +54,7 @@ namespace Geco.Database
                 {
                     foreach (var statement in Statements)
                     {
-                        using (var cmd = new SqlCommand(statement.ToString(), cnn, tran){CommandTimeout = options.CommandTimeout})
+                        using (var cmd = new SqlCommand(statement.ToString(), cnn, tran))
                         {
                             ColorConsole.WriteLine(("Running: ", Yellow), (string.Format(statement.Format, "", "***"), White));
                             cmd.ExecuteNonQuery();

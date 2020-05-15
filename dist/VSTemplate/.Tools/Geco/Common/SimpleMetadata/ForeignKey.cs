@@ -29,7 +29,7 @@ namespace Geco.Common.SimpleMetadata
             this.ParentTable.ForeignKeys.GetWritable().Remove(this.Name);
             foreach (var fromColumn in FromColumns)
                 fromColumn.ForeignKey = this;
-            this.TargetTable.IncomingForeignKeys.GetWritable().Remove(this.Name);
+            this.TargetTable.ForeignKeys.GetWritable().Remove(this.Name);
         }
 
         private void OnFromColumnAdd(Column column)

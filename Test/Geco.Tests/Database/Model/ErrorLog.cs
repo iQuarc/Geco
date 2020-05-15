@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.8.0")]
+    [GeneratedCode("Geco", "1.0.5.0")]
     public partial class ErrorLog
     {
         // Key Properties

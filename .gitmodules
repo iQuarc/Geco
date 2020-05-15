@@ -1,0 +1,4 @@
+[submodule "Geco.Core"]
+	path = Geco.Core
+	url = https://github.com/iQuarc/Geco.Core.git
+	branch = master

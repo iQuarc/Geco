@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30028.174
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packaging", "Packaging", "{C49A00FE-EAC8-45CE-8E5E-6F0A5E5F9139}"
 EndProject
@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Readme", ".Readme", "{8AEC
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geco", "Geco.Core\Geco\Geco.csproj", "{0A806563-3EBA-4927-B60D-3FC70D193587}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geco", "Geco.Core\.Tools\Geco.csproj", "{0A806563-3EBA-4927-B60D-3FC70D193587}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geco.Tests", "Test\Geco.Tests\Geco.Tests.csproj", "{0E41EF7D-124F-420B-A585-D900228C98A0}"
 EndProject

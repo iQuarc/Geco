@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Database\Model\" />
-    <Folder Include="DataSync\Server\" />
   </ItemGroup>
 
 </Project>
