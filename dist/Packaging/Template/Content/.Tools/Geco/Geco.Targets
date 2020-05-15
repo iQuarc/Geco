@@ -2,10 +2,10 @@
   <PropertyGroup>
     <OutputOfExec></OutputOfExec>
   </PropertyGroup>
-  
+
   <Target Name="Geco" AfterTargets="AfterBuild">
     <Message Text="$(OutputAssembly)" Importance="High" />
-    <Exec Command="dotnet $(ProjectDir)$(OutputPath)$(AssemblyName).dll run -tl RunAtBuildTasks" 
+    <Exec Command="dotnet $(ProjectDir)$(OutputPath)$(AssemblyName).dll run -tl RunAtBuildTasks"
           ConsoleToMSBuild="True"
           ContinueOnError="True" />
   </Target>

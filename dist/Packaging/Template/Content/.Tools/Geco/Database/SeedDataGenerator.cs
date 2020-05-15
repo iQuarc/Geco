@@ -11,19 +11,19 @@ using Microsoft.Extensions.Configuration;
 namespace Geco.Database
 {
     /// <summary>
-    /// Generates seed scripts with merge statements for (Sql Server)
+    ///     Generates seed scripts with merge statements for (Sql Server)
     /// </summary>
     [Options(typeof(SeedDataGeneratorOptions))]
     public class SeedDataGenerator : BaseGeneratorWithMetadata
     {
-        private readonly SeedDataGeneratorOptions options;
-        private readonly IConfigurationRoot configurationRoot;
-
         private readonly Func<Column, bool> columnsFilter = c => !c.IsComputed;
-        private readonly Func<Table, string> whereClause = _ => null;
+        private readonly IConfigurationRoot configurationRoot;
         private readonly Func<Table, string> mergeFilter = _ => null;
+        private readonly SeedDataGeneratorOptions options;
+        private readonly Func<Table, string> whereClause = _ => null;
 
-        public SeedDataGenerator(SeedDataGeneratorOptions options, IMetadataProvider provider, IInflector inflector, IConfigurationRoot configurationRoot) : base(provider, inflector, options.ConnectionName)
+        public SeedDataGenerator(SeedDataGeneratorOptions options, IMetadataProvider provider, IInflector inflector,
+            IConfigurationRoot configurationRoot) : base(provider, inflector, options.ConnectionName)
         {
             this.options = options;
             this.configurationRoot = configurationRoot;
@@ -31,22 +31,26 @@ namespace Geco.Database
 
         protected override void Generate()
         {
-            if (options.Tables.Count == 0 && String.IsNullOrEmpty(options.TablesRegex) &&
-                options.ExcludedTables.Count == 0 && String.IsNullOrEmpty(options.ExcludedTablesRegex))
+            if (options.Tables.Count == 0 && string.IsNullOrEmpty(options.TablesRegex) &&
+                options.ExcludedTables.Count == 0 && string.IsNullOrEmpty(options.ExcludedTablesRegex))
             {
-                ColorConsole.WriteLine($"No tables were selected. Use options Tables, TableRegex, ExcludedTables or ExcludedTablesRegex to specity the tables for which Seed data will be generated ", ConsoleColor.Red);
+                ColorConsole.WriteLine(
+                    $"No tables were selected. Use options Tables, TableRegex, ExcludedTables or ExcludedTablesRegex to specity the tables for which Seed data will be generated ",
+                    ConsoleColor.Red);
                 return;
             }
 
             var tables = Db.Schemas.SelectMany(s => s.Tables)
                 .Where(t => (options.Tables.Any(n => Util.TableNameMaches(t, n))
-                || Util.TableNameMachesRegex(t, options.TablesRegex, true))
-                && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
-                && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex, false)).OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
+                             || Util.TableNameMachesRegex(t, options.TablesRegex, true))
+                            && !options.ExcludedTables.Any(n => Util.TableNameMaches(t, n))
+                            && !Util.TableNameMachesRegex(t, options.ExcludedTablesRegex, false))
+                .OrderBy(t => t.Schema.Name + "." + t.Name).ToArray();
             TopologicalSort(tables);
             GenerateSeedFile(options.OutputFileName, tables);
 
-            ColorConsole.WriteLine($"File: '{Path.GetFileName(options.OutputFileName)}' was generated.", ConsoleColor.Yellow);
+            ColorConsole.WriteLine($"File: '{Path.GetFileName(options.OutputFileName)}' was generated.",
+                ConsoleColor.Yellow);
         }
 
         private void GenerateSeedFile(string file, IEnumerable<Table> tables)
@@ -54,12 +58,10 @@ namespace Geco.Database
             using (BeginFile(file))
             {
                 foreach (var table in tables)
-                {
                     if (table.Metadata["is_memory_optimized"] == "False" && table.Metadata["temporal_type"] == "0")
                         foreach (var tableValues in GetTableValues(table)
                             .Batch(options.ItemsPerStatement))
                             GenerateTableSeed(table, tableValues);
-                }
             }
         }
 
@@ -75,8 +77,8 @@ namespace Geco.Database
                 W($"SET IDENTITY_INSERT [{table.Schema.Name}].[{table.Name}] ON");
 
             W($"MERGE [{table.Schema.Name}].[{table.Name}] AS Target");
-            WI($"USING ( VALUES ");
-            int count = 0;
+            WI("USING ( VALUES ");
+            var count = 0;
             foreach (var rowData in rows)
             {
                 W($"({CommaJoin(rowData.Item, QuoteValue)})");
@@ -84,6 +86,7 @@ namespace Geco.Database
                     Comma();
                 count++;
             }
+
             DW($") As Source ({CommaJoin(columns, c => $"[{c.Name}]")}) ");
             W($"ON {string.Join(" AND ", GetMatchColumns(table))}");
             if (table.Columns.Any(c => !c.IsKey))
@@ -96,8 +99,10 @@ namespace Geco.Database
                     if (!columnInfo.IsLast)
                         Comma();
                 }
+
                 Dedent();
             }
+
             W("WHEN NOT MATCHED THEN");
             IW($"INSERT ({CommaJoin(columns, c => $"[{c.Name}]")})");
             WD($"VALUES ({CommaJoin(columns, c => $"Source.[{c.Name}]")});");
@@ -107,15 +112,16 @@ namespace Geco.Database
 
             W("--GO");
             W();
-            ColorConsole.WriteLine($"Generated merge script for {count} row{(count >= 2 ? "s" : "")} for [{table.Schema.Name}].[{table.Name}].", ConsoleColor.DarkYellow);
+            ColorConsole.WriteLine(
+                $"Generated merge script for {count} row{(count >= 2 ? "s" : "")} for [{table.Schema.Name}].[{table.Name}].",
+                ConsoleColor.DarkYellow);
         }
 
         private static IEnumerable<string> GetMatchColumns(Table table)
         {
             if (table.Columns.Any(c => c.IsKey))
                 return table.Columns.Where(c => c.IsKey).Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]");
-            else
-                return table.Columns.Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]");
+            return table.Columns.Select(c => $"Source.[{c.Name}] = Target.[{c.Name}]");
         }
 
         private IEnumerable<IEnumerable<object>> GetTableValues(Table table)
@@ -128,7 +134,8 @@ namespace Geco.Database
                     .Where(columnsFilter)
                     .ToList();
                 var where = whereClause(table);
-                cmd.CommandText = $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(String.IsNullOrEmpty(where) ? "1=1" : where)}";
+                cmd.CommandText =
+                    $"SELECT {CommaJoin(columns, ColumnExpression)} FROM [{table.Schema.Name}].[{table.Name}] WHERE {(string.IsNullOrEmpty(where) ? "1=1" : where)}";
                 cnn.Open();
                 cmd.Connection = cnn;
                 using (var rdr = cmd.ExecuteReader())
@@ -146,25 +153,23 @@ namespace Geco.Database
         private string ColumnExpression(Column column)
         {
             if (!Db.TypeMappings.ContainsKey(column.DataType))
-            {
                 return $"CAST([{column.Name}] as NVARCHAR(MAX)) as[{column.Name}]";
-            }
             return $"[{column.Name}]";
         }
 
 
-        private string QuoteValue(Object value)
+        private string QuoteValue(object value)
         {
             if (value == null || value == DBNull.Value)
                 return "NULL";
             if (value is bool)
-                return ((bool)value) ? "1" : "0";
+                return (bool) value ? "1" : "0";
             if (value is string || value is Guid)
                 return "N'" + value.ToString().Trim().Replace("'", "''") + "'";
             if (value is DateTime)
-                return "N'" + ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss:fff") + "'";
+                return "N'" + ((DateTime) value).ToString("yyyy-MM-dd HH:mm:ss:fff") + "'";
             if (value is DateTimeOffset)
-                return "N'" + ((DateTimeOffset)value).ToString("yyyy-MM-dd HH:mm:ss.fffffff K") + "'";
+                return "N'" + ((DateTimeOffset) value).ToString("yyyy-MM-dd HH:mm:ss.fffffff K") + "'";
             if (value is TimeSpan t)
                 return "N'" + t + "'";
 
@@ -173,10 +178,7 @@ namespace Geco.Database
             {
                 var sb = new StringBuilder(bs.Length * 2 + 30);
                 sb.Append("CONVERT(VARBINARY(MAX),N'");
-                foreach (var b in bs)
-                {
-                    sb.Append(b.ToString("X2"));
-                }
+                foreach (var b in bs) sb.Append(b.ToString("X2"));
                 sb.Append("',2)");
                 return sb.ToString();
             }
@@ -187,26 +189,25 @@ namespace Geco.Database
 
         private void TopologicalSort(IList<Table> tables)
         {
-            bool sorted = false;
-            var comparer = new SeedDataGenerator.TopologicalComparer();
+            var sorted = false;
+            var comparer = new TopologicalComparer();
             var iterations = 0;
             while (!sorted)
             {
                 sorted = true;
                 iterations++;
                 if (iterations > 100)
-                    throw new InvalidOperationException("Cannot sort tables due to cyclic relation between selected tables.");
+                    throw new InvalidOperationException(
+                        "Cannot sort tables due to cyclic relation between selected tables.");
 
-                for (int i = 0; i < tables.Count - 1; i++)
-                    for (int j = i + 1; j < tables.Count; j++)
+                for (var i = 0; i < tables.Count - 1; i++)
+                for (var j = i + 1; j < tables.Count; j++)
+                    if (comparer.Compare(tables[i], tables[j]) > 0)
                     {
-                        if (comparer.Compare(tables[i], tables[j]) > 0)
-                        {
-                            var aux = tables[i];
-                            tables[i] = tables[j];
-                            tables[j] = aux;
-                            sorted = false;
-                        }
+                        var aux = tables[i];
+                        tables[i] = tables[j];
+                        tables[j] = aux;
+                        sorted = false;
                     }
             }
         }
@@ -219,11 +220,13 @@ namespace Geco.Database
                     return 0;
 
                 // Source goes before any table that references is
-                if (source.IncomingForeignKeys.Any(fk => fk.ParentTable == target) || target.ForeignKeys.Any(fk => fk.TargetTable == source))
+                if (source.IncomingForeignKeys.Any(fk => fk.ParentTable == target) ||
+                    target.ForeignKeys.Any(fk => fk.TargetTable == source))
                     return -1;
 
                 // Source goes after any table which it references
-                if (source.ForeignKeys.Any(fk => fk.TargetTable == target) || target.IncomingForeignKeys.Any(fk => fk.ParentTable == source))
+                if (source.ForeignKeys.Any(fk => fk.TargetTable == target) ||
+                    target.IncomingForeignKeys.Any(fk => fk.ParentTable == source))
                     return 1;
 
                 return 0;

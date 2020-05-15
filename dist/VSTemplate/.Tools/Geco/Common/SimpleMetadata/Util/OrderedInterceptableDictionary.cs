@@ -7,23 +7,25 @@ using System.Linq;
 namespace Geco.Common.SimpleMetadata.Util
 {
     /// <summary>
-    /// A string dictionary which preserves the order of elements which were added and allows intercepting additions and deletions
+    ///     A string dictionary which preserves the order of elements which were added and allows intercepting additions and
+    ///     deletions
     /// </summary>
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TElement">The element type</typeparam>
     [DebuggerNonUserCode]
-    internal class OrderedInterceptableDictionary<TKey,TElement> : IDictionary<TKey, TElement>
+    internal class OrderedInterceptableDictionary<TKey, TElement> : IDictionary<TKey, TElement>
     {
+        private readonly SortedDictionary<int, (TKey Key, TElement Element)> elements;
         private readonly IDictionary<TKey, int> keyOrder;
-        private readonly SortedDictionary<int, (TKey Key,TElement Element)> elements;
 
         private readonly Action<TElement> onAdded;
         private readonly Action<TElement> onRemoved;
         private int curentOrder;
 
-        public OrderedInterceptableDictionary(IEqualityComparer<TKey> comparer, Action<TElement> onAdd, Action<TElement> onRemoved)
+        public OrderedInterceptableDictionary(IEqualityComparer<TKey> comparer, Action<TElement> onAdd,
+            Action<TElement> onRemoved)
         {
-            this.onAdded = onAdd;
+            onAdded = onAdd;
             keyOrder = new Dictionary<TKey, int>(comparer ?? EqualityComparer<TKey>.Default);
             elements = new SortedDictionary<int, (TKey, TElement)>();
             this.onRemoved = onRemoved;
@@ -36,10 +38,7 @@ namespace Geco.Common.SimpleMetadata.Util
             get => GetElement(key);
             set
             {
-                if (keyOrder.ContainsKey(key))
-                {
-                    Remove(key);
-                }
+                if (keyOrder.ContainsKey(key)) Remove(key);
                 Add(key, value);
             }
         }
@@ -61,7 +60,7 @@ namespace Geco.Common.SimpleMetadata.Util
         public void Add(TKey key, TElement value)
         {
             keyOrder.Add(key, curentOrder);
-            elements.Add(curentOrder, (key,value));
+            elements.Add(curentOrder, (key, value));
             onAdded?.Invoke(value);
             curentOrder++;
         }
@@ -81,6 +80,7 @@ namespace Geco.Common.SimpleMetadata.Util
                 onRemoved?.Invoke(element);
                 return true;
             }
+
             return false;
         }
 
@@ -91,6 +91,7 @@ namespace Geco.Common.SimpleMetadata.Util
                 value = elements[idx].Element;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -98,14 +99,7 @@ namespace Geco.Common.SimpleMetadata.Util
         public IEnumerator<KeyValuePair<TKey, TElement>> GetEnumerator()
         {
             foreach (var value in elements.Values)
-            {
                 yield return new KeyValuePair<TKey, TElement>(value.Key, value.Element);
-            }
-        }
-
-        private TElement GetElement(TKey key)
-        {
-            return elements[keyOrder[key]].Element;
         }
 
         void ICollection<KeyValuePair<TKey, TElement>>.Add(KeyValuePair<TKey, TElement> item)
@@ -115,7 +109,7 @@ namespace Geco.Common.SimpleMetadata.Util
 
         bool ICollection<KeyValuePair<TKey, TElement>>.Contains(KeyValuePair<TKey, TElement> item)
         {
-            return keyOrder.ContainsKey(item.Key) && Object.Equals(elements[keyOrder[item.Key]].Element, item.Value);
+            return keyOrder.ContainsKey(item.Key) && Equals(elements[keyOrder[item.Key]].Element, item.Value);
         }
 
         void ICollection<KeyValuePair<TKey, TElement>>.CopyTo(KeyValuePair<TKey, TElement>[] array, int arrayIndex)
@@ -131,6 +125,11 @@ namespace Geco.Common.SimpleMetadata.Util
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private TElement GetElement(TKey key)
+        {
+            return elements[keyOrder[key]].Element;
         }
     }
 }

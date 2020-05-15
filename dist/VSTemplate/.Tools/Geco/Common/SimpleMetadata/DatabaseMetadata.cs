@@ -19,11 +19,11 @@ namespace Geco.Common.SimpleMetadata
         public IReadOnlyDictionary<string, Type> TypeMappings { get; }
 
         /// <summary>
-        /// Freezes current database metadata instance so it cannot be modified any more
+        ///     Freezes current database metadata instance so it cannot be modified any more
         /// </summary>
         public void Freeze()
         {
-            this.IsFrozen = true;
+            IsFrozen = true;
         }
 
         private void OnRemoveSchema(Schema schema)

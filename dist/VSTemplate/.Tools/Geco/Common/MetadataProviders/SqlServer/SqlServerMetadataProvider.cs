@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Geco.Common.MetadataProviders.SqlServer
 {
     public class SqlServerMetadataProvider : MetadataProviderBase
     {
         private readonly IConfigurationRoot configurationRoot;
+
         public SqlServerMetadataProvider(IConfigurationRoot configurationRoot)
         {
             this.configurationRoot = configurationRoot;
@@ -116,7 +116,7 @@ namespace Geco.Common.MetadataProviders.SqlServer
 
         protected override DbCommand CreateCommand(DbConnection cnn, string commandText)
         {
-            return new SqlCommand(commandText, (SqlConnection)cnn);
+            return new SqlCommand(commandText, (SqlConnection) cnn);
         }
 
         protected override IReadOnlyDictionary<string, Type> GetClrTypeMappings()
@@ -125,37 +125,37 @@ namespace Geco.Common.MetadataProviders.SqlServer
             (
                 new Dictionary<string, Type>
                 {
-                    { "bigint", typeof(long) },
-                    { "binary", typeof(byte[]) },
-                    { "bit", typeof(bool) },
-                    { "char", typeof(char) },
-                    { "date", typeof(DateTime) },
-                    { "datetime", typeof(DateTime) },
-                    { "datetime2", typeof(DateTime) },
-                    { "datetimeoffset", typeof(DateTimeOffset) },
-                    { "decimal", typeof(decimal) },
-                    { "float", typeof(double) },
-                    { "image", typeof(byte[]) },
-                    { "int", typeof(int) },
-                    { "money", typeof(decimal) },
-                    { "nchar", typeof(char) },
-                    { "ntext", typeof(string) },
-                    { "numeric", typeof(decimal) },
-                    { "nvarchar", typeof(string) },
-                    { "real", typeof(float) },
-                    { "smalldatetime", typeof(DateTime) },
-                    { "smallint", typeof(short) },
-                    { "smallmoney", typeof(decimal) },
-                    { "sql_variant", typeof(byte[]) },
-                    { "sysname", typeof(string) },
-                    { "text", typeof(string) },
-                    { "time", typeof(TimeSpan) },
-                    { "timestamp", typeof(byte[]) },
-                    { "tinyint", typeof(byte) },
-                    { "uniqueidentifier", typeof(Guid) },
-                    { "varbinary", typeof(byte[]) },
-                    { "varchar", typeof(string) },
-                    { "xml", typeof(string) },
+                    {"bigint", typeof(long)},
+                    {"binary", typeof(byte[])},
+                    {"bit", typeof(bool)},
+                    {"char", typeof(char)},
+                    {"date", typeof(DateTime)},
+                    {"datetime", typeof(DateTime)},
+                    {"datetime2", typeof(DateTime)},
+                    {"datetimeoffset", typeof(DateTimeOffset)},
+                    {"decimal", typeof(decimal)},
+                    {"float", typeof(double)},
+                    {"image", typeof(byte[])},
+                    {"int", typeof(int)},
+                    {"money", typeof(decimal)},
+                    {"nchar", typeof(char)},
+                    {"ntext", typeof(string)},
+                    {"numeric", typeof(decimal)},
+                    {"nvarchar", typeof(string)},
+                    {"real", typeof(float)},
+                    {"smalldatetime", typeof(DateTime)},
+                    {"smallint", typeof(short)},
+                    {"smallmoney", typeof(decimal)},
+                    {"sql_variant", typeof(byte[])},
+                    {"sysname", typeof(string)},
+                    {"text", typeof(string)},
+                    {"time", typeof(TimeSpan)},
+                    {"timestamp", typeof(byte[])},
+                    {"tinyint", typeof(byte)},
+                    {"uniqueidentifier", typeof(Guid)},
+                    {"varbinary", typeof(byte[])},
+                    {"varchar", typeof(string)},
+                    {"xml", typeof(string)}
                 }
             );
         }

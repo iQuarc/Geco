@@ -15,6 +15,7 @@ namespace Geco.Common.MetadataProviders
                 writable[key] = item;
                 return item;
             }
+
             return collection[key];
         }
     }

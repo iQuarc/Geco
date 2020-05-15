@@ -36,7 +36,7 @@ namespace Geco.Common
 
         public string Underscore(string pascalCasedWord)
         {
-           return pascalCasedWord.Underscore().Replace(" ", "");
+            return pascalCasedWord.Underscore().Replace(" ", "");
         }
 
         public string Capitalise(string word)

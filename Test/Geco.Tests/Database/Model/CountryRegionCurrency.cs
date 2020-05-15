@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class CountryRegionCurrency
     {
         // Key Properties
@@ -27,8 +27,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public CountryRegion CountryRegion { get; set; }
-        public Currency Currency { get; set; }
+        public CountryRegion CountryRegion { get; set; } //Column: CountryRegionCode, FK: FK_CountryRegionCurrency_CountryRegion_CountryRegionCode
+        public Currency Currency { get; set; } //Column: CurrencyCode, FK: FK_CountryRegionCurrency_Currency_CurrencyCode
 
     }
 }

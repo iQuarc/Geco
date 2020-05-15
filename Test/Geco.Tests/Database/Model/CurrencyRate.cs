@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class CurrencyRate
     {
         // Key Properties
@@ -31,8 +31,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Currency CurrencyFromCurrencyCode { get; set; }
-        public Currency CurrencyToCurrencyCode { get; set; }
+        public Currency CurrencyFromCurrencyCode { get; set; } //Column: FromCurrencyCode, FK: FK_CurrencyRate_Currency_FromCurrencyCode
+        public Currency CurrencyToCurrencyCode { get; set; } //Column: ToCurrencyCode, FK: FK_CurrencyRate_Currency_ToCurrencyCode
 
         // Reverse navigation
         public List<SalesOrderHeader> SalesOrderHeaders { get; set; }

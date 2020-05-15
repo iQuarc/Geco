@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class WorkOrderRouting
     {
         // Key Properties
@@ -36,8 +36,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Location Location { get; set; }
-        public WorkOrder WorkOrder { get; set; }
+        public Location Location { get; set; } //Column: LocationID, FK: FK_WorkOrderRouting_Location_LocationID
+        public WorkOrder WorkOrder { get; set; } //Column: WorkOrderID, FK: FK_WorkOrderRouting_WorkOrder_WorkOrderID
 
     }
 }

@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class BusinessEntityContact
     {
         // Key Properties
@@ -29,9 +29,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public BusinessEntity BusinessEntity { get; set; }
-        public ContactType ContactType { get; set; }
-        public Person Person { get; set; }
+        public BusinessEntity BusinessEntity { get; set; } //Column: BusinessEntityID, FK: FK_BusinessEntityContact_BusinessEntity_BusinessEntityID
+        public ContactType ContactType { get; set; } //Column: ContactTypeID, FK: FK_BusinessEntityContact_ContactType_ContactTypeID
+        public Person Person { get; set; } //Column: PersonID, FK: FK_BusinessEntityContact_Person_PersonID
 
     }
 }

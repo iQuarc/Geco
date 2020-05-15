@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Geco.Common
 {
     /// <summary>
-    /// Extensions class with enumerable extensions targeted at code generation
+    ///     Extensions class with enumerable extensions targeted at code generation
     /// </summary>
     public static class EnumerableExtensions
     {
         /// <summary>
-        /// Yields a single value
+        ///     Yields a single value
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
@@ -21,7 +21,7 @@ namespace Geco.Common
         }
 
         /// <summary>
-        /// Yields two values
+        ///     Yields two values
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instance1"></param>
@@ -34,7 +34,7 @@ namespace Geco.Common
         }
 
         /// <summary>
-        /// Yields tree values
+        ///     Yields tree values
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instance1"></param>
@@ -49,10 +49,12 @@ namespace Geco.Common
         }
 
         /// <summary>
-        /// Batches the source enumerable into a sequence of enumerable each containing <para>size</para> elements
+        ///     Batches the source enumerable into a sequence of enumerable each containing
+        ///     <para>size</para>
+        ///     elements
         /// </summary>
         /// <typeparam name="T">Element Type</typeparam>
-        /// <param name="source">The source <see cref="IEnumerable{T}"/></param>
+        /// <param name="source">The source <see cref="IEnumerable{T}" /></param>
         /// <param name="count">Size of the batch indicating the number of elements in each batch</param>
         /// <returns></returns>
         public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, int count)
@@ -62,21 +64,18 @@ namespace Geco.Common
 
             IEnumerable<T> BatchCounter(int curentCount)
             {
-                do 
+                do
                 {
                     yield return enumerator.Current;
                 } while (--curentCount > 0 && enumerator.MoveNext());
             }
 
-            while (enumerator.MoveNext())
-            {
-                yield return BatchCounter(count);
-            }
+            while (enumerator.MoveNext()) yield return BatchCounter(count);
         }
 
         /// <summary>
-        /// Returns a wrapped enumerable that contains info for each enumerated item, 
-        /// like the index in original source, and whether it's first or last element in the original source
+        ///     Returns a wrapped enumerable that contains info for each enumerated item,
+        ///     like the index in original source, and whether it's first or last element in the original source
         /// </summary>
         /// <typeparam name="T">the type of elements in sequence</typeparam>
         /// <param name="source">the source</param>
@@ -85,15 +84,16 @@ namespace Geco.Common
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
+
             IEnumerable<ItemInfo<T>> WithInfoIterator()
             {
                 using (var enumerator = source.GetEnumerator())
                 {
-                    int index = 0;
+                    var index = 0;
                     if (!enumerator.MoveNext())
                         yield break;
 
-                    T current = enumerator.Current;
+                    var current = enumerator.Current;
 
                     if (enumerator.MoveNext())
                     {
@@ -113,6 +113,7 @@ namespace Geco.Common
                         yield return new ItemInfo<T>(false, false, index++, current);
                         current = next;
                     }
+
                     yield return new ItemInfo<T>(false, true, index, current);
                 }
             }
@@ -121,7 +122,7 @@ namespace Geco.Common
         }
 
         /// <summary>
-        /// Recreates the info for an enumerable sequence
+        ///     Recreates the info for an enumerable sequence
         /// </summary>
         /// <typeparam name="T">the type of elements in sequence</typeparam>
         /// <param name="source">the source</param>
@@ -141,6 +142,7 @@ namespace Geco.Common
             IsFirst,
             IsLast
         }
+
         internal ItemInfo(bool first, bool last, int index, T item)
         {
             info = (first ? Info.IsFirst : 0) | (last ? Info.IsLast : 0);

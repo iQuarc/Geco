@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class ProductInventory
     {
         // Key Properties
@@ -31,8 +31,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Location Location { get; set; }
-        public Product Product { get; set; }
+        public Location Location { get; set; } //Column: LocationID, FK: FK_ProductInventory_Location_LocationID
+        public Product Product { get; set; } //Column: ProductID, FK: FK_ProductInventory_Product_ProductID
 
     }
 }

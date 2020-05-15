@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class ProductModelProductDescriptionCulture
     {
         // Key Properties
@@ -28,9 +28,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Culture Culture { get; set; }
-        public ProductDescription ProductDescription { get; set; }
-        public ProductModel ProductModel { get; set; }
+        public Culture Culture { get; set; } //Column: CultureID, FK: FK_ProductModelProductDescriptionCulture_Culture_CultureID
+        public ProductDescription ProductDescription { get; set; } //Column: ProductDescriptionID, FK: FK_ProductModelProductDescriptionCulture_ProductDescription_ProductDescriptionID
+        public ProductModel ProductModel { get; set; } //Column: ProductModelID, FK: FK_ProductModelProductDescriptionCulture_ProductModel_ProductModelID
 
     }
 }

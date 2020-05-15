@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class Vendor
     {
         // Key Properties
@@ -32,7 +32,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public BusinessEntity BusinessEntity { get; set; }
+        public BusinessEntity BusinessEntity { get; set; } //Column: BusinessEntityID, FK: FK_Vendor_BusinessEntity_BusinessEntityID
 
         // Reverse navigation
         public List<ProductVendor> ProductVendors { get; set; }

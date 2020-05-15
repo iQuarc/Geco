@@ -13,7 +13,7 @@
 
         protected override void OnRemove()
         {
-            Table.Triggers.GetWritable().Remove(this.Name);
+            Table.Triggers.GetWritable().Remove(Name);
         }
     }
 }

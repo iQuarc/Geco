@@ -6,7 +6,8 @@ namespace Geco.Common.SimpleMetadata
 {
     public class MetadataDictionary : IDictionary<string, string>
     {
-        private readonly IDictionary<string, string> innerDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, string> innerDictionary =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
@@ -69,8 +70,9 @@ namespace Geco.Common.SimpleMetadata
 
         public string this[string key]
         {
-            get {
-                innerDictionary.TryGetValue(key, out string value);
+            get
+            {
+                innerDictionary.TryGetValue(key, out var value);
                 return value;
             }
             set => innerDictionary[key] = value;
