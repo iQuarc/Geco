@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Linq;
 
 namespace Geco.Common.SimpleMetadata
 {
@@ -12,9 +11,11 @@ namespace Geco.Common.SimpleMetadata
             Tables = new MetadataCollection<Table>(OnAdd, OnRemove);
         }
 
+        public override string Name { get; }
+        public MetadataCollection<Table> Tables { get; }
+
         private void OnAdd(Table table)
         {
-            
         }
 
         private void OnRemove(Table table)
@@ -26,6 +27,7 @@ namespace Geco.Common.SimpleMetadata
                 foreach (var fkToColumn in fk.ToColumns)
                     fkToColumn.ForeignKey = null;
             }
+
             foreach (var fk in table.IncomingForeignKeys)
             {
                 fk.ParentTable.ForeignKeys.GetWritable().Remove(fk.Name);
@@ -33,8 +35,5 @@ namespace Geco.Common.SimpleMetadata
                     fkToColumn.ForeignKey = null;
             }
         }
-
-        public override string Name { get; }
-        public MetadataCollection<Table> Tables { get; }
     }
 }

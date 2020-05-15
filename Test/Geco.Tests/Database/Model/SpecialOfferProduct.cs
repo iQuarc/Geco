@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class SpecialOfferProduct
     {
         // Key Properties
@@ -28,8 +28,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Product Product { get; set; }
-        public SpecialOffer SpecialOffer { get; set; }
+        public Product Product { get; set; } //Column: ProductID, FK: FK_SpecialOfferProduct_Product_ProductID
+        public SpecialOffer SpecialOffer { get; set; } //Column: SpecialOfferID, FK: FK_SpecialOfferProduct_SpecialOffer_SpecialOfferID
 
         // Reverse navigation
         public List<SalesOrderDetail> SalesOrderDetails { get; set; }

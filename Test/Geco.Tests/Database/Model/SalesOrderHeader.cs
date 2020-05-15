@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class SalesOrderHeader
     {
         // Key Properties
@@ -50,14 +50,14 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Address BillToAddress { get; set; }
-        public CreditCard CreditCard { get; set; }
-        public CurrencyRate CurrencyRate { get; set; }
-        public Customer Customer { get; set; }
-        public SalesPerson SalesPerson { get; set; }
-        public ShipMethod ShipMethod { get; set; }
-        public Address ShipToAddress { get; set; }
-        public SalesTerritory SalesTerritory { get; set; }
+        public Address BillToAddress { get; set; } //Column: BillToAddressID, FK: FK_SalesOrderHeader_Address_BillToAddressID
+        public CreditCard CreditCard { get; set; } //Column: CreditCardID, FK: FK_SalesOrderHeader_CreditCard_CreditCardID
+        public CurrencyRate CurrencyRate { get; set; } //Column: CurrencyRateID, FK: FK_SalesOrderHeader_CurrencyRate_CurrencyRateID
+        public Customer Customer { get; set; } //Column: CustomerID, FK: FK_SalesOrderHeader_Customer_CustomerID
+        public SalesPerson SalesPerson { get; set; } //Column: SalesPersonID, FK: FK_SalesOrderHeader_SalesPerson_SalesPersonID
+        public ShipMethod ShipMethod { get; set; } //Column: ShipMethodID, FK: FK_SalesOrderHeader_ShipMethod_ShipMethodID
+        public Address ShipToAddress { get; set; } //Column: ShipToAddressID, FK: FK_SalesOrderHeader_Address_ShipToAddressID
+        public SalesTerritory SalesTerritory { get; set; } //Column: TerritoryID, FK: FK_SalesOrderHeader_SalesTerritory_TerritoryID
 
         // Reverse navigation
         public List<SalesOrderDetail> SalesOrderDetails { get; set; }

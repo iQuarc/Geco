@@ -10,7 +10,7 @@
         DatabaseMetadata GetMetadata(string connectionName = "DefaultConnection");
 
         /// <summary>
-        ///     Reloads the metadata from the database and caches it 
+        ///     Reloads the metadata from the database and caches it
         /// </summary>
         void Reload();
     }

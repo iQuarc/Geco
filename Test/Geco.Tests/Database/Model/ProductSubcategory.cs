@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class ProductSubcategory
     {
         // Key Properties
@@ -29,7 +29,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public ProductCategory ProductCategory { get; set; }
+        public ProductCategory ProductCategory { get; set; } //Column: ProductCategoryID, FK: FK_ProductSubcategory_ProductCategory_ProductCategoryID
 
         // Reverse navigation
         public List<Product> Products { get; set; }

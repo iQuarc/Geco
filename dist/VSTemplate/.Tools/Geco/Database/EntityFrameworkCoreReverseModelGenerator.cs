@@ -2,24 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Geco.Common;
 using Geco.Common.SimpleMetadata;
-using Microsoft.Extensions.Options;
-using System.Text;
 
 // ReSharper disable PossibleMultipleEnumeration
 
 namespace Geco.Database
 {
     /// <summary>
-    /// Model Generator for Entity Framework Core
+    ///     Model Generator for Entity Framework Core
     /// </summary>
     [Options(typeof(EntityFrameworkCoreReverseModelGeneratorOptions))]
     public class EntityFrameworkCoreReverseModelGenerator : BaseGeneratorWithMetadata
     {
+        private readonly HashSet<string> binaryTypes = new HashSet<string> {"varbinary"};
+        private readonly HashSet<string> numericTypes = new HashSet<string> {"numeric", "decimal"};
         private readonly EntityFrameworkCoreReverseModelGeneratorOptions options;
 
-        public EntityFrameworkCoreReverseModelGenerator(IMetadataProvider provider, IInflector inf, EntityFrameworkCoreReverseModelGeneratorOptions options) : base(provider, inf, options.ConnectionName)
+        private readonly HashSet<string> stringTypes = new HashSet<string> {"nvarchar", "varchar", "char", "nchar"};
+
+        public EntityFrameworkCoreReverseModelGenerator(IMetadataProvider provider, IInflector inf,
+            EntityFrameworkCoreReverseModelGeneratorOptions options) : base(provider, inf, options.ConnectionName)
         {
             this.options = options;
         }
@@ -34,8 +38,10 @@ namespace Geco.Database
 
         private void WriteEntityFiles()
         {
-            using (BeginFile($"{options.ContextName ?? Inf.Pascalise(Db.Name)}Entities.cs", options.OneFilePerEntity == false))
+            using (BeginFile($"{options.ContextName ?? Inf.Pascalise(Db.Name)}Entities.cs",
+                options.OneFilePerEntity == false))
             using (WriteHeader(options.OneFilePerEntity == false))
+            {
                 foreach (var table in Db.Schemas.SelectMany(s => s.Tables).OrderBy(t => t.Name))
                 {
                     var className = Inf.Pascalise(Inf.Singularise(table.Name));
@@ -47,6 +53,7 @@ namespace Geco.Database
                         WriteEntity(table);
                     }
                 }
+            }
         }
 
 
@@ -55,7 +62,8 @@ namespace Geco.Database
             using (BeginFile($"{options.ContextName ?? Inf.Pascalise(Db.Name)}.cs"))
             using (WriteHeader())
             {
-                W($"[GeneratedCode(\"Geco\", \"{Assembly.GetEntryAssembly().GetName().Version}\")]", options.GeneratedCodeAttribute);
+                W($"[GeneratedCode(\"Geco\", \"{Assembly.GetEntryAssembly().GetName().Version}\")]",
+                    options.GeneratedCodeAttribute);
                 W($"public partial class {options.ContextName ?? Inf.Pascalise(Db.Name)}Context : DbContext");
                 WI("{");
                 {
@@ -81,8 +89,12 @@ namespace Geco.Database
 
                     if (options.UseSqlServer)
                     {
-                        W($"optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[\"{options.ConnectionName}\"].ConnectionString, opt =>", !options.NetCore);
-                        W($"optionsBuilder.UseSqlServer(Configuration.GetConnectionString(\"{options.ConnectionName}\"), opt =>", options.NetCore);
+                        W(
+                            $"optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[\"{options.ConnectionName}\"].ConnectionString, opt =>",
+                            !options.NetCore);
+                        W(
+                            $"optionsBuilder.UseSqlServer(Configuration.GetConnectionString(\"{options.ConnectionName}\"), opt =>",
+                            options.NetCore);
                         WI("{");
                         {
                             W("//opt.EnableRetryOnFailure();");
@@ -122,7 +134,7 @@ namespace Geco.Database
         private IDisposable WriteHeader(bool write = true)
         {
             if (!write)
-                return base.OnBlockEnd();
+                return OnBlockEnd();
 
             if (options.DisableCodeWarnings)
             {
@@ -136,6 +148,7 @@ namespace Geco.Database
                 W("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
                 W();
             }
+
             W("using System;");
             W("using System.CodeDom.Compiler;");
             W("using System.Collections.Generic;");
@@ -147,15 +160,12 @@ namespace Geco.Database
             W($"namespace {options.Namespace}");
             WI("{");
 
-            return base.OnBlockEnd(() =>
-            {
-                DW("}");
-            });
+            return OnBlockEnd(() => { DW("}"); });
         }
 
         private void WriteDbSets()
         {
-            foreach (var table in Db.Schemas.SelectMany<Schema, Table>(s => s.Tables).OrderBy<Table, string>(t => t.Name))
+            foreach (var table in Db.Schemas.SelectMany(s => s.Tables).OrderBy(t => t.Name))
             {
                 var className = table.Metadata["Class"];
                 var plural = Inf.Pluralise(className);
@@ -169,14 +179,16 @@ namespace Geco.Database
             var existingNames = new HashSet<string>();
             var className = table.Metadata["Class"];
             var classInterfaces = "";
-            int i = 1;
+            var i = 1;
             existingNames.Add(className);
 
-            W($"[GeneratedCode(\"Geco\", \"{Assembly.GetEntryAssembly().GetName().Version}\")]", options.GeneratedCodeAttribute);
-            W($"public partial class {className}{(!String.IsNullOrWhiteSpace(classInterfaces) ? ": " + classInterfaces : "")}");
+            W($"[GeneratedCode(\"Geco\", \"{Assembly.GetEntryAssembly().GetName().Version}\")]",
+                options.GeneratedCodeAttribute);
+            W(
+                $"public partial class {className}{(!string.IsNullOrWhiteSpace(classInterfaces) ? ": " + classInterfaces : "")}");
             WI("{");
             {
-                var keyProperties = table.Columns.Where<Column>(c => c.IsKey);
+                var keyProperties = table.Columns.Where(c => c.IsKey);
                 if (keyProperties.Any())
                 {
                     W("// Key Properties", options.GenerateComments);
@@ -185,13 +197,15 @@ namespace Geco.Database
                         var propertyName = Inf.Pascalise(column.Name);
                         CheckClash(ref propertyName, existingNames, ref i);
                         column.Metadata["Property"] = propertyName;
-                        W($"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{ get; set; }}");
+                        W(
+                            $"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{ get; set; }}");
                     }
+
                     W();
                 }
 
 
-                var scalarProperties = table.Columns.Where<Column>(c => !c.IsKey);
+                var scalarProperties = table.Columns.Where(c => !c.IsKey);
                 if (scalarProperties.Any())
                 {
                     W("// Scalar Properties", options.GenerateComments);
@@ -200,15 +214,18 @@ namespace Geco.Database
                         var propertyName = Inf.Pascalise(column.Name);
                         CheckClash(ref propertyName, existingNames, ref i);
                         column.Metadata["Property"] = propertyName;
-                        W($"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{ get; set; }}");
+                        W(
+                            $"public {GetClrTypeName(column.DataType)}{GetNullable(column)} {propertyName} {{ get; set; }}");
                     }
+
                     W();
                 }
 
                 if (table.ForeignKeys.Any())
                 {
                     W("// Foreign keys", options.GenerateComments);
-                    foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
+                    foreach (var fk in table.ForeignKeys.OrderBy(t => t.ParentTable.Name)
+                        .ThenBy(t => t.FromColumns.First().Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name));
                         string propertyName;
@@ -219,25 +236,25 @@ namespace Geco.Database
 
                         if (CheckClash(ref propertyName, existingNames, ref i))
                         {
-                            propertyName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name)) + GetFkName(fk.FromColumns);
+                            propertyName = Inf.Pascalise(Inf.Singularise(fk.TargetTable.Name)) +
+                                           GetFkName(fk.FromColumns);
                             CheckClash(ref propertyName, existingNames, ref i);
                         }
 
                         fk.Metadata["NavProperty"] = propertyName;
-                        foreach (var column in fk.FromColumns)
-                        {
-                            column.Metadata["NavProperty"] = propertyName;
-                        }
+                        foreach (var column in fk.FromColumns) column.Metadata["NavProperty"] = propertyName;
                         W("[JsonIgnore]", options.JsonSerialization);
                         W($"public {targetClassName} {propertyName} {{ get; set; }}");
                     }
+
                     W();
                 }
 
                 if (table.IncomingForeignKeys.Any())
                 {
                     W("// Reverse navigation", options.GenerateComments);
-                    foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
+                    foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name)
+                        .ThenBy(t => t.FromColumns.First().Name))
                     {
                         var targetClassName = Inf.Pascalise(Inf.Singularise(fk.ParentTable.Name));
                         string propertyName;
@@ -248,27 +265,28 @@ namespace Geco.Database
 
                         if (CheckClash(ref propertyName, existingNames, ref i))
                         {
-                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.ParentTable.Name)) + GetFkName(fk.FromColumns);
+                            propertyName = Inf.Pascalise(Inf.Pluralise(fk.ParentTable.Name)) +
+                                           GetFkName(fk.FromColumns);
                             CheckClash(ref propertyName, existingNames, ref i);
                         }
+
                         fk.Metadata["Property"] = propertyName;
                         fk.Metadata["Type"] = targetClassName;
                         W("[JsonIgnore]", options.JsonSerialization);
                         W($"public List<{targetClassName}> {propertyName} {{ get; set; }}");
                     }
+
                     W();
 
                     W($"public {className}()");
                     WI("{");
                     {
-                        foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name).ThenBy(t => t.FromColumns.First().Name))
-                        {
+                        foreach (var fk in table.IncomingForeignKeys.OrderBy(t => t.ParentTable.Name)
+                            .ThenBy(t => t.FromColumns.First().Name))
                             W($"this.{fk.Metadata["Property"]} = new List<{fk.Metadata["Type"]}>();");
-                        }
                     }
                     DW("}");
                 }
-
             }
             DW("}");
             W("", !options.OneFilePerEntity);
@@ -277,16 +295,13 @@ namespace Geco.Database
         private string GetFkName(IEnumerable<Column> fromColumns)
         {
             var sb = new StringBuilder();
-            foreach (var fromCol in fromColumns)
-            {
-                sb.Append(Inf.Pascalise(Inf.Singularise(RemoveSuffix(fromCol.Name))));
-            }
+            foreach (var fromCol in fromColumns) sb.Append(Inf.Pascalise(Inf.Singularise(RemoveSuffix(fromCol.Name))));
             return sb.ToString();
         }
 
         private void WriteModelBuilderConfigurations()
         {
-            foreach (var table in Db.Schemas.SelectMany<Schema, Table>(s => s.Tables).OrderBy(t => t.Name))
+            foreach (var table in Db.Schemas.SelectMany(s => s.Tables).OrderBy(t => t.Name))
             {
                 var className = table.Metadata["Class"];
                 W($"modelBuilder.Entity<{className}>(entity =>");
@@ -294,45 +309,37 @@ namespace Geco.Database
                 {
                     W($"entity.ToTable(\"{table.Name}\", \"{table.Schema.Name}\");");
 
-                    if (table.Columns.Count<Column>(c => c.IsKey) == 1)
+                    if (table.Columns.Count(c => c.IsKey) == 1)
                     {
-                        var col = table.Columns.First<Column>(c => c.IsKey);
+                        var col = table.Columns.First(c => c.IsKey);
                         W($"entity.HasKey(e => e.{col.Metadata["Property"]})");
                         SemiColon();
                     }
-                    else if (table.Columns.Count<Column>(c => c.IsKey) > 1)
+                    else if (table.Columns.Count(c => c.IsKey) > 1)
                     {
-                        W($"entity.HasKey(e => new {{ {string.Join(", ", table.Columns.Where<Column>(c => c.IsKey).Select(c => "e." + c.Metadata["Property"]))} }});");
+                        W(
+                            $"entity.HasKey(e => new {{ {string.Join(", ", table.Columns.Where(c => c.IsKey).Select(c => "e." + c.Metadata["Property"]))} }});");
                     }
 
                     WI();
-                    foreach (var column in table.Columns.Where<Column>(c => c.ForeignKey == null))
+                    foreach (var column in table.Columns.Where(c => c.ForeignKey == null))
                     {
                         var propertyName = column.Metadata["Property"];
                         DW($"entity.Property(e => e.{propertyName})");
                         IW($".HasColumnName(\"{column.Name}\")");
                         W($".HasColumnType(\"{GetColumnType(column)}\")");
-                        if (!String.IsNullOrEmpty(column.DefaultValue))
-                        {
+                        if (!string.IsNullOrEmpty(column.DefaultValue))
                             W($".HasDefaultValueSql(\"{RemoveExtraParantesis(column.DefaultValue)}\")");
-                        }
-                        if (IsString(column.DataType) && !column.IsNullable)
-                        {
-                            W($".IsRequired()");
-                        }
+                        if (IsString(column.DataType) && !column.IsNullable) W(".IsRequired()");
                         if (IsString(column.DataType) && column.MaxLength != -1)
-                        {
                             W($".HasMaxLength({column.MaxLength})");
-                        }
-                        if (column.DataType == "uniqueidentifier")
-                        {
-                            W(".ValueGeneratedOnAdd()");
-                        }
+                        if (column.DataType == "uniqueidentifier") W(".ValueGeneratedOnAdd()");
                         if (column.IsIdentity)
                         {
                             W(".UseSqlServerIdentityColumn()");
                             W(".ValueGeneratedOnAdd()");
                         }
+
                         SemiColon();
                         W();
                     }
@@ -344,12 +351,15 @@ namespace Geco.Database
                         DW($"entity.HasOne(e => e.{propertyName})");
                         IW($".WithMany(p => p.{reverse})");
                         W($".HasForeignKey(p => p.{fk.FromColumns.First().Name})", fk.FromColumns.Count == 1);
-                        W($".HasForeignKey(p => new {{{string.Join(", ", fk.FromColumns.Select(c => "p." + c.Metadata["Property"]))}}})", fk.FromColumns.Count > 1);
+                        W(
+                            $".HasForeignKey(p => new {{{string.Join(", ", fk.FromColumns.Select(c => "p." + c.Metadata["Property"]))}}})",
+                            fk.FromColumns.Count > 1);
                         W($".OnDelete(DeleteBehavior.{GetBehavior(fk.DeleteAction)})");
                         W($".HasConstraintName(\"{fk.Name}\")");
                         SemiColon();
                         W();
                     }
+
                     Dedent();
                 }
                 DW("});");
@@ -381,13 +391,10 @@ namespace Geco.Database
                 existingNames.Add(propertyName);
                 return true;
             }
+
             existingNames.Add(propertyName);
             return false;
         }
-
-        private readonly HashSet<string> stringTypes = new HashSet<string>() { "nvarchar", "varchar", "char", "nchar" };
-        private readonly HashSet<string> binaryTypes = new HashSet<string>() { "varbinary" };
-        private readonly HashSet<string> numericTypes = new HashSet<string>() { "numeric", "decimal" };
 
         private bool IsString(string dataType)
         {
@@ -413,16 +420,14 @@ namespace Geco.Database
 
         private string GetNullable(Column column)
         {
-            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsValueType && Db.TypeMappings[column.DataType] != typeof(char))
-            {
-                return "?";
-            }
+            if (column.IsNullable && Db.TypeMappings[column.DataType].GetTypeInfo().IsValueType &&
+                Db.TypeMappings[column.DataType] != typeof(char)) return "?";
             return "";
         }
 
         private string GetClrTypeName(string sqlType)
         {
-            string sysType = "string";
+            var sysType = "string";
             if (Db.TypeMappings.ContainsKey(sqlType))
             {
                 var clrType = Db.TypeMappings[sqlType];
@@ -431,25 +436,20 @@ namespace Geco.Database
 
                 sysType = GetCharpTypeName(clrType);
             }
+
             return sysType;
         }
 
         private string GetColumnType(Column column)
         {
             if (IsString(column.DataType))
-            {
-                return $"{column.DataType}({(column.MaxLength == -1 || column.MaxLength >= 8000 ? "MAX" : column.MaxLength.ToString())})";
-            }
+                return
+                    $"{column.DataType}({(column.MaxLength == -1 || column.MaxLength >= 8000 ? "MAX" : column.MaxLength.ToString())})";
 
             if (IsBinary(column.DataType))
-            {
                 return $"{column.DataType}({(column.MaxLength == -1 ? "MAX" : column.MaxLength.ToString())})";
-            }
 
-            if (IsNumeric(column.DataType))
-            {
-                return $"{column.DataType}({column.Precision}, {column.Scale})";
-            }
+            if (IsNumeric(column.DataType)) return $"{column.DataType}({column.Precision}, {column.Scale})";
 
             return column.DataType;
         }
@@ -464,27 +464,31 @@ namespace Geco.Database
         private void IgnoreUnsuportedColumns()
         {
             foreach (var schema in Db.Schemas)
-                foreach (var table in schema.Tables)
-                {
-                    foreach (var column in table.Columns.ToList())
-                        if (!Db.TypeMappings.TryGetValue(column.DataType, out var type) || type == null)
-                        {
-                            ColorConsole.WriteLine($"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.", ConsoleColor.DarkYellow);
-                            table.Columns.GetWritable().Remove(column.Name);
-                        }
-
-                    if (!table.Columns.Any(c => c.IsKey))
+            foreach (var table in schema.Tables)
+            {
+                foreach (var column in table.Columns.ToList())
+                    if (!Db.TypeMappings.TryGetValue(column.DataType, out var type) || type == null)
                     {
-                        ColorConsole.WriteLine($"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.", ConsoleColor.DarkYellow);
-                        table.GetWritable().Remove();
+                        ColorConsole.WriteLine(
+                            $"Column [{schema.Name}].[{table.Name}].[{column.Name}] has unsupported data type [{column.DataType}] and was Ignored.",
+                            ConsoleColor.DarkYellow);
+                        table.Columns.GetWritable().Remove(column.Name);
                     }
+
+                if (!table.Columns.Any(c => c.IsKey))
+                {
+                    ColorConsole.WriteLine(
+                        $"Table [{schema.Name}].[{table.Name}] does not have a primary key and was Ignored.",
+                        ConsoleColor.DarkYellow);
+                    table.GetWritable().Remove();
                 }
+            }
         }
 
         private void FilterTables()
         {
-            if (options.Tables.Count == 0 && String.IsNullOrEmpty(options.TablesRegex) &&
-                options.ExcludedTables.Count == 0 && String.IsNullOrEmpty(options.ExcludedTablesRegex))
+            if (options.Tables.Count == 0 && string.IsNullOrEmpty(options.TablesRegex) &&
+                options.ExcludedTables.Count == 0 && string.IsNullOrEmpty(options.ExcludedTablesRegex))
                 return;
 
             var tables = new HashSet<Table>(
@@ -496,10 +500,8 @@ namespace Geco.Database
 
             foreach (var schema in Db.Schemas)
             foreach (var table in schema.Tables)
-            {
                 if (!tables.Contains(table))
                     schema.Tables.GetWritable().Remove(table.Name);
-            }
         }
     }
 }

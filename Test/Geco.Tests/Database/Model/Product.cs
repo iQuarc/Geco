@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class Product
     {
         // Key Properties
@@ -49,10 +49,10 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public ProductModel ProductModel { get; set; }
-        public ProductSubcategory ProductSubcategory { get; set; }
-        public UnitMeasure UnitMeasureSizeUnitMeasureCode { get; set; }
-        public UnitMeasure UnitMeasureWeightUnitMeasureCode { get; set; }
+        public ProductModel ProductModel { get; set; } //Column: ProductModelID, FK: FK_Product_ProductModel_ProductModelID
+        public ProductSubcategory ProductSubcategory { get; set; } //Column: ProductSubcategoryID, FK: FK_Product_ProductSubcategory_ProductSubcategoryID
+        public UnitMeasure UnitMeasureSizeUnitMeasureCode { get; set; } //Column: SizeUnitMeasureCode, FK: FK_Product_UnitMeasure_SizeUnitMeasureCode
+        public UnitMeasure UnitMeasureWeightUnitMeasureCode { get; set; } //Column: WeightUnitMeasureCode, FK: FK_Product_UnitMeasure_WeightUnitMeasureCode
 
         // Reverse navigation
         public List<BillOfMaterial> BillOfMaterialsComponent { get; set; }

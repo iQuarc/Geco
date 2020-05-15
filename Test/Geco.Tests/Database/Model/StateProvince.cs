@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class StateProvince
     {
         // Key Properties
@@ -32,8 +32,8 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public CountryRegion CountryRegion { get; set; }
-        public SalesTerritory SalesTerritory { get; set; }
+        public CountryRegion CountryRegion { get; set; } //Column: CountryRegionCode, FK: FK_StateProvince_CountryRegion_CountryRegionCode
+        public SalesTerritory SalesTerritory { get; set; } //Column: TerritoryID, FK: FK_StateProvince_SalesTerritory_TerritoryID
 
         // Reverse navigation
         public List<Address> Addresses { get; set; }

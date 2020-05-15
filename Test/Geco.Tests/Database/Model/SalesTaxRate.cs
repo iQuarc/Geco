@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class SalesTaxRate
     {
         // Key Properties
@@ -31,7 +31,7 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public StateProvince StateProvince { get; set; }
+        public StateProvince StateProvince { get; set; } //Column: StateProvinceID, FK: FK_SalesTaxRate_StateProvince_StateProvinceID
 
     }
 }

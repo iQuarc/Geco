@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class PurchaseOrderHeader
     {
         // Key Properties
@@ -37,9 +37,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Employee Employee { get; set; }
-        public ShipMethod ShipMethod { get; set; }
-        public Vendor Vendor { get; set; }
+        public Employee Employee { get; set; } //Column: EmployeeID, FK: FK_PurchaseOrderHeader_Employee_EmployeeID
+        public ShipMethod ShipMethod { get; set; } //Column: ShipMethodID, FK: FK_PurchaseOrderHeader_ShipMethod_ShipMethodID
+        public Vendor Vendor { get; set; } //Column: VendorID, FK: FK_PurchaseOrderHeader_Vendor_VendorID
 
         // Reverse navigation
         public List<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }

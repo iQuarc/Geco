@@ -14,10 +14,11 @@ namespace Geco.Database
     [Options(typeof(SeedScriptRunnerOptions))]
     public class SeedScriptRunner : BaseGenerator
     {
-        private readonly SeedScriptRunnerOptions options;
         private readonly IConfigurationRoot configurationRoot;
+        private readonly SeedScriptRunnerOptions options;
 
-        public SeedScriptRunner(SeedScriptRunnerOptions options, IConfigurationRoot configurationRoot, IInflector inf) : base(inf)
+        public SeedScriptRunner(SeedScriptRunnerOptions options, IConfigurationRoot configurationRoot,
+            IInflector inf) : base(inf)
         {
             this.options = options;
             this.configurationRoot = configurationRoot;
@@ -47,10 +48,11 @@ namespace Geco.Database
             var connectionString = configurationRoot.GetConnectionString(options.ConnectionName);
             if (!File.Exists(file))
             {
-                
-                WriteLine($"File:[{(Path.GetFullPath(file), Yellow)}] does not exit on disk. {("Skipping!", Red)}", Gray);
+                WriteLine($"File:[{(Path.GetFullPath(file), Yellow)}] does not exit on disk. {("Skipping!", Red)}",
+                    Gray);
                 return;
             }
+
             using (var f = File.OpenText(file))
             using (var cnn = new SqlConnection(connectionString))
             {
@@ -58,14 +60,14 @@ namespace Geco.Database
                 using (var tran = cnn.BeginTransaction())
                 {
                     foreach (var commandText in GetCommands(f))
-                    {
-                        using (var cmd = new SqlCommand(commandText.Command, cnn, tran){CommandTimeout = options.CommandTimeout})
+                        using (var cmd = new SqlCommand(commandText.Command, cnn, tran)
+                            {CommandTimeout = options.CommandTimeout})
                         {
                             Write($"{commandText.TableName}", Cyan);
                             var affectedRows = cmd.ExecuteNonQuery();
                             WriteLine($" ({affectedRows} row(s) affected)", White);
                         }
-                    }
+
                     tran.Commit();
                     Console.WriteLine();
                     Console.WriteLine();
@@ -80,7 +82,7 @@ namespace Geco.Database
             while (!streamReader.EndOfStream)
             {
                 var line = streamReader.ReadLine();
-                if (String.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
 
                 var tableMatch = Regex.Match(line, @"\s*MERGE\s*(.*)\s*AS");
@@ -95,7 +97,9 @@ namespace Geco.Database
                     tableName = "";
                 }
                 else
+                {
                     buffer.AppendLine(line);
+                }
             }
         }
     }

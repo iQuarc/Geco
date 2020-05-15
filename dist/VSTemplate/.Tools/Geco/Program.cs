@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,24 +32,28 @@ using static System.ConsoleColor;
 namespace Geco
 {
     /// <summary>
-    /// As simple as it gets code generator, which is a console application that runs code generation tasks written in C#.
+    ///     As simple as it gets code generator, which is a console application that runs code generation tasks written in C#.
     /// </summary>
     /// <remarks>
-    /// Task discovery is done at runtime by scanning current assembly for all the types that implement <see cref="IRunnable"/> interfaces.
-    /// The tasks are resolved using a <see cref="ServiceProvider"/>. Generator tasks can declare a options class using the <see cref="OptionsAttribute"/>
-    /// in order to have the options be read from the <c>appsettings.json</c> configuration file and registered in the <see cref="Microsoft.Extensions.DependencyInjection.ServiceCollection"/>
+    ///     Task discovery is done at runtime by scanning current assembly for all the types that implement
+    ///     <see cref="IRunnable" /> interfaces.
+    ///     The tasks are resolved using a <see cref="ServiceProvider" />. Generator tasks can declare a options class using
+    ///     the <see cref="OptionsAttribute" />
+    ///     in order to have the options be read from the <c>appsettings.json</c> configuration file and registered in the
+    ///     <see cref="Microsoft.Extensions.DependencyInjection.ServiceCollection" />
     /// </remarks>
     public class Program
     {
+        private IConfigurationRoot configurationRoot;
+        private RootConfig rootConfig;
         private Dictionary<string, Type> runnableTypes;
         private IServiceCollection serviceCollection;
-        private RootConfig rootConfig;
-        private IConfigurationRoot configurationRoot;
-        private bool Interactive { get; set; }
-        static int Main(string[] args)
+        public bool Interactive { get; private set; }
+
+        private static int Main(string[] args)
         {
             var p = new Program();
-            return p.Run(args); 
+            return p.Run(args);
         }
 
         private int Run(string[] args)
@@ -64,10 +69,12 @@ namespace Geco
                 app.Command("run", command =>
                 {
                     command.HelpOption("-?|-h|--help");
-                    var taskList = command.Option("-tl|--tasklist "
-                        , "The name of the task list from appsettings.json to execute. The task list is an array of task names.", CommandOptionType.SingleValue);
+                    var taskList = command.Option("-tl|--tasklist"
+                        , "The name of the task list from appsettings.json to execute. The task list is an array of task names.",
+                        CommandOptionType.SingleValue);
                     var taskNames = command.Option("-tn|--taskname <taskname>"
-                        , "The name(s) of the tasks to execute. The task names is an list of task names parameters -tn <xx> -tn <yy>.", CommandOptionType.MultipleValue);
+                        , "The name(s) of the tasks to execute. The task names is an list of task names parameters -tn <xx> -tn <yy>.",
+                        CommandOptionType.MultipleValue);
                     command.OnExecute(() =>
                     {
                         ConfigureServices(app.RemainingArguments.ToArray());
@@ -121,21 +128,24 @@ namespace Geco
                 WriteLine(($"{taskNr}. ", White), ($"{taskInfo.Item.Name}", Blue));
                 actions.Add(taskNr, () => RunTask(taskInfo.Item));
             }
-            WriteLine(("q. ", White), ("Quit", ConsoleColor.Yellow));
+
+            WriteLine(("q. ", White), ("Quit", Yellow));
             Write($">>", White);
 
             bool Choose()
             {
-                var command = Console.ReadLine();
+                var command = Console.ReadLine().Trim();
                 if (string.Equals(command, "q", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.WriteLine();
                     return false;
                 }
+
                 if (actions.TryGetValue(command, out var action))
                     action();
                 return true;
             }
+
             return Choose;
         }
 
@@ -185,20 +195,21 @@ namespace Geco
                 .ToDictionary(t => t.FullName);
 
             foreach (var runnableType in runnableTypes.Values)
-            {
                 serviceCollection.Add(new ServiceDescriptor(runnableType, runnableType, ServiceLifetime.Transient));
-            }
 
             //RootConfig rootConfig
             foreach (var taskConfig in rootConfig.Tasks.WithInfo())
             {
                 if (!runnableTypes.ContainsKey(taskConfig.Item.TaskClass))
                 {
-                    WriteLine($"Task configuration for:[{taskConfig.Item.TaskClass}] has no corresponding service to be applied to", DarkYellow);
+                    WriteLine(
+                        $"Task configuration for:[{taskConfig.Item.TaskClass}] has no corresponding service to be applied to",
+                        DarkYellow);
                     continue;
                 }
+
                 var taskType = runnableTypes[taskConfig.Item.TaskClass];
-                var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
+                var optionsAttribute = (OptionsAttribute) taskType.GetCustomAttribute(typeof(OptionsAttribute));
                 if (optionsAttribute != null)
                 {
                     taskConfig.Item.ConfigIndex = taskConfig.Index;
@@ -235,7 +246,7 @@ namespace Geco
                 WriteLine(("*** Starting ", Yellow), ($" {itemInfo.Name} ", Blue));
 
                 var taskType = runnableTypes[itemInfo.TaskClass];
-                var optionsAttribute = (OptionsAttribute)taskType.GetCustomAttribute(typeof(OptionsAttribute));
+                var optionsAttribute = (OptionsAttribute) taskType.GetCustomAttribute(typeof(OptionsAttribute));
                 if (optionsAttribute != null)
                 {
                     var options = Activator.CreateInstance(optionsAttribute.OptionType);
@@ -246,7 +257,7 @@ namespace Geco
                 using (var provider = serviceCollection.BuildServiceProvider())
                 {
                     sw.Start();
-                    var task = (IRunnable)provider.GetService(taskType);
+                    var task = (IRunnable) provider.GetService(taskType);
                     if (task is IOutputRunnable to)
                     {
                         to.OutputToConsole = itemInfo.OutputToConsole;
@@ -255,7 +266,7 @@ namespace Geco
                         to.Interactive = Interactive;
                     }
 
-                    if (task is IRunableConfirmation co && Interactive)
+                    if (task is IRunnableConfirmation co && Interactive)
                     {
                         sw.Stop();
                         if (!co.GetUserConfirmation())
@@ -263,8 +274,10 @@ namespace Geco
                             WriteLine(("*** Task was canceled ", Yellow), ($" {itemInfo.Name} ", Blue));
                             return;
                         }
+
                         sw.Start();
                     }
+
                     try
                     {
                         task.Run();
@@ -280,9 +293,11 @@ namespace Geco
                 WriteLine($"Error running {(itemInfo.Name, Blue)}: Error:{(ex.Message, Red)}", DarkRed);
                 WriteLine($"Detail: {ex}", DarkYellow);
             }
+
             sw.Stop();
-            Console.WriteLine();
-            WriteLine(("Task", Yellow), ($" {itemInfo.Name} ", Blue), ("completed in", Yellow), ($" {sw.ElapsedMilliseconds} ms", Green));
+            WriteLine();
+            WriteLine(("Task", Yellow), ($" {itemInfo.Name} ", Blue), ("completed in", Yellow),
+                ($" {sw.ElapsedMilliseconds} ms", Green));
         }
     }
 }

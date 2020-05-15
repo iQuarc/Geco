@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Geco.Tests.Database.Model
 {
-    [GeneratedCode("Geco", "1.0.5.0")]
+    [GeneratedCode("Geco", "1.0.9.0")]
     public partial class EmployeeDepartmentHistory
     {
         // Key Properties
@@ -30,9 +30,9 @@ namespace Geco.Tests.Database.Model
         public DateTime ModifiedDate { get; set; }
 
         // Foreign keys
-        public Employee Employee { get; set; }
-        public Department Department { get; set; }
-        public Shift Shift { get; set; }
+        public Employee Employee { get; set; } //Column: BusinessEntityID, FK: FK_EmployeeDepartmentHistory_Employee_BusinessEntityID
+        public Department Department { get; set; } //Column: DepartmentID, FK: FK_EmployeeDepartmentHistory_Department_DepartmentID
+        public Shift Shift { get; set; } //Column: ShiftID, FK: FK_EmployeeDepartmentHistory_Shift_ShiftID
 
     }
 }

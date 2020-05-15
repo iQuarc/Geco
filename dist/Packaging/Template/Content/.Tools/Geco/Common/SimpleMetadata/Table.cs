@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Linq;
-using Geco.Common.MetadataProviders;
 
 namespace Geco.Common.SimpleMetadata
 {
@@ -29,7 +27,7 @@ namespace Geco.Common.SimpleMetadata
 
         protected override void OnRemove()
         {
-            Schema.Tables.GetWritable().Remove(this.Name);
+            Schema.Tables.GetWritable().Remove(Name);
             foreach (var foreignKey in ForeignKeys)
                 foreignKey.GetWritable().Remove();
             foreach (var incomingForeignKey in IncomingForeignKeys)

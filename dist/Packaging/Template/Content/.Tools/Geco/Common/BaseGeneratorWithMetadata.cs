@@ -6,25 +6,25 @@ namespace Geco.Common
     public abstract class BaseGeneratorWithMetadata : BaseGenerator
     {
         protected readonly string ConnectionName;
-        public DatabaseMetadata Db => Provider.GetMetadata(ConnectionName);
-        public IMetadataProvider Provider { get; }
 
         protected BaseGeneratorWithMetadata(IMetadataProvider provider, IInflector inf, string connectionName)
             : base(inf)
         {
-            this.ConnectionName = connectionName;
+            ConnectionName = connectionName;
             Provider = provider;
         }
+
+        public DatabaseMetadata Db => Provider.GetMetadata(ConnectionName);
+        public IMetadataProvider Provider { get; }
 
         protected void ReloadMetadata()
         {
             Provider.Reload();
-            this.Db.Freeze();
+            Db.Freeze();
         }
 
         protected virtual void OnMetadataLoaded(DatabaseMetadata db)
         {
-
         }
 
         protected string GetCharpTypeName(Type type)

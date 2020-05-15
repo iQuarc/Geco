@@ -8,15 +8,13 @@ namespace Geco
     {
         public static bool TableNameMachesRegex(Table table, string tablesRegex, bool onNull)
         {
-            if (String.IsNullOrWhiteSpace(tablesRegex))
+            if (string.IsNullOrWhiteSpace(tablesRegex))
                 return onNull;
             return
-                (
-                    Regex.IsMatch(table.Name, tablesRegex) ||
-                    Regex.IsMatch($"[{table.Name}]", tablesRegex) ||
-                    Regex.IsMatch($"{table.Schema.Name}.{table.Name}", tablesRegex) ||
-                    Regex.IsMatch($"[{table.Schema.Name}].[{table.Name}]", tablesRegex)
-                );
+                Regex.IsMatch(table.Name, tablesRegex) ||
+                Regex.IsMatch($"[{table.Name}]", tablesRegex) ||
+                Regex.IsMatch($"{table.Schema.Name}.{table.Name}", tablesRegex) ||
+                Regex.IsMatch($"[{table.Schema.Name}].[{table.Name}]", tablesRegex);
         }
 
         public static bool TableNameMaches(Table table, string name)

@@ -6,7 +6,7 @@ namespace Geco.Common
 {
     public static class ColorConsole
     {
-        static readonly Regex splitRegex = new Regex(@"{\d+}", RegexOptions.Compiled);
+        private static readonly Regex splitRegex = new Regex(@"{\d+}", RegexOptions.Compiled);
 
         public static void WriteLine(FormattableString value, ConsoleColor color)
         {
@@ -15,6 +15,7 @@ namespace Geco.Common
                 Console.WriteLine();
                 return;
             }
+
             Write(value, color);
             WriteLine();
         }
@@ -29,6 +30,7 @@ namespace Geco.Common
                     Console.ForegroundColor = valueColorPair.color;
                     Console.Write(valueColorPair.value);
                 }
+
                 Console.WriteLine();
             }
             finally
@@ -39,9 +41,8 @@ namespace Geco.Common
 
         public static void Write(FormattableString value, ConsoleColor color)
         {
-
             var parts = splitRegex.Split(value.Format);
-            for (int i = 0; i < parts.Length; i++)
+            for (var i = 0; i < parts.Length; i++)
             {
                 Write(parts[i], color);
                 if (i < value.ArgumentCount)
