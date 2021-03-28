@@ -44,7 +44,7 @@ Next snippet is from the included Entity Framework Core Reverse model generator 
 
 ![Geco Preview1](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage.JPG?raw=true)
 
-This snippet is from the SQL Seed Scrip Generator [SeedDataGenerator.cs](https://github.com/iQuarc/Geco/blob/master/src/Geco/Database/SeedDataGenerator.cs), which generates SQL Merge scripts for Seed data:
+This snippet is from the SQL Seed Scrip Generator [SeedDataGenerator.cs](https://github.com/iQuarc/Geco/blob/master/dist/Packaging/Template/Content/.Tools/Geco/Database/SeedDataGenerator.cs), which generates SQL Merge scripts for Seed data:
 
 ![Geco Preview2](https://github.com/iQuarc/Geco/blob/dev/dist/GecoResources/PreviewImage2.JPG?raw=true)
 
