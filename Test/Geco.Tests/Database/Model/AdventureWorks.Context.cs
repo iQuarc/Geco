@@ -39,7 +39,6 @@ namespace Geco.Tests.Database.Model
             optionsBuilder.ConfigureWarnings(w =>
             {
                 w.Ignore(RelationalEventId.AmbientTransactionWarning);
-                w.Ignore(RelationalEventId.QueryClientEvaluationWarning);
             });
         }
 
@@ -124,7 +123,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.AddressID)
                     .HasColumnName("AddressID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.AddressLine1)
@@ -176,7 +175,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.AddressTypeID)
                     .HasColumnName("AddressTypeID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -205,7 +204,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.SystemInformationID)
                     .HasColumnName("SystemInformationID")
                     .HasColumnType("tinyint")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.DatabaseVersion)
@@ -232,7 +231,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.BillOfMaterialsID)
                     .HasColumnName("BillOfMaterialsID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.StartDate)
@@ -285,7 +284,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.BusinessEntityID)
                     .HasColumnName("BusinessEntityID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Rowguid)
@@ -378,7 +377,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ContactTypeID)
                     .HasColumnName("ContactTypeID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -447,7 +446,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.CreditCardID)
                     .HasColumnName("CreditCardID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CardType)
@@ -530,7 +529,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.CurrencyRateID)
                     .HasColumnName("CurrencyRateID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CurrencyRateDate)
@@ -571,7 +570,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.CustomerID)
                     .HasColumnName("CustomerID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.AccountNumber)
@@ -618,7 +617,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.DatabaseLogID)
                     .HasColumnName("DatabaseLogID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.PostTime)
@@ -665,7 +664,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.DepartmentID)
                     .HasColumnName("DepartmentID")
                     .HasColumnType("smallint")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -694,7 +693,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.EmailAddressID)
                     .HasColumnName("EmailAddressID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EmailAddress1)
@@ -883,7 +882,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ErrorLogID)
                     .HasColumnName("ErrorLogID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ErrorTime)
@@ -933,7 +932,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.IllustrationID)
                     .HasColumnName("IllustrationID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Diagram)
@@ -954,7 +953,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.JobCandidateID)
                     .HasColumnName("JobCandidateID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Resume)
@@ -981,7 +980,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.LocationID)
                     .HasColumnName("LocationID")
                     .HasColumnType("smallint")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -1175,7 +1174,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.PhoneNumberTypeID)
                     .HasColumnName("PhoneNumberTypeID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -1198,7 +1197,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductID)
                     .HasColumnName("ProductID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -1328,7 +1327,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductCategoryID)
                     .HasColumnName("ProductCategoryID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -1386,7 +1385,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductDescriptionID)
                     .HasColumnName("ProductDescriptionID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Description)
@@ -1505,7 +1504,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductModelID)
                     .HasColumnName("ProductModelID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -1594,7 +1593,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductPhotoID)
                     .HasColumnName("ProductPhotoID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ThumbNailPhoto)
@@ -1657,7 +1656,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductReviewID)
                     .HasColumnName("ProductReviewID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ReviewerName)
@@ -1706,7 +1705,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ProductSubcategoryID)
                     .HasColumnName("ProductSubcategoryID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -1798,7 +1797,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.PurchaseOrderDetailID)
                     .HasColumnName("PurchaseOrderDetailID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.DueDate)
@@ -1855,7 +1854,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.PurchaseOrderID)
                     .HasColumnName("PurchaseOrderID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.RevisionNumber)
@@ -1928,7 +1927,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.SalesOrderDetailID)
                     .HasColumnName("SalesOrderDetailID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CarrierTrackingNumber)
@@ -1985,7 +1984,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.SalesOrderID)
                     .HasColumnName("SalesOrderID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.RevisionNumber)
@@ -2236,7 +2235,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.SalesReasonID)
                     .HasColumnName("SalesReasonID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -2265,7 +2264,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.SalesTaxRateID)
                     .HasColumnName("SalesTaxRateID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.TaxType)
@@ -2309,7 +2308,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.TerritoryID)
                     .HasColumnName("TerritoryID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -2407,7 +2406,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ScrapReasonID)
                     .HasColumnName("ScrapReasonID")
                     .HasColumnType("smallint")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -2430,7 +2429,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ShiftID)
                     .HasColumnName("ShiftID")
                     .HasColumnType("tinyint")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -2461,7 +2460,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ShipMethodID)
                     .HasColumnName("ShipMethodID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
@@ -2500,7 +2499,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.ShoppingCartItemID)
                     .HasColumnName("ShoppingCartItemID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ShoppingCartID)
@@ -2539,7 +2538,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.SpecialOfferID)
                     .HasColumnName("SpecialOfferID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Description)
@@ -2631,7 +2630,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.StateProvinceID)
                     .HasColumnName("StateProvinceID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.StateProvinceCode)
@@ -2722,7 +2721,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.TransactionID)
                     .HasColumnName("TransactionID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ReferenceOrderID)
@@ -2891,7 +2890,7 @@ namespace Geco.Tests.Database.Model
                 entity.Property(e => e.WorkOrderID)
                     .HasColumnName("WorkOrderID")
                     .HasColumnType("int")
-                    .UseSqlServerIdentityColumn()
+                    .UseIdentityColumn()
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.OrderQty)

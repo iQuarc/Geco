@@ -1,37 +1,47 @@
 ﻿using System.Diagnostics;
 
-namespace Geco.Common.SimpleMetadata
+namespace Geco.Common.SimpleMetadata;
+
+[DebuggerDisplay(
+   "[{Name}] IsUnique:{IsUnique} IsClustered:{IsClustered} Columns:{Columns} IncludedColumns:{IncludedColumns}")]
+public class DataBaseIndex : MetadataItem
 {
-    [DebuggerDisplay(
-        "[{Name}] IsUnique:{IsUnique} IsClustered:{IsClustered} Columns:{Columns} IncludedColumns:{IncludedColumns}")]
-    public class DataBaseIndex : MetadataItem
-    {
-        public DataBaseIndex(string name, Table table, bool isUnique, bool isClustered)
-        {
-            Name = name;
-            Table = table;
-            IsUnique = isUnique;
-            IsClustered = isClustered;
-            Columns = new MetadataCollection<Column>(OnColumnAdded);
-            IncludedColumns = new MetadataCollection<Column>(OnIncludedColumnAdded);
-        }
+   public DataBaseIndex(string name, Table table, bool isUnique, bool isClustered)
+   {
+      Name               = name;
+      FullyQualifiedName = $"{table.FullyQualifiedName}.[{name}]";
+      Table              = table;
+      IsUnique           = isUnique;
+      IsClustered        = isClustered;
+      Columns            = new MetadataCollection<Column>(OnColumnAdded);
+      IncludedColumns    = new MetadataCollection<Column>(OnIncludedColumnAdded);
 
-        public override string Name { get; }
-        public Table Table { get; }
-        public bool IsUnique { get; }
-        public bool IsClustered { get; }
+      Db.AddToIndex(this);
+   }
 
-        public MetadataCollection<Column> Columns { get; }
-        public MetadataCollection<Column> IncludedColumns { get; }
+   public override             string            Name               { get; }
+   public override             string            FullyQualifiedName { get; }
+   protected internal override IDatabaseMetadata Db                 => Table.Db;
 
-        private void OnColumnAdded(Column column)
-        {
-            column.Indexes.Add(this);
-        }
+   public Table Table       { get; }
+   public bool  IsUnique    { get; }
+   public bool  IsClustered { get; }
 
-        private void OnIncludedColumnAdded(Column column)
-        {
-            column.IndexIncludes.Add(this);
-        }
-    }
+   public MetadataCollection<Column> Columns         { get; }
+   public MetadataCollection<Column> IncludedColumns { get; }
+
+   private void OnColumnAdded(Column column)
+   {
+      column.Indexes.Add(this);
+   }
+
+   private void OnIncludedColumnAdded(Column column)
+   {
+      column.IndexIncludes.Add(this);
+   }
+
+   protected override void OnRemove()
+   {
+      Db.RemoveFromIndex(this);
+   }
 }

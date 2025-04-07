@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Geco.Config;
 
-namespace Geco.Config
+public class RootConfig
 {
-    public class RootConfig
-    {
-        public List<TaskConfig> Tasks { get; } = new List<TaskConfig>();
-    }
+   public List<TaskConfig> Tasks { get; } = new();
 }

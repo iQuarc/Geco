@@ -1,7 +1,7 @@
 # Geco, (Ge)nerator (Co)nsole
 Simple code generator based on a console project, running on .Net Core and using C# interpolated strings.
 
-Geco runs on .Net Core 3.1. [Download and Install](http://dot.net)
+Geco runs on .Net Core 9. [Download and Install](http://dot.net)
 
 What's the reasoning behind this utility?
 
@@ -55,7 +55,7 @@ Next screen shot shows Geco running in interactive mode (as a Console App), and 
 
 ## Description
 
-Geco uses C# 6.0 string interpolation as a template engine for code generation, in order to allow:
+Geco uses C# 13.0 string interpolation as a template engine for code generation, in order to allow:
 
  - Easy customization of templates (Simply edit the .cs file)
  - Easy debugging (Place a breakpoint an run)
@@ -160,6 +160,10 @@ Example:
  - SQL Sever to SQL Compact data sync template (Api to synchronize schema compatible SQL Server and SQL Compact databases including Web Api and .Net client methods)
 
 ## Version History
+
+**Version 1.5.0**
+  - Updated Geco to .Net Core 9.0
+  - Long overdue update with lots of smaller or bigger improvements
 
 **Version 1.0.9**
   - Updated Geco to .Net Core 3.1

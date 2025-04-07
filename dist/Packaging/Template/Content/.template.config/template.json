@@ -1,8 +1,9 @@
 ﻿{
     "$schema": "http://json.schemastore.org/template",
-    "author": "Catalin Pop, © iQuarc 2017",
-    "classifications": [ "Code-Generator","Template-Engine"],
+    "author": "Catalin Pop © 2025",
+    "classifications": [ "Code-Generator", "Template-Engine" ],
     "identity": "iQuarc.Geco.CSharp",
     "name": "Geco, [Ge]nerator [Co]nsole",
-    "shortName": "geco"
+    "shortName": "geco",
+    "preferNameDirectory": true
 }

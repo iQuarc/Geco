@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <GecoDir Condition="'$(GecoDir)' == ''">$(SolutionDir)\Geco.Core\Geco\</GecoDir>
-    <OverwriteSettings Condition="'$(OverwriteSettings)' == ''">false</OverwriteSettings>
+    <OverwriteSettings Condition="'$(OverwriteSettings)' == ''">true</OverwriteSettings>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,14 +1,7 @@
-using System;
+namespace Geco.Common;
 
-namespace Geco.Common
+[AttributeUsage(AttributeTargets.Class)]
+public class OptionsAttribute(Type optionsType) : Attribute
 {
-    public class OptionsAttribute : Attribute
-    {
-        public OptionsAttribute(Type optionsType)
-        {
-            OptionType = optionsType ?? throw new ArgumentNullException(nameof(optionsType));
-        }
-
-        public Type OptionType { get; }
-    }
+   public Type OptionType { get; } = optionsType ?? throw new ArgumentNullException(nameof(optionsType));
 }

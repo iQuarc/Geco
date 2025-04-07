@@ -1,52 +1,59 @@
-namespace Geco.Common.SimpleMetadata
+namespace Geco.Common.SimpleMetadata;
+
+public class ForeignKey : MetadataItem
 {
-    public class ForeignKey : MetadataItem
-    {
-        public ForeignKey(string name, Table parentTable, Table targetTable, ForeignKeyAction updateAction,
-            ForeignKeyAction deleteAction)
-        {
-            Name = name;
-            ParentTable = parentTable;
-            TargetTable = targetTable;
-            FromColumns = new MetadataCollection<Column>(OnFromColumnAdd);
-            ToColumns = new MetadataCollection<Column>(OnToColumnsAdd);
-            UpdateAction = updateAction;
-            DeleteAction = deleteAction;
-        }
+   public ForeignKey(string name, Table parentTable, Table targetTable, ForeignKeyAction updateAction,
+      ForeignKeyAction      deleteAction)
+   {
+      Name               = name;
+      FullyQualifiedName = $"{parentTable.FullyQualifiedName}.[{name}]";
+      ParentTable        = parentTable;
+      TargetTable        = targetTable;
+      FromColumns        = new MetadataCollection<Column>(OnFromColumnAdd);
+      ToColumns          = new MetadataCollection<Column>(OnToColumnsAdd);
+      UpdateAction       = updateAction;
+      DeleteAction       = deleteAction;
 
-        public override string Name { get; }
-        public Table ParentTable { get; }
-        public Table TargetTable { get; }
-        public MetadataCollection<Column> FromColumns { get; }
-        public MetadataCollection<Column> ToColumns { get; }
+      Db.AddToIndex(this);
+   }
 
-        public ForeignKeyAction UpdateAction { get; }
-        public ForeignKeyAction DeleteAction { get; }
+   public override string Name               { get; }
+   public override string FullyQualifiedName { get; }
 
-        protected override void OnRemove()
-        {
-            ParentTable.ForeignKeys.GetWritable().Remove(Name);
-            foreach (var fromColumn in FromColumns)
-                fromColumn.ForeignKey = this;
-            TargetTable.ForeignKeys.GetWritable().Remove(Name);
-        }
+   public Table                      ParentTable { get; }
+   public Table                      TargetTable { get; }
+   public MetadataCollection<Column> FromColumns { get; }
+   public MetadataCollection<Column> ToColumns   { get; }
 
-        private void OnFromColumnAdd(Column column)
-        {
-            column.ForeignKey = this;
-        }
+   public ForeignKeyAction UpdateAction { get; }
+   public ForeignKeyAction DeleteAction { get; }
 
-        private void OnToColumnsAdd(Column column)
-        {
-            column.IncommingForeignKeys.Add(this);
-        }
-    }
+   protected internal override IDatabaseMetadata Db => ParentTable.Db;
 
-    public enum ForeignKeyAction : byte
-    {
-        NoAction = 0,
-        Cascade = 1,
-        SetNull = 2,
-        SetDefault = 3
-    }
+   protected override void OnRemove()
+   {
+      ParentTable.ForeignKeys.GetWritable().Remove(Name);
+      foreach (var fromColumn in FromColumns)
+         fromColumn.ForeignKey = this;
+      TargetTable.ForeignKeys.GetWritable().Remove(Name);
+      Db.RemoveFromIndex(this);
+   }
+
+   private void OnFromColumnAdd(Column column)
+   {
+      column.ForeignKey = this;
+   }
+
+   private void OnToColumnsAdd(Column column)
+   {
+      column.IncomingForeignKeys.Add(this);
+   }
+}
+
+public enum ForeignKeyAction : byte
+{
+   NoAction   = 0,
+   Cascade    = 1,
+   SetNull    = 2,
+   SetDefault = 3
 }

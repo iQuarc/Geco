@@ -2,26 +2,32 @@
 <package >
   <metadata>
     <id>iQuarc.Geco.CSharp</id>
-    <version>1.0.9</version>
+    <version>1.5.0</version>
     <title>Geco, dotnet new template</title>
-    <authors>Catalin Pop, © iQuarc 2017</authors>
+    <authors>Catalin Pop © 2025</authors>
     <owners>iQuarc</owners>
-    <licenseUrl>https://github.com/iQuarc/Geco/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/iQuarc/Geco</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/iQuarc/Geco/master/src/Geco/Logo.png</iconUrl>
+    <license type="file">LICENSE.txt</license>
+    <icon>images\Logo.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</description>
     <summary>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</summary>
+    <readme>README.md</readme>
     <releaseNotes>
       - Fixed pluralization bug
       - Fixed issue with current directory, not being set to bin\
       - Fixed nullable date time not being generated correctly
     </releaseNotes>
-    <copyright>Copyright © iQuarc 2017</copyright>
+    <copyright>Copyright © Catalin Pop 2025</copyright>
     <tags>Code-Generator Template-Engine CSharp Interpolated-Strings</tags>
     <repository url="https://github.com/iQuarc/Geco.git" />
     <packageTypes>
       <packageType name="Template" />
     </packageTypes>
   </metadata>
+  <files>
+    <file src="..\Docs\Logo.png" target="images\" />
+    <file src="..\Docs\README.md" target="\" />
+    <file src="..\Docs\LICENSE.txt" target="\" />
+  </files>
 </package>

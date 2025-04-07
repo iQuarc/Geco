@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net9</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,11 +12,26 @@
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
+    <None Include="Docs\README.md" Pack="true" PackagePath="\" />
+    <None Include="Docs\LICENSE.txt" Pack="true" PackagePath="\" />
+    <None Include="Docs\Logo.png" Pack="true" PackagePath="\images" />
   </ItemGroup>
 
   <Import Condition="Exists('Packaging.Targets')" Project="Packaging.Targets" />
 
   <ItemGroup>
     <None Remove="obj\Debug\netcoreapp2.0\Packaging.AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Docs\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Docs\Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

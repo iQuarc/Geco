@@ -1,34 +1,54 @@
-using System;
-using System.Collections.Generic;
+namespace Geco.Common.SimpleMetadata;
 
-namespace Geco.Common.SimpleMetadata
+public class DatabaseMetadata : IDatabaseMetadata
 {
-    public class DatabaseMetadata
-    {
-        public DatabaseMetadata(string name, IReadOnlyDictionary<string, Type> typeMappings)
-        {
-            Schemas = new MetadataCollection<Schema>(null, OnRemoveSchema);
-            TypeMappings = typeMappings;
-            Name = name;
-        }
+   private readonly Dictionary<string, IMetadataItem> items = new();
 
-        public string Name { get; }
-        public MetadataCollection<Schema> Schemas { get; }
-        public bool IsFrozen { get; private set; }
+   public DatabaseMetadata(string name, IReadOnlyDictionary<string, Type> typeMappings)
+   {
+      Schemas      = new MetadataCollection<Schema>(null, OnRemoveSchema);
+      TypeMappings = typeMappings;
+      Name         = name;
+   }
 
-        public IReadOnlyDictionary<string, Type> TypeMappings { get; }
+   public IReadOnlyDictionary<string, Type> TypeMappings { get; }
 
-        /// <summary>
-        ///     Freezes current database metadata instance so it cannot be modified any more
-        /// </summary>
-        public void Freeze()
-        {
-            IsFrozen = true;
-        }
+   public string                                     Name       { get; }
+   public MetadataCollection<Schema>                 Schemas    { get; }
+   public IReadOnlyDictionary<string, IMetadataItem> ItemsIndex => items;
 
-        private void OnRemoveSchema(Schema schema)
-        {
-            schema.GetWritable().Remove();
-        }
-    }
+   public TMetadataItem Find<TMetadataItem>(string fullyQualifiedTableName)
+      where TMetadataItem : class, IMetadataItem
+   {
+      items.TryGetValue(fullyQualifiedTableName, out var item);
+      return item as TMetadataItem;
+   }
+
+   public void AddToIndex(IMetadataItem item)
+   {
+      items.TryAdd(item.FullyQualifiedName, item);
+   }
+
+   public void RemoveFromIndex(IMetadataItem item)
+   {
+      items.Remove(item.FullyQualifiedName);
+   }
+
+   private void OnRemoveSchema(Schema schema)
+   {
+      schema.GetWritable().Remove();
+      RemoveFromIndex(schema);
+   }
+}
+
+public interface IDatabaseMetadata
+{
+   string                                     Name       { get; }
+   MetadataCollection<Schema>                 Schemas    { get; }
+   IReadOnlyDictionary<string, IMetadataItem> ItemsIndex { get; }
+   void                                       AddToIndex(IMetadataItem      item);
+   void                                       RemoveFromIndex(IMetadataItem item);
+
+   TMetadataItem Find<TMetadataItem>(string fullyQualifiedTableName)
+      where TMetadataItem : class, IMetadataItem;
 }

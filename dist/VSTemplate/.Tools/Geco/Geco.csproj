@@ -1,7 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>As simple as it gets code generator, which is a console application that runs code generation tasks written in C# using interpolated strings.</Description>
@@ -15,8 +17,10 @@
     <Authors>iQuarc</Authors>
     <PackageId>Geco.Core</PackageId>
     <Product>Geco Core</Product>
-    <Version>1.0.9</Version>
+    <Version>1.5.0.0</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>c66975da-2856-41d8-a8fd-d9e06e8652ec</UserSecretsId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
@@ -39,18 +43,24 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Humanizer" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.4" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.3" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
-
   <Import Project="$(ProjectDir)Geco.Targets" Condition="Exists('$(ProjectDir)Geco.Targets')" />
 </Project>
